@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: crosschain
+    database: "{{ 'crosschain' if target.database == 'SEI' else 'crosschain_dev' }}"
+    schema: core
+    tables:
+      - name: dim_date_hours
+      - name: address_tags
+      - name: dim_dates
