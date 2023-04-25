@@ -14,7 +14,7 @@ sei:
       user: <USERNAME>
       password: <PASSWORD>
       region: <REGION>
-      database: OSMOSIS_DEV
+      database: SEI_DEV
       warehouse: <WAREHOUSE>
       schema: silver
       threads: 4
