@@ -8,3 +8,9 @@ sources:
       - name: dim_date_hours
       - name: address_tags
       - name: dim_dates
+  - name: lq
+    database: SEI
+    schema: bronze
+    tables:
+      - name: lq_blocks
+      - name: lq_txs
