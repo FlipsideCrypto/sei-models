@@ -4,19 +4,19 @@
             fetch_result = True
         ) -%}
     SELECT
-        DATA :data :response :last_block_height :: INT last_block_height
+        DATA :data :result :response :last_block_height :: INT last_block_height
     FROM
         (
             SELECT
-                ethereum.streamline.udf_api(
-                    'GET',
-                    'https://sei-testnet-rpc.polkachu.com/abci_info',{},{}
+                ethereum.streamline.udf_json_rpc_call(
+                    'http://35.158.109.187:26657',{},
+                    [ { 'id': 1, 'jsonrpc': '2.0', 'method': 'abci_info' } ]
                 ) DATA
         )
-    {%- endcall -%}
+{%- endcall -%}
 
-    {%- set max_block = load_result('get_mb') ['data'] [0] [0] -%}
-    {% set load_query %}
+{%- set max_block = load_result('get_mb') ['data'] [0] [0] -%}
+{% set load_query %}
 INSERT INTO
     bronze.lq_blocks WITH gen AS (
         SELECT
@@ -75,7 +75,7 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                'https://sei-testnet-rpc.polkachu.com/',{},
+                'http://35.158.109.187:26657',{},
                 calls
             ) DATA
         FROM

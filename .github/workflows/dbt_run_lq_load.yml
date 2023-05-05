@@ -4,7 +4,7 @@ run-name: dbt_run_scheduled_lq_load
 on:
   workflow_dispatch:
   schedule:
-    # “Every 15 minutes”
+    # “Every 10 minutes”
     - cron: '3,13,23,33,43,53 * * * *'
 
 env:
@@ -28,7 +28,7 @@ jobs:
     uses: FlipsideCrypto/analytics-workflow-templates/.github/workflows/dbt_run_template.yml@main
     with:
       dbt_command: >
-        dbt run-operation load_blocks_lq; dbt run-operation load_txs_lq ;dbt run -m models/silver/silver__blocks.sql models/silver/silver__transactions.sql+ 
+        dbt run-operation load_blocks_lq; dbt run-operation load_blocks_lq; dbt run-operation load_txs_lq; dbt run-operation load_txs_lq; dbt run-operation load_txs_lq; dbt run-operation load_txs_lq ;dbt run -m models/silver/silver__blocks.sql models/silver/silver__transactions.sql+ 
       environment: workflow_prod
       warehouse: ${{ vars.WAREHOUSE }}
     secrets: inherit 

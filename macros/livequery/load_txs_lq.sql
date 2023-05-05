@@ -28,7 +28,7 @@ INSERT INTO
                         FROM
                             bronze.lq_txs A
                         LIMIT
-                            1000
+                            250
                     )
                 ORDER BY
                     1
@@ -39,7 +39,7 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                'https://sei-testnet-rpc.polkachu.com/',{},
+                'http://35.158.109.187:26657',{},
                 calls
             ) DATA
         FROM
