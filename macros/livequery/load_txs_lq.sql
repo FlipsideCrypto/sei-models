@@ -27,10 +27,10 @@ INSERT INTO
                             DISTINCT block_number
                         FROM
                             bronze.lq_txs A
-                        LIMIT
-                            250
                         ORDER BY
                             1 DESC
+                        LIMIT
+                            250
                     )
             )
         GROUP BY
@@ -64,7 +64,7 @@ FROM
 {% endset %}
     {% do run_query(load_query) %}
     {% set wait %}
-    CALL system$wait(10);
+    CALL system $ wait(10);
 {% endset %}
     {% do run_query(wait) %}
 {% endmacro %}
