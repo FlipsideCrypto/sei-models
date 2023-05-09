@@ -13,10 +13,10 @@
                     [ { 'id': 1, 'jsonrpc': '2.0', 'method': 'abci_info' } ]
                 ) DATA
         )
-{%- endcall -%}
+    {%- endcall -%}
 
-{%- set max_block = load_result('get_mb') ['data'] [0] [0] -%}
-{% set load_query %}
+    {%- set max_block = load_result('get_mb') ['data'] [0] [0] -%}
+    {% set load_query %}
 INSERT INTO
     bronze.lq_blocks WITH gen AS (
         SELECT
@@ -63,11 +63,11 @@ INSERT INTO
                             DISTINCT block_number
                         FROM
                             bronze.lq_blocks A
+                        ORDER BY
+                            1 DESC
                         LIMIT
                             1000
                     )
-                ORDER BY
-                    1
             )
         GROUP BY
             grp
@@ -100,7 +100,7 @@ FROM
 {% endset %}
     {% do run_query(load_query) %}
     {% set wait %}
-    CALL system$wait(10);
+    CALL system $ wait(10);
 {% endset %}
     {% do run_query(wait) %}
 {% endmacro %}

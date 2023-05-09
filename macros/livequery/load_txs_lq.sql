@@ -29,9 +29,9 @@ INSERT INTO
                             bronze.lq_txs A
                         LIMIT
                             250
+                        ORDER BY
+                            1 DESC
                     )
-                ORDER BY
-                    1
             )
         GROUP BY
             grp
