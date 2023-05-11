@@ -13,7 +13,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (30) over(PARTITION BY getdate()
+                    NTILE (40) over(PARTITION BY getdate()
                 ORDER BY
                     block_number) AS grp
                 FROM
@@ -63,8 +63,9 @@ FROM
     );
 {% endset %}
     {% do run_query(load_query) %}
-    {% set wait %}
-    CALL system$wait(10);
+    {# {% set wait %}
+    CALL system $ wait(10);
 {% endset %}
     {% do run_query(wait) %}
+    #}
 {% endmacro %}

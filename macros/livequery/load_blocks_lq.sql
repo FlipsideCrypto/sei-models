@@ -99,8 +99,8 @@ FROM
     );
 {% endset %}
     {% do run_query(load_query) %}
-    {% set wait %}
+    {# {% set wait %}
     CALL system$wait(10);
 {% endset %}
-    {% do run_query(wait) %}
+    {% do run_query(wait) %} #}
 {% endmacro %}
