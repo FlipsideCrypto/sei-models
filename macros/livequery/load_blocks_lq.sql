@@ -60,7 +60,7 @@ INSERT INTO
                             blocks
                         EXCEPT
                         SELECT
-                            DISTINCT block_number
+                            block_number
                         FROM
                             bronze.lq_blocks A
                         ORDER BY

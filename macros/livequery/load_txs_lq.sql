@@ -24,7 +24,7 @@ INSERT INTO
                             bronze.lq_blocks
                         EXCEPT
                         SELECT
-                            DISTINCT block_number
+                            block_number
                         FROM
                             bronze.lq_txs A
                         ORDER BY
