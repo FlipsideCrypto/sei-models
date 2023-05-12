@@ -49,7 +49,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (40) over(PARTITION BY getdate()
+                    NTILE (80) over(PARTITION BY getdate()
                 ORDER BY
                     block_height) AS grp
                 FROM
@@ -66,7 +66,7 @@ INSERT INTO
                         ORDER BY
                             1 DESC
                         LIMIT
-                            3000
+                            6000
                     )
             )
         GROUP BY
