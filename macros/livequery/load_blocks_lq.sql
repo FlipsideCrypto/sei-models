@@ -66,7 +66,7 @@ INSERT INTO
                         ORDER BY
                             1 DESC
                         LIMIT
-                            7000
+                            6000
                     )
             )
         GROUP BY
