@@ -1,7 +1,7 @@
 {% macro load_txs_lq() %}
     {% set load_query %}
 INSERT INTO
-    bronze.lq_txs WITH calls AS (
+    bronze.lq_txs_2 WITH calls AS (
         SELECT
             ARRAY_AGG(
                 { 'id': block_number,

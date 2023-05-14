@@ -18,7 +18,7 @@
     {%- set max_block = load_result('get_mb') ['data'] [0] [0] -%}
     {% set load_query %}
 INSERT INTO
-    bronze.lq_blocks WITH gen AS (
+    bronze.lq_blocks_2 WITH gen AS (
         SELECT
             ROW_NUMBER() over (
                 ORDER BY
@@ -49,7 +49,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (50) over(PARTITION BY getdate()
+                    NTILE (100) over(PARTITION BY getdate()
                 ORDER BY
                     block_height) AS grp
                 FROM
@@ -66,7 +66,7 @@ INSERT INTO
                         ORDER BY
                             1 DESC
                         LIMIT
-                            1000
+                            2000
                     )
             )
         GROUP BY
@@ -100,7 +100,8 @@ FROM
 {% endset %}
     {% do run_query(load_query) %}
     {# {% set wait %}
-    CALL system$wait(10);
+    CALL system $ wait(10);
 {% endset %}
-    {% do run_query(wait) %} #}
+    {% do run_query(wait) %}
+    #}
 {% endmacro %}
