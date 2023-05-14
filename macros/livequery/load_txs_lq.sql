@@ -30,7 +30,7 @@ INSERT INTO
                         ORDER BY
                             1 DESC
                         LIMIT
-                            1000                    )
+                            500                    )
             )
         GROUP BY
             grp
