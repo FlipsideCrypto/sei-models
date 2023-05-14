@@ -25,7 +25,7 @@ INSERT INTO
                     SEQ4()
             ) AS block_height
         FROM
-            TABLE(GENERATOR(rowcount => 100000000))
+            TABLE(GENERATOR(rowcount => 3139628))
     ),
     blocks AS (
         SELECT
@@ -49,7 +49,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (25) over(PARTITION BY getdate()
+                    NTILE (50) over(PARTITION BY getdate()
                 ORDER BY
                     block_height) AS grp
                 FROM
@@ -62,11 +62,11 @@ INSERT INTO
                         SELECT
                             block_number
                         FROM
-                            bronze.lq_blocks A
+                            bronze.lq_blocks_2 A
                         ORDER BY
                             1 DESC
                         LIMIT
-                            250
+                            1000
                     )
             )
         GROUP BY

@@ -13,7 +13,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (13) over(PARTITION BY getdate()
+                    NTILE (20) over(PARTITION BY getdate()
                 ORDER BY
                     block_number) AS grp
                 FROM
@@ -21,16 +21,16 @@ INSERT INTO
                         SELECT
                             DISTINCT block_number
                         FROM
-                            bronze.lq_blocks
+                            bronze.lq_blocks_2
                         EXCEPT
                         SELECT
                             block_number
                         FROM
-                            bronze.lq_txs A
+                            bronze.lq_txs_2 A
                         ORDER BY
                             1 DESC
                         LIMIT
-                            130                   )
+                            200                   )
             )
         GROUP BY
             grp
