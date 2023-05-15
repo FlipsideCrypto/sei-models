@@ -4,8 +4,11 @@
 
 SELECT
   block_number AS block_id,
-  COALESCE(ARRAY_SIZE(b.value :data :txs) :: NUMBER, 0) AS tx_count,
-  b.value :header AS header,
+  COALESCE(ARRAY_SIZE(COALESCE(b.value, C.value) :data :txs) :: NUMBER, 0) AS tx_count,
+  COALESCE(
+    b.value,
+    C.value
+  ) :header AS header,
   header :chain_id :: STRING AS chain_id,
   header :time :: datetime AS block_timestamp,
   A.data,
@@ -18,6 +21,10 @@ FROM
   LATERAL FLATTEN(
     input => A.data :result,
     outer => TRUE
-  ) AS b
+  ) AS b,
+  LATERAL FLATTEN(
+    input => A.data :data :result,
+    outer => TRUE
+  ) AS C
 WHERE
   key = 'block'
