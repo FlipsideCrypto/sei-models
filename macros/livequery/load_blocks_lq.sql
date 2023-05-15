@@ -82,14 +82,23 @@ INSERT INTO
             calls
     )
 SELECT
-    NULL AS VALUE,
+    DISTINCT NULL AS VALUE,
     ROUND(
-        VALUE :id,
+        CASE
+            WHEN DATA :data :id IS NOT NULL THEN DATA :data :id
+            ELSE VALUE :id
+        END,
         -3
     ) AS _PARTITION_BY_BLOCK_ID,
-    VALUE :id AS block_number,
+    CASE
+        WHEN DATA :data :id IS NOT NULL THEN DATA :data :id
+        ELSE VALUE :id
+    END AS block_number,
     DATA :headers AS metadata,
-    VALUE AS DATA,
+    CASE
+        WHEN DATA :data :id IS NOT NULL THEN DATA
+        ELSE VALUE
+    END AS DATA,
     getdate() AS _inserted_timestamp
 FROM
     results,

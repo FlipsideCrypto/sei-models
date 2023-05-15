@@ -13,7 +13,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (2000) over(PARTITION BY getdate()
+                    NTILE (200) over(PARTITION BY getdate()
                 ORDER BY
                     block_number) AS grp
                 FROM
@@ -22,6 +22,8 @@ INSERT INTO
                             DISTINCT block_number
                         FROM
                             bronze.lq_blocks_2
+                        WHERE
+                            block_number IS NOT NULL
                         EXCEPT
                         SELECT
                             block_number
@@ -30,7 +32,8 @@ INSERT INTO
                         ORDER BY
                             1 DESC
                         LIMIT
-                            2000                   )
+                            200
+                    )
             )
         GROUP BY
             grp
@@ -45,14 +48,23 @@ INSERT INTO
             calls
     )
 SELECT
-    NULL AS VALUE,
+    DISTINCT NULL AS VALUE,
     ROUND(
-        VALUE :id,
+        CASE
+            WHEN DATA :data :id IS NOT NULL THEN DATA :data :id
+            ELSE VALUE :id
+        END,
         -3
     ) AS _PARTITION_BY_BLOCK_ID,
-    VALUE :id AS block_number,
+    CASE
+        WHEN DATA :data :id IS NOT NULL THEN DATA :data :id
+        ELSE VALUE :id
+    END AS block_number,
     DATA :headers AS metadata,
-    VALUE AS DATA,
+    CASE
+        WHEN DATA :data :id IS NOT NULL THEN DATA
+        ELSE VALUE
+    END AS DATA,
     getdate() AS _inserted_timestamp
 FROM
     results,
