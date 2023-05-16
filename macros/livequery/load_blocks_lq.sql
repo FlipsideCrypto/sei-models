@@ -54,7 +54,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (1) over(PARTITION BY getdate()
+                    NTILE (5000) over(PARTITION BY getdate()
                 ORDER BY
                     block_height) AS grp
                 FROM
@@ -71,7 +71,7 @@ INSERT INTO
                         ORDER BY
                             1 DESC
                         LIMIT
-                            1
+                            5000
                     )
             )
         GROUP BY
