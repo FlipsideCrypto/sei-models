@@ -13,7 +13,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (200) over(PARTITION BY getdate()
+                    NTILE (1500) over(PARTITION BY getdate()
                 ORDER BY
                     block_number) AS grp
                 FROM
@@ -32,7 +32,7 @@ INSERT INTO
                         ORDER BY
                             1 DESC
                         LIMIT
-                            200
+                            1500
                     )
             )
         GROUP BY
