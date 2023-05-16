@@ -13,7 +13,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (100) over(PARTITION BY getdate()
+                    NTILE (1000) over(PARTITION BY getdate()
                 ORDER BY
                     block_number) AS grp
                 FROM
@@ -31,7 +31,10 @@ INSERT INTO
                                 2762410,
                                 2762409,
                                 2762408,
-                                2762404
+                                2762404,
+                                2762335,
+                                2762333,
+                                2762330
                             )
                         EXCEPT
                         SELECT
@@ -41,7 +44,7 @@ INSERT INTO
                         ORDER BY
                             1 DESC
                         LIMIT
-                            100
+                            1000
                     )
             )
         GROUP BY
