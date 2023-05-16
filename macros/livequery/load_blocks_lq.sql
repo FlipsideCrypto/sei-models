@@ -34,6 +34,11 @@ INSERT INTO
             gen
         WHERE
             block_height <= {{ max_block }}
+            AND block_height NOT IN (
+                808192,
+                808191,
+                808190
+            )
         ORDER BY
             1 DESC
     ),
@@ -49,7 +54,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (10) over(PARTITION BY getdate()
+                    NTILE (1) over(PARTITION BY getdate()
                 ORDER BY
                     block_height) AS grp
                 FROM
@@ -66,7 +71,7 @@ INSERT INTO
                         ORDER BY
                             1 DESC
                         LIMIT
-                            10
+                            1
                     )
             )
         GROUP BY
