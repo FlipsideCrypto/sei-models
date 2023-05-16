@@ -13,7 +13,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (5000) over(PARTITION BY getdate()
+                    NTILE (100) over(PARTITION BY getdate()
                 ORDER BY
                     block_number) AS grp
                 FROM
@@ -24,7 +24,15 @@ INSERT INTO
                             bronze.lq_blocks_2
                         WHERE
                             block_number IS NOT NULL
-                            AND block_number <> 1835256
+                            AND block_number NOT IN (
+                                1835256,
+                                2762450,
+                                2762412,
+                                2762410,
+                                2762409,
+                                2762408,
+                                2762404
+                            )
                         EXCEPT
                         SELECT
                             block_number
@@ -33,7 +41,7 @@ INSERT INTO
                         ORDER BY
                             1 DESC
                         LIMIT
-                            5000
+                            100
                     )
             )
         GROUP BY

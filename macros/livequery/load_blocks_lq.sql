@@ -25,7 +25,7 @@ INSERT INTO
                     SEQ4()
             ) AS block_height
         FROM
-            TABLE(GENERATOR(rowcount => 852371))
+            TABLE(GENERATOR(rowcount => 2866743))
     ),
     blocks AS (
         SELECT
@@ -63,6 +63,18 @@ INSERT INTO
                             block_height
                         FROM
                             blocks
+                        WHERE
+                            block_height NOT IN (
+                                2763047,
+                                2763046,
+                                2763045,
+                                2763044,
+                                2763043,
+                                2762449,
+                                2762448,
+                                2762447,
+                                2762446
+                            )
                         EXCEPT
                         SELECT
                             block_number
