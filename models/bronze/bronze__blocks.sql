@@ -27,4 +27,7 @@ FROM
     outer => TRUE
   ) AS C
 WHERE
-  key = 'block'
+  COALESCE(
+    b.key,
+    C.key
+  ) = 'block'

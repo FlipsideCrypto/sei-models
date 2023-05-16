@@ -18,14 +18,14 @@
     {%- set max_block = load_result('get_mb') ['data'] [0] [0] -%}
     {% set load_query %}
 INSERT INTO
-    bronze.lq_blocks_2 WITH gen AS (
+    bronze.lq_blocks WITH gen AS (
         SELECT
             ROW_NUMBER() over (
                 ORDER BY
                     SEQ4()
             ) AS block_height
         FROM
-            TABLE(GENERATOR(rowcount => 2866743))
+            TABLE(GENERATOR(rowcount => 100000000))
     ),
     blocks AS (
         SELECT
@@ -34,10 +34,21 @@ INSERT INTO
             gen
         WHERE
             block_height <= {{ max_block }}
+            AND block_height > 9839243
             AND block_height NOT IN (
                 808192,
                 808191,
-                808190
+                808190,
+                2763047,
+                2763046,
+                2763045,
+                2763044,
+                2763043,
+                2762449,
+                2762448,
+                2762447,
+                2762446,
+                852655
             )
         ORDER BY
             1 DESC
@@ -63,23 +74,13 @@ INSERT INTO
                             block_height
                         FROM
                             blocks
-                        WHERE
-                            block_height NOT IN (
-                                2763047,
-                                2763046,
-                                2763045,
-                                2763044,
-                                2763043,
-                                2762449,
-                                2762448,
-                                2762447,
-                                2762446
-                            )
                         EXCEPT
                         SELECT
                             block_number
                         FROM
-                            bronze.lq_blocks_2 A
+                            bronze.lq_blocks A
+                        WHERE
+                            block_number > 9839243
                         ORDER BY
                             1 DESC
                         LIMIT
