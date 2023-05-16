@@ -4,9 +4,18 @@
 
 SELECT
   block_number AS block_id,
-  b.value :hash :: STRING AS tx_id,
-  INDEX AS tx_block_index,
-  b.value AS tx,
+  COALESCE(
+    b.value,
+    C.value
+  ) :hash :: STRING AS tx_id,
+  COALESCE(
+    b.index,
+    C.index
+  ) AS tx_block_index,
+  COALESCE(
+    b.value,
+    C.value
+  ) AS tx,
   _inserted_timestamp
 FROM
   {{ source(
@@ -16,6 +25,10 @@ FROM
   LATERAL FLATTEN(
     input => A.data :result :txs,
     outer => TRUE
-  ) AS b
+  ) AS b,
+  LATERAL FLATTEN(
+    input => A.data :data :result :txs,
+    outer => TRUE
+  ) AS C
 WHERE
   DATA :error :code IS NULL
