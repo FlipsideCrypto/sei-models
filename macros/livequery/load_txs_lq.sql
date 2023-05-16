@@ -13,7 +13,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (500) over(PARTITION BY getdate()
+                    NTILE (10) over(PARTITION BY getdate()
                 ORDER BY
                     block_number) AS grp
                 FROM
@@ -44,7 +44,7 @@ INSERT INTO
                         ORDER BY
                             1 DESC
                         LIMIT
-                            500
+                            10
                     )
             )
         GROUP BY
