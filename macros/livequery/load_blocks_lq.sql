@@ -25,7 +25,7 @@ INSERT INTO
                     SEQ4()
             ) AS block_height
         FROM
-            TABLE(GENERATOR(rowcount => 2272825))
+            TABLE(GENERATOR(rowcount => 852371))
     ),
     blocks AS (
         SELECT
@@ -49,7 +49,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (300) over(PARTITION BY getdate()
+                    NTILE (5000) over(PARTITION BY getdate()
                 ORDER BY
                     block_height) AS grp
                 FROM
@@ -66,7 +66,7 @@ INSERT INTO
                         ORDER BY
                             1 DESC
                         LIMIT
-                            300
+                            5000
                     )
             )
         GROUP BY
