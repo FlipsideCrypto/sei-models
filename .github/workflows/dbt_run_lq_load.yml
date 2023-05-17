@@ -4,8 +4,8 @@ run-name: dbt_run_scheduled_lq_load
 on:
   workflow_dispatch:
   schedule:
-    # “Every 10 minutes”
-    - cron: '3,13,23,33,43,53 * * * *'
+    # “Every 20 minutes”
+    - cron: '3,23,43 * * * *'
 
 env:
   USE_VARS: "${{ vars.USE_VARS }}"
