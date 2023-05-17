@@ -1,7 +1,7 @@
 {% macro load_txs_lq() %}
     {% set load_query %}
 INSERT INTO
-    bronze.lq_txs_2 WITH calls AS (
+    bronze.lq_txs WITH calls AS (
         SELECT
             ARRAY_AGG(
                 { 'id': block_number,
@@ -13,7 +13,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (1000) over(PARTITION BY getdate()
+                    NTILE (5000) over(PARTITION BY getdate()
                 ORDER BY
                     block_number) AS grp
                 FROM
@@ -21,9 +21,10 @@ INSERT INTO
                         SELECT
                             DISTINCT block_number
                         FROM
-                            bronze.lq_blocks_2
+                            bronze.lq_blocks
                         WHERE
                             block_number IS NOT NULL
+                            AND block_number > 9839243
                             AND block_number NOT IN (
                                 1835256,
                                 2762450,
@@ -49,18 +50,17 @@ INSERT INTO
                                 806074,
                                 806073
                             )
-                            AND block_number < 806084
                         EXCEPT
                         SELECT
                             block_number
                         FROM
-                            bronze.lq_txs_2 A
+                            bronze.lq_txs A
                         WHERE
-                            block_number < 806084
+                            block_number > 9839243
                         ORDER BY
                             1 DESC
                         LIMIT
-                            1000
+                            5000
                     )
             )
         GROUP BY
