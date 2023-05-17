@@ -13,7 +13,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (5000) over(PARTITION BY getdate()
+                    NTILE (1000) over(PARTITION BY getdate()
                 ORDER BY
                     block_number) AS grp
                 FROM
@@ -40,17 +40,27 @@ INSERT INTO
                                 849173,
                                 849150,
                                 849138,
-                                849137
+                                849137,
+                                808189,
+                                808188,
+                                808187,
+                                806084,
+                                806079,
+                                806074,
+                                806073
                             )
+                            AND block_number < 806084
                         EXCEPT
                         SELECT
                             block_number
                         FROM
                             bronze.lq_txs_2 A
+                        WHERE
+                            block_number < 806084
                         ORDER BY
                             1 DESC
                         LIMIT
-                            5000
+                            1000
                     )
             )
         GROUP BY
