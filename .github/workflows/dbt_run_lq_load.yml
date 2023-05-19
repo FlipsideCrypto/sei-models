@@ -1,5 +1,5 @@
-name: dbt_run_scheduled_lq_load
-run-name: dbt_run_scheduled_lq_load
+name: dbt_run_scheduled_lq_load_testnet
+run-name: dbt_run_scheduled_lq_load_testnet
 
 on:
   workflow_dispatch:
@@ -29,6 +29,6 @@ jobs:
     with:
       dbt_command: >
          dbt run-operation load_blocks_lq; dbt run-operation load_txs_lq; dbt run --exclude models/silver/silver__staking_rewards.sql; 
-      environment: workflow_prod
+      environment: workflow_testnet
       warehouse: ${{ vars.WAREHOUSE }}
     secrets: inherit 
