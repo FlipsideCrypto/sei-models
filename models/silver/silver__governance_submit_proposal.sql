@@ -101,6 +101,8 @@ SELECT
     proposer,
     p.proposal_id :: NUMBER AS proposal_id,
     y.proposal_type,
+    NULL AS proposal_title,
+    NULL AS proposal_description,
     {# COALESCE(
     tx_body :messages [0] :content :title,
     tx_body :messages [0] :msgs [0] :content :title

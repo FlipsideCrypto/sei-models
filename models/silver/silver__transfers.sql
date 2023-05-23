@@ -143,7 +143,7 @@ receiver_ibc AS (
         msg_group,
         msg_sub_group
 ),
-osmo_tx_ids AS (
+sei_tx_ids AS (
     SELECT
         DISTINCT tx_id
     FROM
@@ -156,13 +156,13 @@ osmo_tx_ids AS (
         )
         OR msg_type = 'claim'
 ),
-message_indexes_osmo AS (
+message_indexes_sei AS (
     SELECT
         v.tx_id,
         attribute_key,
         m.msg_index
     FROM
-        osmo_tx_ids v
+        sei_tx_ids v
         LEFT OUTER JOIN base_atts m
         ON v.tx_id = m.tx_id
         INNER JOIN sender s
@@ -172,24 +172,24 @@ message_indexes_osmo AS (
         AND attribute_key = 'amount'
         AND m.msg_index > s.msg_index
 ),
-osmo_receiver AS (
+sei_receiver AS (
     SELECT
         o.tx_id,
         m.msg_group,
         m.msg_index,
         attribute_value AS receiver
     FROM
-        osmo_tx_ids o
+        sei_tx_ids o
         LEFT OUTER JOIN base_atts m
         ON o.tx_id = m.tx_id
-        LEFT OUTER JOIN message_indexes_osmo idx
+        LEFT OUTER JOIN message_indexes_sei idx
         ON idx.tx_id = m.tx_id
     WHERE
         m.msg_type = 'transfer'
         AND m.attribute_key = 'recipient'
         AND idx.msg_index = m.msg_index
 ),
-osmo_amount AS (
+sei_amount AS (
     SELECT
         o.tx_id,
         m.msg_index,
@@ -206,10 +206,10 @@ osmo_amount AS (
         ) AS amount,
         RIGHT(attribute_value, LENGTH(attribute_value) - LENGTH(SPLIT_PART(TRIM(REGEXP_REPLACE(attribute_value, '[^[:digit:]]', ' ')), ' ', 0))) AS currency
     FROM
-        osmo_tx_ids o
+        sei_tx_ids o
         LEFT OUTER JOIN base_atts m
         ON o.tx_id = m.tx_id
-        LEFT OUTER JOIN message_indexes_osmo idx
+        LEFT OUTER JOIN message_indexes_sei idx
         ON idx.tx_id = m.tx_id
     WHERE
         m.msg_type = 'transfer'
@@ -298,8 +298,8 @@ fin AS (
             currency
         ) AS _unique_key
     FROM
-        osmo_receiver r
-        LEFT OUTER JOIN osmo_amount C
+        sei_receiver r
+        LEFT OUTER JOIN sei_amount C
         ON r.tx_id = C.tx_id
         AND r.msg_index = C.msg_index
         LEFT OUTER JOIN sender s

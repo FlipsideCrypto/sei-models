@@ -109,7 +109,7 @@ SELECT
     tx_succeeded,
     d.depositor,
     p.proposal_id :: NUMBER AS proposal_id,
-    v.amount,
+    v.amount :: FLOAT AS amount,
     v.currency,
     _inserted_timestamp
 FROM
