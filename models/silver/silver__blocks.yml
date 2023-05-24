@@ -7,6 +7,11 @@ models:
           combination_of_columns:
             - CHAIN_ID
             - BLOCK_ID
+      - sequence_gaps:
+          column_name: BLOCK_ID
+          config:
+            severity: error
+            error_if: ">10"
     columns:
       - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
