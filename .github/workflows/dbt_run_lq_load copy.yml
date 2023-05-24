@@ -1,11 +1,11 @@
-name: dbt_run_scheduled_lq_load_testnet
-run-name: dbt_run_scheduled_lq_load_testnet
+name: dbt_run_scheduled_lq_load_mainnet
+run-name: dbt_run_scheduled_lq_load_mainnet
 
 on:
   workflow_dispatch:
   schedule:
     # “Hourly”
-    - cron: '3 * * * *'
+    - cron: '23 * * * *'
 
 env:
   USE_VARS: "${{ vars.USE_VARS }}"
@@ -28,7 +28,7 @@ jobs:
     uses: FlipsideCrypto/analytics-workflow-templates/.github/workflows/dbt_run_template.yml@main
     with:
       dbt_command: >
-         dbt run-operation load_blocks_lq; dbt run-operation load_txs_lq;  dbt run-operation load_blocks_lq; dbt run-operation load_txs_lq;  dbt run-operation load_blocks_lq; dbt run-operation load_txs_lq; dbt run -m +models/silver/silver__msg_attributes.sql; 
-      environment: workflow_testnet
+         dbt run-operation load_blocks_lq_mainnet; dbt run-operation load_txs_lq_mainnet;dbt run-operation load_blocks_lq_mainnet; dbt run-operation load_txs_lq_mainnet;dbt run-operation load_blocks_lq_mainnet; dbt run-operation load_txs_lq_mainnet; dbt run -m +models/silver/silver__msg_attributes.sql; 
+      environment: workflow_prod
       warehouse: ${{ vars.WAREHOUSE }}
     secrets: inherit 
