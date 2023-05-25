@@ -9,7 +9,7 @@ sources:
       - name: address_tags
       - name: dim_dates
   - name: lq
-    database: SEI
+    database: "{{ 'SEI_TESTNET' if target.database == 'SEI_TESTNET' else 'SEI' }}"
     schema: bronze
     tables:
       - name: lq_blocks
