@@ -1,0 +1,41 @@
+version: 2
+models:
+  - name: core__fact_transfers
+    description: Records of all transfers on Sei, including IBC transfers as on- and off-ramps to Osmosis and wallet to wallet transfers.
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: TX_SUCCEEDED
+        description: "{{ doc('tx_succeeded') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: TRANSFER_TYPE
+        description: "{{ doc('transfer_type') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: SENDER
+        description: "{{ doc('sender') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: AMOUNT
+        description: "{{ doc('amount') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: CURRENCY
+        description: "{{ doc('currency') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: RECEIVER
+        description: "{{ doc('receiver') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist

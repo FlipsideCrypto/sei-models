@@ -1,0 +1,42 @@
+version: 2
+models:
+  - name: core__fact_msg_attributes
+    description: Records of all message attributes associated to messages that have occurred on Sei, dating back to the genesis block.
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: TX_SUCCEEDED
+        description: "{{ doc('tx_succeeded') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: MSG_GROUP
+        description: "{{ doc('msg_group') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist 
+      - name: MSG_INDEX
+        description: "{{ doc('msg_index') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist 
+      - name: MSG_TYPE
+        description: "{{ doc('msg_type') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: ATTRIBUTE_KEY
+        description: "They key from the key-value pair from the message attribute"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: ATTRIBUTE_VALUE
+        description: "They value from the key-value pair from the message attribute"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      

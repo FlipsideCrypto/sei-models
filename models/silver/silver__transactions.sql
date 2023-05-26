@@ -29,15 +29,16 @@ WITH base_table AS (
         _inserted_timestamp
     FROM
         {{ ref('bronze__transactions') }}
+    WHERE
+        tx_id IS NOT NULL
 
 {% if is_incremental() %}
-WHERE
-    _inserted_timestamp >= (
-        SELECT
-            MAX(_inserted_timestamp)
-        FROM
-            {{ this }}
-    )
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(_inserted_timestamp)
+    FROM
+        {{ this }}
+)
 {% endif %}
 
 qualify(ROW_NUMBER() over (PARTITION BY tx_id
