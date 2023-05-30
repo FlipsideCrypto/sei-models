@@ -1,0 +1,35 @@
+version: 2
+models:
+  - name: core__fact_oracle_votes
+    description: Records of all oracle votes from validators. 
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: TX_SUCCEEDED
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - BOOLEAN
+      - name: VOTER
+        description: "{{ doc('voter') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: AMOUNT
+        description: "{{ doc('amount') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: CURRENCY
+        description: "{{ doc('currency') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist

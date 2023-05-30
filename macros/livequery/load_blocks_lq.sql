@@ -9,7 +9,8 @@
         (
             SELECT
                 ethereum.streamline.udf_json_rpc_call(
-                    'http://35.158.109.187:26657',{},
+                    --'http://35.158.109.187:26657'
+                    'http://3.76.200.142:26657',{},
                     [ { 'id': 1, 'jsonrpc': '2.0', 'method': 'abci_info' } ]
                 ) DATA
         )
@@ -51,7 +52,7 @@ INSERT INTO
                 852655
             )
         ORDER BY
-            1 DESC
+            1
     ),
     calls AS (
         SELECT
@@ -93,7 +94,7 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                'http://35.158.109.187:26657',{},
+                'http://3.76.200.142:26657',{},
                 calls
             ) DATA
         FROM

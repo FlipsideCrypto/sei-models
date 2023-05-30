@@ -58,7 +58,7 @@ INSERT INTO
                         WHERE
                             block_number > 9839243
                         ORDER BY
-                            1 DESC
+                            1
                         LIMIT
                             5000
                     )
@@ -69,7 +69,7 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                'http://35.158.109.187:26657',{},
+                'http://3.76.200.142:26657',{},
                 calls
             ) DATA
         FROM

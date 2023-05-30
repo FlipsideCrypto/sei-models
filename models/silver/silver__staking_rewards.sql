@@ -210,6 +210,7 @@ SELECT
     A.amount,
     A.currency,
     A.validator_address,
+    'withdraw_rewards' AS action,
     A._inserted_timestamp,
     concat_ws(
         '-',
