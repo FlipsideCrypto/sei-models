@@ -14,3 +14,8 @@ sources:
     tables:
       - name: lq_blocks
       - name: lq_txs
+  - name: crosschain
+    database: "{{ 'crosschain_dev' if target.database == 'SEI_DEV' else 'crosschain' }}"
+    schema: core
+    tables:
+      - name: address_labels
