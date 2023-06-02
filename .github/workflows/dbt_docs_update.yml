@@ -23,7 +23,7 @@ concurrency:
 
 jobs:
   called_workflow_template:
-    uses: FlipsideCrypto/analytics-workflow-templates/.github/workflows/dbt_docs_update.yml@docs-workflow-add-datashare-model
+    uses: FlipsideCrypto/analytics-workflow-templates/.github/workflows/dbt_docs_updates.yml@docs-workflow-add-datashare-model
     with:
       dbt_command: >
         dbt ls
