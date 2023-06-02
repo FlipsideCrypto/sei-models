@@ -25,6 +25,8 @@ jobs:
   called_workflow_template:
     uses: FlipsideCrypto/analytics-workflow-templates/.github/workflows/dbt_run_template.yml@docs-workflow-add-datashare-model
     with:
+      dbt_command: >
+        dbt ls
       environment: workflow_prod
       warehouse: ${{ vars.WAREHOUSE }}
     secrets: inherit 
