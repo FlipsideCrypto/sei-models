@@ -31,9 +31,6 @@ jobs:
          dbt run-operation load_blocks_lq; 
          dbt run-operation load_txs_lq;  
          dbt run-operation load_blocks_lq; 
-         dbt run-operation load_txs_lq;  
-         dbt run-operation load_blocks_lq; 
-         dbt run-operation load_txs_lq; 
          dbt run -m models/bronze/bronze__blocks.sql+ --exclude models/silver/silver__oracle_votes.sql; 
       environment: workflow_testnet
       warehouse: ${{ vars.WAREHOUSE }}
