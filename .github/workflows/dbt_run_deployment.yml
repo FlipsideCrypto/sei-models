@@ -43,5 +43,5 @@ jobs:
     with:
       dbt_command: |
          ${{ inputs.dbt_command }}
-      warehouse: ${{ input.WAREHOUSE }}
+      warehouse: ${{ vars.WAREHOUSE }}
     secrets: inherit 
