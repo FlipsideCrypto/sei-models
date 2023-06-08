@@ -27,8 +27,14 @@ jobs:
   called_workflow_template:
     uses: FlipsideCrypto/analytics-workflow-templates/.github/workflows/dbt_run_template.yml@main
     with:
-      dbt_command: >
-         dbt run-operation load_blocks_lq_mainnet; dbt run-operation load_txs_lq_mainnet;dbt run-operation load_blocks_lq_mainnet; dbt run-operation load_txs_lq_mainnet;dbt run-operation load_blocks_lq_mainnet; dbt run-operation load_txs_lq_mainnet; dbt run -m +models/silver/silver__msg_attributes.sql; 
+      dbt_command: |
+         dbt run-operation load_blocks_lq_mainnet; 
+         dbt run-operation load_txs_lq_mainnet;
+         dbt run-operation load_blocks_lq_mainnet; 
+         dbt run-operation load_txs_lq_mainnet;
+         dbt run-operation load_blocks_lq_mainnet; 
+         dbt run-operation load_txs_lq_mainnet;
+         dbt run -m ./models
       environment: workflow_prod
       warehouse: ${{ vars.WAREHOUSE }}
     secrets: inherit 
