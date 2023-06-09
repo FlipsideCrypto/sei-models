@@ -23,10 +23,10 @@ WHERE
     blockchain = 'sei'
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND insert_date >= (
     SELECT
         MAX(
-            _inserted_timestamp
+            insert_date
         )
     FROM
         {{ this }}
