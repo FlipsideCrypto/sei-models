@@ -10,7 +10,8 @@
             SELECT
                 ethereum.streamline.udf_json_rpc_call(
                     --'http://35.158.109.187:26657'
-                    'http://3.76.200.142:26657',{},
+                    --'http://3.76.200.142:26657'
+                    'https://sei-testnet-rpc.polkachu.com/',{},
                     [ { 'id': 1, 'jsonrpc': '2.0', 'method': 'abci_info' } ]
                 ) DATA
         )
@@ -66,7 +67,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (5000) over(PARTITION BY getdate()
+                    NTILE (500) over(PARTITION BY getdate()
                 ORDER BY
                     block_height) AS grp
                 FROM
@@ -85,7 +86,7 @@ INSERT INTO
                         ORDER BY
                             1 DESC
                         LIMIT
-                            5000
+                            50
                     )
             )
         GROUP BY
@@ -94,7 +95,7 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                'http://3.76.200.142:26657',{},
+                'https://sei-testnet-rpc.polkachu.com/',{},
                 calls
             ) DATA
         FROM
