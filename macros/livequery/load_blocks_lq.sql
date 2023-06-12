@@ -84,7 +84,7 @@ INSERT INTO
                         WHERE
                             block_number > 9839243
                         ORDER BY
-                            1 DESC
+                            1
                         LIMIT
                             50
                     )
