@@ -374,7 +374,7 @@ SELECT
     A.transfer_type,
     A.msg_index,
     A.sender,
-    A.amount,
+    A.amount :: INT AS amount,
     A.currency,
     A.receiver,
     A._inserted_timestamp,

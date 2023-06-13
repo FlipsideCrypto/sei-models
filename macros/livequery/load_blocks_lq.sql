@@ -86,7 +86,7 @@ INSERT INTO
                         ORDER BY
                             1
                         LIMIT
-                            500
+                            2000
                     )
             )
         GROUP BY

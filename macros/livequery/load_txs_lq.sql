@@ -60,7 +60,7 @@ INSERT INTO
                         ORDER BY
                             1
                         LIMIT
-                            500
+                            1000
                     )
             )
         GROUP BY
