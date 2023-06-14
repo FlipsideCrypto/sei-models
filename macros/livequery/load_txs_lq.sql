@@ -13,7 +13,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (50) over(PARTITION BY getdate()
+                    NTILE (90) over(PARTITION BY getdate()
                 ORDER BY
                     block_number) AS grp
                 FROM
