@@ -1,21 +1,67 @@
 {% macro load_txs_lq_mainnet() %}
     {% set load_query %}
 INSERT INTO
-    bronze.lq_txs WITH calls AS (
+    bronze.lq_txs WITH gen AS (
+        SELECT
+            ROW_NUMBER() over (
+                ORDER BY
+                    SEQ4()
+            ) AS id
+        FROM
+            TABLE(GENERATOR(rowcount => 50))
+    ),
+    possible_perms AS (
+        SELECT
+            id,
+            (
+                id * 100
+            ) - 99 min_count,
+            id * 100 max_count
+        FROM
+            gen
+    ),
+    perms AS (
+        SELECT
+            block_number,
+            id
+        FROM
+            (
+                SELECT
+                    block_number,
+                    COALESCE(ARRAY_SIZE(COALESCE(b.value, C.value) :data :txs) :: NUMBER, 100) AS tx_count
+                FROM
+                    bronze.lq_blocks A,
+                    LATERAL FLATTEN(
+                        input => A.data :result,
+                        outer => TRUE
+                    ) AS b,
+                    LATERAL FLATTEN(
+                        input => A.data :data :result,
+                        outer => TRUE
+                    ) AS C
+            ) A
+            JOIN possible_perms
+            ON CEIL(
+                tx_count,
+                -2
+            ) >= max_count
+    ),
+    calls AS (
         SELECT
             ARRAY_AGG(
                 { 'id': block_number,
                 'jsonrpc': '2.0',
                 'method': 'tx_search',
-                'params': [ 'tx.height='||BLOCK_NUMBER::STRING , true, '1', '1000', 'asc' ] }
+                'params': [ 'tx.height='||BLOCK_NUMBER::STRING , true, ''||id||'', '100', 'asc' ] }
             ) calls
         FROM
             (
                 SELECT
-                    *,
+                    A.block_number,
+                    p.id,
                     NTILE (5000) over(PARTITION BY getdate()
                 ORDER BY
-                    block_number) AS grp
+                    A.block_number) AS grp
                 FROM
                     (
                         SELECT
@@ -33,7 +79,9 @@ INSERT INTO
                             1
                         LIMIT
                             5000
-                    )
+                    ) A
+                    JOIN perms p
+                    ON A.block_number = p.block_number
             )
         GROUP BY
             grp
