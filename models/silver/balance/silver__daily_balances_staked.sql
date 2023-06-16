@@ -80,7 +80,7 @@ recent AS (
                         ) qualify(ROW_NUMBER() over (PARTITION BY DATE, address, currency
                     ORDER BY
                         RANK ASC)) = 1
-                ),
+                )
             {% endif %},
             base AS (
 
