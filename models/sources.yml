@@ -19,3 +19,11 @@ sources:
     schema: core
     tables:
       - name: address_labels
+  - name: bronze_streamline
+    database: streamline
+    schema: |
+      {{ "SEI_DEV" if var("STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES", False) else "SEI" }}
+    tables:
+      - name: blocks
+      - name: transactions
+      - name: txcount
