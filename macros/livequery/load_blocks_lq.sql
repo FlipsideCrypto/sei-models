@@ -10,8 +10,7 @@
             SELECT
                 ethereum.streamline.udf_json_rpc_call(
                     --'http://35.158.109.187:26657'
-                    --'http://3.76.200.142:26657'
-                    'https://sei-testnet-rpc.polkachu.com/',{},
+                    'http://3.76.200.142:26657',{},
                     [ { 'id': 1, 'jsonrpc': '2.0', 'method': 'abci_info' } ]
                 ) DATA
         )
@@ -67,7 +66,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (50) over(PARTITION BY getdate()
+                    NTILE (5000) over(PARTITION BY getdate()
                 ORDER BY
                     block_height) AS grp
                 FROM
@@ -83,10 +82,12 @@ INSERT INTO
                             bronze.lq_blocks A
                         WHERE
                             block_number > 9839243
+                            AND DATA [0] :error IS NULL
+                            AND DATA :error IS NULL
                         ORDER BY
                             1
                         LIMIT
-                            1000
+                            5000
                     )
             )
         GROUP BY
@@ -95,7 +96,7 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                'https://sei-testnet-rpc.polkachu.com/',{},
+                'http://3.76.200.142:26657',{},
                 calls
             ) DATA
         FROM
@@ -128,8 +129,9 @@ FROM
     );
 {% endset %}
     {% do run_query(load_query) %}
-    {% set wait %}
-    CALL system$wait(10);
+    {# {% set wait %}
+    CALL system $ wait(10);
 {% endset %}
     {% do run_query(wait) %}
+    #}
 {% endmacro %}

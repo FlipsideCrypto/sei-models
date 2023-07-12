@@ -13,7 +13,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (90) over(PARTITION BY getdate()
+                    NTILE (5000) over(PARTITION BY getdate()
                 ORDER BY
                     block_number) AS grp
                 FROM
@@ -57,10 +57,12 @@ INSERT INTO
                             bronze.lq_txs A
                         WHERE
                             block_number > 9839243
+                            AND DATA [0] :error IS NULL
+                            AND DATA :error IS NULL
                         ORDER BY
                             1
                         LIMIT
-                            100
+                            5000
                     )
             )
         GROUP BY
@@ -69,7 +71,7 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                'https://sei-testnet-rpc.polkachu.com/',{},
+                'http://3.76.200.142:26657',{},
                 calls
             ) DATA
         FROM
@@ -102,9 +104,9 @@ FROM
     );
 {% endset %}
     {% do run_query(load_query) %}
-    {% set wait %}
-    CALL system$wait(10);
+    {# {% set wait %}
+    CALL system $ wait(10);
 {% endset %}
     {% do run_query(wait) %}
-   
+    #}
 {% endmacro %}
