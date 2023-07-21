@@ -59,7 +59,7 @@ INSERT INTO
                 SELECT
                     A.block_number,
                     p.id,
-                    NTILE (5000) over(PARTITION BY getdate()
+                    NTILE (2000) over(PARTITION BY getdate()
                 ORDER BY
                     A.block_number) AS grp
                 FROM
@@ -78,7 +78,7 @@ INSERT INTO
                         ORDER BY
                             1
                         LIMIT
-                            5000
+                            2000
                     ) A
                     JOIN perms p
                     ON A.block_number = p.block_number
