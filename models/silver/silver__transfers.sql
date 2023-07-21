@@ -228,7 +228,7 @@ fin AS (
         COALESCE(
             c_old.amount,
             C.amount
-        ) AS amount,
+        ) :: FLOAT AS amount,
         COALESCE(
             c_old.currency,
             C.currency
@@ -287,7 +287,7 @@ fin AS (
         'SEI' AS transfer_type,
         r.msg_index,
         sender,
-        amount,
+        amount :: FLOAT,
         currency,
         receiver,
         _inserted_timestamp,
@@ -329,7 +329,7 @@ fin AS (
         'IBC_TRANSFER_IN' AS transfer_type,
         m.msg_index,
         TRY_PARSE_JSON(attribute_value) :sender :: STRING AS sender,
-        C.amount :: NUMBER AS amount,
+        C.amount :: FLOAT AS amount,
         C.currency,
         TRY_PARSE_JSON(attribute_value) :receiver :: STRING AS receiver,
         m._inserted_timestamp,
@@ -374,7 +374,7 @@ SELECT
     A.transfer_type,
     A.msg_index,
     A.sender,
-    A.amount :: INT AS amount,
+    A.amount :: FLOAT AS amount,
     A.currency,
     A.receiver,
     A._inserted_timestamp,
