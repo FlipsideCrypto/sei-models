@@ -59,7 +59,7 @@ INSERT INTO
                 SELECT
                     A.block_number,
                     p.id,
-                    NTILE (2000) over(PARTITION BY getdate()
+                    NTILE (5000) over(PARTITION BY getdate()
                 ORDER BY
                     A.block_number) AS grp
                 FROM
@@ -78,7 +78,7 @@ INSERT INTO
                         ORDER BY
                             1
                         LIMIT
-                            2000
+                            5000
                     ) A
                     JOIN perms p
                     ON A.block_number = p.block_number
@@ -89,7 +89,7 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                'http://3.70.183.174:26657',{},
+                'http://3.76.200.142:26657',{},
                 calls
             ) DATA
         FROM
