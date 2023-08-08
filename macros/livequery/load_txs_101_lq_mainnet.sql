@@ -1,4 +1,4 @@
-{% macro load_txs_101_lq() %}
+{% macro load_txs_101_lq_mainnet() %}
     {% set load_query %}
 INSERT INTO
     bronze.lq_txs_101 WITH gen AS (
