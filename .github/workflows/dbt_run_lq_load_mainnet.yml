@@ -4,8 +4,8 @@ run-name: dbt_run_scheduled_lq_load_mainnet
 on:
   workflow_dispatch:
   schedule:
-    # “Hourly”
-    - cron: '23 * * * *'
+    # “Twice Hourly”
+    - cron: '23,53 * * * *'
 
 env:
   USE_VARS: "${{ vars.USE_VARS }}"
