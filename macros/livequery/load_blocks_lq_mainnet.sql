@@ -9,7 +9,7 @@
         (
             SELECT
                 ethereum.streamline.udf_json_rpc_call(
-                    'http://3.76.200.142:26657',{},
+                    'https://snapshotter-0.pacific-1.seinetwork.io/',{},
                     [ { 'id': 1, 'jsonrpc': '2.0', 'method': 'abci_info' } ]
                 ) DATA
         )
@@ -75,7 +75,7 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                'http://3.76.200.142:26657',{},
+                'https://snapshotter-0.pacific-1.seinetwork.io/',{},
                 calls
             ) DATA
         FROM
