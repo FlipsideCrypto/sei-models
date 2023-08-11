@@ -70,11 +70,14 @@ INSERT INTO
                             bronze.lq_blocks
                         WHERE
                             block_number IS NOT NULL
+                            AND block_number > 16500000
                         EXCEPT
                         SELECT
                             block_number
                         FROM
                             bronze.lq_txs A
+                        WHERE
+                            block_number > 16500000
                         ORDER BY
                             1
                         LIMIT
