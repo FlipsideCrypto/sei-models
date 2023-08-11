@@ -9,7 +9,14 @@
         (
             SELECT
                 ethereum.streamline.udf_json_rpc_call(
-                    'https://sei-priv.kingnodes.com/',{},
+                    (
+                        SELECT
+                            url
+                        FROM
+                            sei._internal.api_keys
+                        WHERE
+                            provider = 'allthatnode'
+                    ),{},
                     [ { 'id': 1, 'jsonrpc': '2.0', 'method': 'abci_info' } ]
                 ) DATA
         )
@@ -75,7 +82,14 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                'https://sei-priv.kingnodes.com/',{},
+                (
+                    SELECT
+                        url
+                    FROM
+                        sei._internal.api_keys
+                    WHERE
+                        provider = 'allthatnode'
+                ),{},
                 calls
             ) DATA
         FROM
