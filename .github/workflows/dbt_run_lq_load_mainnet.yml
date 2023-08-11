@@ -43,7 +43,6 @@ jobs:
          dbt run-operation load_blocks_lq_mainnet; 
          dbt run-operation load_txs_lq_mainnet;
          dbt run -m models/silver/silver__blocks.sql;
-         dbt run -m ./models --exclude models/silver/silver__oracle_votes.sql; 
       environment: workflow_prod
       warehouse: ${{ vars.WAREHOUSE }}
     secrets: inherit 
