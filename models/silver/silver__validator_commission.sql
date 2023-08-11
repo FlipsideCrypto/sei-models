@@ -177,7 +177,7 @@ SELECT
         ),
         ' ',
         0
-    ) AS amount,
+    ) :: FLOAT AS amount,
     RIGHT(am.value, LENGTH(am.value) - LENGTH(SPLIT_PART(TRIM(REGEXP_REPLACE(am.value, '[^[:digit:]]', ' ')), ' ', 0))) AS currency,
     A.validator_address_operator,
     d.validator_address_reward,
