@@ -9,7 +9,7 @@
         (
             SELECT
                 ethereum.streamline.udf_json_rpc_call(
-                    'https://snapshotter-0.pacific-1.seinetwork.io/',{},
+                    'https://sei-priv.kingnodes.com/',{},
                     [ { 'id': 1, 'jsonrpc': '2.0', 'method': 'abci_info' } ]
                 ) DATA
         )
@@ -75,7 +75,7 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                'https://snapshotter-0.pacific-1.seinetwork.io/',{},
+                'https://sei-priv.kingnodes.com/',{},
                 calls
             ) DATA
         FROM
