@@ -12,7 +12,12 @@ SELECT
         WHEN action = 'delegate' THEN amount
         ELSE - amount
     END AS amount,
-    SUM(amount) over(
+    SUM(
+        CASE
+            WHEN action = 'delegate' THEN amount
+            ELSE - amount
+        END
+    ) over(
         PARTITION BY address,
         currency
         ORDER BY
