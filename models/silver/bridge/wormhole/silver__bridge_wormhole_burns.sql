@@ -37,13 +37,11 @@ prefinal AS (
         A.tx_id,
         msg_group,
         msg_sub_group,
-        A.msg_index,
+        {# A.msg_index, #}
         OBJECT_AGG(
             attribute_key :: STRING,
             attribute_value :: variant
         ) AS j,
-        j :_contract_address :: STRING AS _contract_address,
-        j :action :: STRING AS action,
         j :amount :: INT AS amount,
         j :from :: STRING AS from_address,
         j :"transfer.amount" :: INT AS transfer_amount,
@@ -87,21 +85,79 @@ prefinal AS (
         ) C
         ON A.block_timestamp :: DATE = C.bd
         AND A.tx_id = C.tx_id
+    WHERE
+        attribute_key NOT IN (
+            '_contract_address',
+            'action',
+            'amount'
+        )
     GROUP BY
         A.block_timestamp,
         A.tx_id,
         msg_group,
         msg_sub_group,
-        A.msg_index,
+        {# A.msg_index, #}
         _inserted_timestamp
+),
+con_array AS (
+    SELECT
+        tx_id,
+        msg_group,
+        msg_sub_group,
+        ARRAY_AGG(
+            DISTINCT attribute_value
+        ) within GROUP(
+            ORDER BY
+                attribute_value
+        ) AS _contract_address
+    FROM
+        msg_atts A
+    WHERE
+        attribute_key = '_contract_address'
+    GROUP BY
+        tx_id,
+        msg_group,
+        msg_sub_group
+),
+act_array AS (
+    SELECT
+        tx_id,
+        msg_group,
+        msg_sub_group,
+        ARRAY_AGG(
+            DISTINCT attribute_value
+        ) within GROUP(
+            ORDER BY
+                attribute_value
+        ) AS action
+    FROM
+        msg_atts A
+    WHERE
+        attribute_key = 'action'
+    GROUP BY
+        tx_id,
+        msg_group,
+        msg_sub_group
+),
+amount AS (
+    SELECT
+        DISTINCT tx_id,
+        msg_group,
+        msg_sub_group,
+        attribute_value amount
+    FROM
+        msg_atts A
+    WHERE
+        attribute_key = 'amount'
 )
 SELECT
-    block_timestamp,
-    tx_id,
-    msg_index,
-    _contract_address,
-    action,
-    amount,
+    A.block_timestamp,
+    A.tx_id,
+    A.msg_group,
+    A.msg_sub_group,
+    b._contract_address AS contract_address_array,
+    C.action AS action_array,
+    d.amount,
     from_address,
     transfer_amount,
     transfer_block_time,
@@ -117,4 +173,16 @@ SELECT
     message_sequence,
     _inserted_timestamp
 FROM
-    prefinal
+    prefinal A
+    JOIN con_array b
+    ON A.tx_id = b.tx_id
+    AND A.msg_group = b.msg_group
+    AND A.msg_sub_group = b.msg_sub_group
+    JOIN act_array C
+    ON A.tx_id = C.tx_id
+    AND A.msg_group = C.msg_group
+    AND A.msg_sub_group = C.msg_sub_group
+    JOIN amount d
+    ON A.tx_id = d.tx_id
+    AND A.msg_group = d.msg_group
+    AND A.msg_sub_group = d.msg_sub_group
