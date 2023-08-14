@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = ["tx_id","msg_index"],
+    unique_key = ["tx_id","msg_group","msg_sub_group"],
     incremental_strategy = 'merge',
     cluster_by = ['block_timestamp::DATE']
 ) }}
