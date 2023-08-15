@@ -40,7 +40,7 @@ prefinal AS (
         ) AS j,
         j :_contract_address :: STRING AS _contract_address,
         j :action :: STRING AS action,
-        j :token_address AS token_address,
+        j :token_address :: STRING AS token_address,
         j :token_chain :: INT AS token_chain,
         _inserted_timestamp
     FROM
@@ -73,7 +73,7 @@ SELECT
     block_timestamp,
     tx_id,
     msg_index,
-    _contract_address,
+    _contract_address AS contract_address,
     action,
     token_address,
     token_chain,
