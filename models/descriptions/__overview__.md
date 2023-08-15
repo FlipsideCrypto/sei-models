@@ -20,21 +20,22 @@ There is more information on how to use dbt docs in the last section of this doc
 ### Core Tables (`SEI`.`CORE`.`<table_name>`)
 
 **Dimension Tables:**
-- [dim_labels](#!/model/model.osmosis_models.core__dim_labels)
+- [dim_labels](#!/model/model.sei_models.core__dim_labels)
 
 
 **Fact Tables:**
-- [fact_blocks](#!/model/model.osmosis.core__fact_blocks)
-- [fact_governance_proposal_deposits](#!/model/model.osmosis.core__fact_governance_proposal_deposits)
-- [fact_governance_submit_proposal](#!/model/model.osmosis.core__fact_governance_submit_proposal)
-- [fact_governance_validator_votes](#!/model/model.osmosis.core__fact_governance_validator_votes)
-- [fact_governance_votes](#!/model/model.osmosis.core__fact_governance_votes)
-- [fact_msg_attributes](#!/model/model.osmosis.core__fact_msg_attributes)
-- [fact_msgs](#!/model/model.osmosis.core__fact_msgs)
-- [fact_staking](#!/model/model.osmosis.core__fact_staking)
-- [fact_staking_rewards](#!/model/model.osmosis.core__fact_staking_rewards)
-- [fact_transactions](#!/model/model.osmosis.core__fact_transactions)
-- [fact_transfers](#!/model/model.osmosis.core__fact_transfers)
+- [fact_blocks](#!/model/model.sei.core__fact_blocks)
+- [fact_governance_proposal_deposits](#!/model/model.sei.core__fact_governance_proposal_deposits)
+- [fact_governance_submit_proposal](#!/model/model.sei.core__fact_governance_submit_proposal)
+- [fact_governance_validator_votes](#!/model/model.sei.core__fact_governance_validator_votes)
+- [fact_governance_votes](#!/model/model.sei.core__fact_governance_votes)
+- [fact_msg_attributes](#!/model/model.sei.core__fact_msg_attributes)
+- [fact_msgs](#!/model/model.sei.core__fact_msgs)
+- [fact_oracle_votes](#!/model/model.sei.core__fact_oracle_votes)
+- [fact_staking](#!/model/model.sei.core__fact_staking)
+- [fact_staking_rewards](#!/model/model.sei.core__fact_staking_rewards)
+- [fact_transactions](#!/model/model.sei.core__fact_transactions)
+- [fact_transfers](#!/model/model.sei.core__fact_transfers)
 **Convenience Tables:**
 
 
