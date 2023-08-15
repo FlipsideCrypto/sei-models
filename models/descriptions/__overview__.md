@@ -36,6 +36,7 @@ There is more information on how to use dbt docs in the last section of this doc
 - [fact_staking_rewards](#!/model/model.sei.core__fact_staking_rewards)
 - [fact_transactions](#!/model/model.sei.core__fact_transactions)
 - [fact_transfers](#!/model/model.sei.core__fact_transfers)
+
 **Convenience Tables:**
 
 
