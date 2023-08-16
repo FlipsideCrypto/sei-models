@@ -9,21 +9,23 @@
         (
             SELECT
                 ethereum.streamline.udf_json_rpc_call(
-                    (
-                        SELECT
-                            url
-                        FROM
-                            sei._internal.api_keys
-                        WHERE
-                            provider = 'allthatnode'
-                    ),{},
-                    [ { 'id': 1, 'jsonrpc': '2.0', 'method': 'abci_info' } ]
-                ) DATA
-        )
-    {%- endcall -%}
+                    {# (
+                    SELECT
+                        url
+                    FROM
+                        sei._internal.api_keys
+                    WHERE
+                        provider = 'allthatnode'
+                ),{},
+                #}
+                'https://sei-priv.kingnodes.com/',{ 'Referer': 'https://flipside.com' },
+                [ { 'id': 1, 'jsonrpc': '2.0', 'method': 'abci_info' } ]
+        ) DATA
+)
+{%- endcall -%}
 
-    {%- set max_block = load_result('get_mb') ['data'] [0] [0] -%}
-    {% set load_query %}
+{%- set max_block = load_result('get_mb') ['data'] [0] [0] -%}
+{% set load_query %}
 INSERT INTO
     bronze.lq_blocks WITH gen AS (
         SELECT
@@ -82,19 +84,21 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                (
-                    SELECT
-                        url
-                    FROM
-                        sei._internal.api_keys
-                    WHERE
-                        provider = 'allthatnode'
-                ),{},
-                calls
-            ) DATA
-        FROM
+                {# (
+                SELECT
+                    url
+                FROM
+                    sei._internal.api_keys
+                WHERE
+                    provider = 'allthatnode'
+            ),{},
+            #}
+            'https://sei-priv.kingnodes.com/',{ 'Referer': 'https://flipside.com' },
             calls
-    )
+    ) DATA
+FROM
+    calls
+)
 SELECT
     DISTINCT NULL AS VALUE,
     ROUND(
