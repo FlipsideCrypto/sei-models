@@ -42,6 +42,7 @@ models:
 vars:
   "dbt_date:time_zone": GMT
   "UPDATE_SNOWFLAKE_TAGS": TRUE
+  OBSERV_FULL_TEST: FALSE
 
 tests:
   +store_failures: true # all tests

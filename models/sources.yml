@@ -8,6 +8,7 @@ sources:
       - name: dim_date_hours
       - name: address_tags
       - name: dim_dates
+      - name: address_labels
   - name: lq
     database: "{{ 'SEI_TESTNET' if target.database == 'SEI_TESTNET' else 'SEI' }}"
     schema: bronze
@@ -15,11 +16,19 @@ sources:
       - name: lq_blocks
       - name: lq_txs
       - name: lq_txs_101
-  - name: crosschain
-    database: "{{ 'crosschain_dev' if target.database == 'SEI_DEV' else 'crosschain' }}"
-    schema: core
+  - name: bronze_api
+    schema: bronze_api
+    tables: 
+      - name: blockchain
+  - name: crosschain_silver
+    database: "{{ 'crosschain' if target.database == 'SEI' else 'crosschain_dev' }}"
+    schema: silver
     tables:
-      - name: address_labels
+      - name: asset_metadata_coin_market_cap
+      - name: asset_metadata_coin_gecko
+      - name: hourly_prices_coin_market_cap
+      - name: hourly_prices_coin_gecko
+      - name: number_sequence
   - name: streamline
     database: streamline
     schema:  "{{ 'SEI' if target.database == 'SEI' else 'SEI_DEV' }}"
