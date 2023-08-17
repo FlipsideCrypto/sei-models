@@ -39,6 +39,11 @@ INSERT INTO
                         input => A.data :data :result,
                         outer => TRUE
                     ) AS C
+                WHERE
+                    (
+                        b.value LIKE '%txs%'
+                        OR C.value LIKE '%txs%'
+                    )
             ) A
             JOIN possible_perms
             ON CEIL(
