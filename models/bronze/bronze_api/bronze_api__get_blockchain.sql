@@ -97,7 +97,7 @@ SELECT
     ethereum.streamline.udf_json_rpc_call(
         (
             SELECT
-                rpc_url
+                url
             FROM
                 sei._internal.api_keys
             WHERE
