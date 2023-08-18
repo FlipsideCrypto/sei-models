@@ -31,8 +31,7 @@ FROM
     outer => TRUE
   ) AS C
 WHERE
-  DATA :error :code IS NULL
-UNION ALL
+  DATA :error :code IS NULL {# UNION ALL
 SELECT
   block_number AS block_id,
   COALESCE(
@@ -62,4 +61,4 @@ FROM
     outer => TRUE
   ) AS C
 WHERE
-  DATA :error :code IS NULL
+  DATA :error :code IS NULL #}
