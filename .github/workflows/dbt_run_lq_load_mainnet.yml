@@ -4,8 +4,8 @@ run-name: dbt_run_scheduled_lq_load_mainnet
 on:
   workflow_dispatch:
   schedule:
-    # “Twice Hourly”
-    - cron: '3,23,43 * * * *'
+    # Every 15
+    - cron: '3,18,33,48 * * * *'
 
 env:
   USE_VARS: "${{ vars.USE_VARS }}"
@@ -41,11 +41,11 @@ jobs:
          dbt run-operation load_txs_lq_mainnet; 
          dbt run-operation load_txs_lq_mainnet;
          dbt run-operation load_txs_lq_mainnet; 
-         dbt run -m ./models --exclude models/silver/_observability/silver_observabilit*
-         dbt run -m models/bronze/bronze_api/bronze_api__get_blockchain.sql;
-         dbt run -m models/silver/silver__blockchain.sql;
-         dbt run -m models/bronze/bronze_api/bronze_api__get_blockchain.sql;
-         dbt run -m models/silver/silver__blockchain.sql;
+         dbt run-operation load_txs_lq_mainnet;
+         dbt run-operation load_txs_lq_mainnet; 
+         dbt run-operation load_txs_lq_mainnet;
+         dbt run-operation load_txs_lq_mainnet; 
+         
       environment: workflow_prod
       warehouse: ${{ vars.WAREHOUSE }}
     secrets: inherit 
