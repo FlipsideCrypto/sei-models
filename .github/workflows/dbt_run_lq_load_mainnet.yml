@@ -36,12 +36,11 @@ jobs:
          dbt run-operation load_txs_lq_mainnet;
          dbt run-operation load_blocks_lq_mainnet; 
          dbt run-operation load_txs_lq_mainnet;
-         dbt run-operation load_blocks_lq_mainnet; 
          dbt run-operation load_txs_lq_mainnet;
-         dbt run-operation load_blocks_lq_mainnet; 
          dbt run-operation load_txs_lq_mainnet;
-         dbt run-operation load_blocks_lq_mainnet; 
+         dbt run-operation load_txs_lq_mainnet; 
          dbt run-operation load_txs_lq_mainnet;
+         dbt run-operation load_txs_lq_mainnet; 
          dbt run -m ./models --exclude models/silver/_observability/silver_observabilit*
          dbt run -m models/bronze/bronze_api/bronze_api__get_blockchain.sql;
          dbt run -m models/silver/silver__blockchain.sql;

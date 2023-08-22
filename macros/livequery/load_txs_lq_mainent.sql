@@ -63,7 +63,10 @@ INSERT INTO
             (
                 SELECT
                     A.block_number,
-                    p.id,
+                    COALESCE(
+                        p.id,
+                        1
+                    ) AS id,
                     NTILE (5000) over(PARTITION BY getdate()
                 ORDER BY
                     A.block_number) AS grp
@@ -88,7 +91,7 @@ INSERT INTO
                         LIMIT
                             5000
                     ) A
-                    JOIN perms p
+                    LEFT JOIN perms p
                     ON A.block_number = p.block_number
             )
         GROUP BY
