@@ -79,7 +79,14 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                'https://snapshotter-0.pacific-1.seinetwork.io/',{},
+                (
+                    SELECT
+                        url
+                    FROM
+                        sei._internal.api_keys
+                    WHERE
+                        provider = 'allthatnode_archive'
+                ),{},
                 calls
             ) DATA
         FROM
