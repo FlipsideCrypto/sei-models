@@ -365,6 +365,63 @@ fin AS (
             amount IS NOT NULL
             OR currency IS NOT NULL
         )
+),
+links AS (
+    SELECT
+        tx_id,
+        deposit_address,
+        destination_address,
+        destination_chain,
+        module
+    FROM
+        {{ source(
+            'axelar_silver',
+            'link_events'
+        ) }}
+
+{% if is_incremental() %}
+WHERE
+    _inserted_timestamp >= (
+        SELECT
+            MAX(
+                _inserted_timestamp
+            )
+        FROM
+            {{ this }}
+    ) - INTERVAL '72 HOURS'
+{% endif %}
+),
+axl_tran AS (
+    SELECT
+        tx_id,
+        block_timestamp,
+        amount,
+        A.currency,
+        foreign_address,
+        sender,
+        foreign_chain,
+        receiver,
+        {# b.address #}
+    FROM
+        {{ source(
+            'axelar_silver',
+            'transfers'
+        ) }} A {# LEFT JOIN {{ ref('silver__asset_metadata') }}
+        b
+        ON A.currency = b.alias #}
+    WHERE
+        foreign_address IS NOT NULL
+
+{% if is_incremental() %}
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(
+            _inserted_timestamp
+        )
+    FROM
+        {{ this }}
+) - INTERVAL '72 HOURS'
+{% endif %}
 )
 SELECT
     A.block_id,

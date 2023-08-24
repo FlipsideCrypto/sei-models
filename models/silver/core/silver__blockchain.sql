@@ -11,9 +11,8 @@ WITH base AS (
         DATA,
         _inserted_timestamp
     FROM
-        {{ source(
-            'bronze_api',
-            'blockchain'
+        {{ ref(
+            'bronze_api__get_blockchain'
         ) }}
 
 {% if is_incremental() %}

@@ -63,12 +63,20 @@ SELECT
     msg_index,
     _contract_address,
     chain_address,
-    chain_id,
+    A.chain_id,
+    b.chain_name,
+    b.address AS foreign_address,
     _inserted_timestamp
 FROM
-    prefinal
+    prefinal A
+    LEFT JOIN {{ source(
+        'bronze',
+        'bridge_wormhole_chain_ids'
+    ) }}
+    b
+    ON A.chain_id = b.wormhole_chain_id
 WHERE
     chain_address IS NOT NULL
-    AND chain_id IS NOT NULL qualify(ROW_NUMBER() over (PARTITION BY chain_id
+    AND chain_id IS NOT NULL qualify(ROW_NUMBER() over (PARTITION BY A.chain_id
 ORDER BY
     block_timestamp DESC) = 1)

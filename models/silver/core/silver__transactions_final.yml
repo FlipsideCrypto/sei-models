@@ -1,7 +1,7 @@
 version: 2
 models:
   - name: silver__transactions_final
-    description: Records of all transactions that have occurred on Osmosis, dating back to the genesis block. The columns blockchain, chain_id, and tx_status will be deprecating soon. 
+    description: Records of all transactions that have occurred on sei, dating back to the genesis block
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -11,6 +11,10 @@ models:
         description: "{{ doc('block_id') }}"
       - name: BLOCK_TIMESTAMP
         description: "{{ doc('block_timestamp') }}"
+        tests:
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
       - name: TX_ID
         description: "{{ doc('tx_id') }}"
       - name: TX_FROM

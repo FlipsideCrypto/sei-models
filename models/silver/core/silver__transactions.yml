@@ -1,0 +1,36 @@
+version: 2
+models:
+  - name: silver__transactions
+    description: Records of all transactions that have occurred on Sei, dating back to the genesis block
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - TX_ID
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+      - name: TX_SUCCEEDED
+        description: "{{ doc('tx_succeeded') }}"
+      - name: CODESPACE
+        description: "{{ doc('codespace') }}"
+      - name: FEE
+        description: "{{ doc('fee') }}"
+        tests: 
+          - not_null
+      - name: GAS_USED
+        description: "{{ doc('gas_used') }}"
+      - name: GAS_WANTED
+        description: "{{ doc('gas_wanted') }}"
+      - name: TX_CODE
+        description: "{{ doc('tx_code') }}"
+      - name: MSGS
+        description: "{{ doc('msgs') }}"
+  
