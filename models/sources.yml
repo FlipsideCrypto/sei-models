@@ -35,3 +35,13 @@ sources:
     tables:
       - name: blocks
       - name: tx_search
+  - name: bronze
+    schema: bronze
+    tables:
+      - name: bridge_wormhole_chain_ids
+  - name: axelar_silver
+    database: "{{ 'axelar' if target.database == 'SEI' else 'axelar_dev' }}"
+    schema: silver
+    tables:
+      - name: link_events
+      - name: transfers
