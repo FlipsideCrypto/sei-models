@@ -76,7 +76,7 @@ GROUP BY
 )
 )
 WHERE
-    groupID_out < 6
+    groupID_out < 20
 ),
 calls AS (
     SELECT
