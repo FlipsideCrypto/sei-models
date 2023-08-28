@@ -1,13 +1,13 @@
 {{ config (
     materialized = "ephemeral",
-    unique_key = "block_number",
+    unique_key = "block_id",
 ) }}
 
 WITH base AS (
 
     SELECT
         block_timestamp :: DATE AS block_date,
-        MAX(block_number) as block_number
+        MAX(block_id) as block_id
     FROM
         {{ ref("silver__blocks") }}
     GROUP BY
@@ -15,7 +15,7 @@ WITH base AS (
 )
 SELECT
     block_date,
-    block_number
+    block_id
 FROM
     base
 WHERE
