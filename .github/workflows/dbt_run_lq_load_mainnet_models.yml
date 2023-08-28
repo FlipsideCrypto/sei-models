@@ -1,11 +1,11 @@
-name: dbt_run_scheduled_lq_load_mainnet
-run-name: dbt_run_scheduled_lq_load_mainnet
+name: dbt_run_scheduled_lq_load_mainnet_models
+run-name: dbt_run_scheduled_lq_load_mainnet_models
 
 on:
   workflow_dispatch:
   schedule:
-    # Every 30
-    - cron: '3,33 * * * *'
+    # Hourly”
+    - cron: '5 * * * *'
 
 env:
   USE_VARS: "${{ vars.USE_VARS }}"
@@ -28,26 +28,11 @@ jobs:
     uses: FlipsideCrypto/analytics-workflow-templates/.github/workflows/dbt_run_template.yml@main
     with:
       dbt_command: |
-         dbt run-operation load_blocks_lq_mainnet; 
-         dbt run-operation load_txs_lq_mainnet;
-         dbt run-operation load_blocks_lq_mainnet; 
-         dbt run-operation load_txs_lq_mainnet;
-         dbt run-operation load_blocks_lq_mainnet; 
-         dbt run-operation load_txs_lq_mainnet;
-         dbt run-operation load_blocks_lq_mainnet; 
-         dbt run-operation load_txs_lq_mainnet;
-         dbt run-operation load_blocks_lq_mainnet; 
-         dbt run-operation load_txs_lq_mainnet;
-         dbt run-operation load_blocks_lq_mainnet; 
-         dbt run-operation load_txs_lq_mainnet;
-         dbt run-operation load_blocks_lq_mainnet; 
-         dbt run-operation load_txs_lq_mainnet;
          dbt run -m ./models --exclude models/silver/_observability/silver_observabilit*
          dbt run -m models/bronze/bronze_api/bronze_api__get_blockchain.sql;
          dbt run -m models/silver/silver__blockchain.sql;
          dbt run -m models/bronze/bronze_api/bronze_api__get_blockchain.sql;
          dbt run -m models/silver/silver__blockchain.sql;
-         
       environment: workflow_prod
       warehouse: ${{ vars.WAREHOUSE }}
     secrets: inherit 

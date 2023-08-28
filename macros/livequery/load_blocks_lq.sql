@@ -66,7 +66,7 @@ INSERT INTO
             (
                 SELECT
                     *,
-                    NTILE (5000) over(PARTITION BY getdate()
+                    NTILE (2000) over(PARTITION BY getdate()
                 ORDER BY
                     block_height) AS grp
                 FROM
@@ -82,10 +82,12 @@ INSERT INTO
                             bronze.lq_blocks A
                         WHERE
                             block_number > 9839243
+                            AND DATA [0] :error IS NULL
+                            AND DATA :error IS NULL
                         ORDER BY
-                            1 DESC
+                            1
                         LIMIT
-                            5000
+                            2000
                     )
             )
         GROUP BY

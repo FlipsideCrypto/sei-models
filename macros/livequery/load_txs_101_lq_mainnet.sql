@@ -1,81 +1,77 @@
-{% macro load_blocks_lq_mainnet() %}
-    {%- call statement(
-            'get_mb',
-            fetch_result = True
-        ) -%}
-    SELECT
-        DATA :data :result :response :last_block_height :: INT last_block_height
-    FROM
-        (
-            SELECT
-                ethereum.streamline.udf_json_rpc_call(
-                    (
-                        SELECT
-                            url
-                        FROM
-                            sei._internal.api_keys
-                        WHERE
-                            provider = 'allthatnode_archive'
-                    ),{},
-                    {# 'https://sei-priv.kingnodes.com/',{ 'Referer': 'https://flipside.com' }, #}
-                    [ { 'id': 1, 'jsonrpc': '2.0', 'method': 'abci_info' } ]
-                ) DATA
-        )
-    {%- endcall -%}
-
-    {%- set max_block = load_result('get_mb') ['data'] [0] [0] -%}
+{% macro load_txs_101_lq_mainnet() %}
     {% set load_query %}
 INSERT INTO
-    bronze.lq_blocks WITH gen AS (
+    bronze.lq_txs_101 WITH gen AS (
         SELECT
             ROW_NUMBER() over (
                 ORDER BY
                     SEQ4()
-            ) AS block_height
+            ) AS id
         FROM
-            TABLE(GENERATOR(rowcount => 100000000))
+            TABLE(GENERATOR(rowcount => 50))
     ),
-    blocks AS (
+    possible_perms AS (
         SELECT
-            block_height
+            id,
+            (
+                id * 100
+            ) - 99 min_count,
+            id * 100 max_count
         FROM
             gen
+    ),
+    perms AS (
+        SELECT
+            block_id,
+            id
+        FROM
+            silver.blocks A
+            JOIN possible_perms
+            ON CEIL(
+                tx_count,
+                -2
+            ) >= max_count
         WHERE
-            block_height <= {{ max_block }}
-        ORDER BY
-            1 DESC
+            tx_count > 100
     ),
     calls AS (
         SELECT
             ARRAY_AGG(
-                { 'id': block_height,
+                { 'id': block_id,
                 'jsonrpc': '2.0',
-                'method': 'block',
-                'params': [ block_height::STRING ] }
+                'method': 'tx_search',
+                'params': [ 'tx.height='||block_id::STRING , true, ''||id||'', '100', 'asc' ] }
             ) calls
         FROM
             (
                 SELECT
-                    *,
-                    NTILE (5000) over(PARTITION BY getdate()
+                    A.block_id,
+                    p.id,
+                    NTILE (1) over(PARTITION BY getdate()
                 ORDER BY
-                    block_height) AS grp
+                    A.block_id) AS grp
                 FROM
                     (
-                        SELECT
-                            block_height
-                        FROM
-                            blocks
+                        (
+                            SELECT
+                                DISTINCT block_id
+                            FROM
+                                perms
+                            WHERE
+                                block_id IS NOT NULL
+                        )
                         EXCEPT
                         SELECT
                             block_number
                         FROM
-                            bronze.lq_blocks A
+                            bronze.lq_txs_101 A
                         ORDER BY
                             1
                         LIMIT
-                            5000
-                    )
+                            1
+                    ) A
+                    JOIN perms p
+                    ON A.block_id = p.block_id
             )
         GROUP BY
             grp
@@ -91,7 +87,6 @@ INSERT INTO
                     WHERE
                         provider = 'allthatnode_archive'
                 ),{},
-                {# 'https://sei-priv.kingnodes.com/',{ 'Referer': 'https://flipside.com' }, #}
                 calls
             ) DATA
         FROM

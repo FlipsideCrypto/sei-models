@@ -8,22 +8,42 @@ sources:
       - name: dim_date_hours
       - name: address_tags
       - name: dim_dates
+      - name: address_labels
   - name: lq
     database: "{{ 'SEI_TESTNET' if target.database == 'SEI_TESTNET' else 'SEI' }}"
     schema: bronze
     tables:
       - name: lq_blocks
       - name: lq_txs
-  - name: crosschain
-    database: "{{ 'crosschain_dev' if target.database == 'SEI_DEV' else 'crosschain' }}"
-    schema: core
+      - name: lq_txs_101
+  - name: bronze_api
+    schema: bronze_api
     tables:
-      - name: address_labels
-  - name: bronze_streamline
+      - name: blockchain
+  - name: crosschain_silver
+    database: "{{ 'crosschain' if target.database == 'SEI' else 'crosschain_dev' }}"
+    schema: silver
+    tables:
+      - name: asset_metadata_coin_market_cap
+      - name: asset_metadata_coin_gecko
+      - name: hourly_prices_coin_market_cap
+      - name: hourly_prices_coin_gecko
+      - name: number_sequence
+  - name: streamline
     database: streamline
-    schema: |
-      {{ "SEI_DEV" if var("STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES", False) else "SEI" }}
+    schema:  "{{ 'SEI' if target.database == 'SEI' else 'SEI_DEV' }}"
     tables:
+      - name: tx_search
       - name: blocks
       - name: transactions
       - name: txcount
+  - name: bronze
+    schema: bronze
+    tables:
+      - name: bridge_wormhole_chain_ids
+  - name: axelar_silver
+    database: "{{ 'axelar' if target.database == 'SEI' else 'axelar_dev' }}"
+    schema: silver
+    tables:
+      - name: link_events
+      - name: transfers

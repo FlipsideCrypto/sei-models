@@ -1,7 +1,0 @@
-
-version: 2
-
-models:
-  - name: silver__transactions
-    columns:
-      - name: TX_ID

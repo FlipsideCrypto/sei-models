@@ -1,21 +1,75 @@
 {% macro load_txs_lq_mainnet() %}
     {% set load_query %}
 INSERT INTO
-    bronze.lq_txs WITH calls AS (
+    bronze.lq_txs WITH gen AS (
+        SELECT
+            ROW_NUMBER() over (
+                ORDER BY
+                    SEQ4()
+            ) AS id
+        FROM
+            TABLE(GENERATOR(rowcount => 50))
+    ),
+    possible_perms AS (
+        SELECT
+            id,
+            (
+                id * 100
+            ) - 99 min_count,
+            id * 100 max_count
+        FROM
+            gen
+    ),
+    perms AS (
+        SELECT
+            block_number,
+            id
+        FROM
+            (
+                SELECT
+                    block_number,
+                    COALESCE(ARRAY_SIZE(COALESCE(b.value, C.value) :data :txs) :: NUMBER, 100) AS tx_count
+                FROM
+                    bronze.lq_blocks A,
+                    LATERAL FLATTEN(
+                        input => A.data :result,
+                        outer => TRUE
+                    ) AS b,
+                    LATERAL FLATTEN(
+                        input => A.data :data :result,
+                        outer => TRUE
+                    ) AS C
+                WHERE
+                    (
+                        b.value LIKE '%txs%'
+                        OR C.value LIKE '%txs%'
+                    )
+            ) A
+            JOIN possible_perms
+            ON CEIL(
+                tx_count,
+                -2
+            ) >= max_count
+    ),
+    calls AS (
         SELECT
             ARRAY_AGG(
                 { 'id': block_number,
                 'jsonrpc': '2.0',
                 'method': 'tx_search',
-                'params': [ 'tx.height='||BLOCK_NUMBER::STRING , true, '1', '1000', 'asc' ] }
+                'params': [ 'tx.height='||BLOCK_NUMBER::STRING , true, ''||id||'', '100', 'asc' ] }
             ) calls
         FROM
             (
                 SELECT
-                    *,
+                    A.block_number,
+                    COALESCE(
+                        p.id,
+                        1
+                    ) AS id,
                     NTILE (5000) over(PARTITION BY getdate()
                 ORDER BY
-                    block_number) AS grp
+                    A.block_number) AS grp
                 FROM
                     (
                         SELECT
@@ -24,16 +78,21 @@ INSERT INTO
                             bronze.lq_blocks
                         WHERE
                             block_number IS NOT NULL
+                            AND block_number > 16500000
                         EXCEPT
                         SELECT
                             block_number
                         FROM
                             bronze.lq_txs A
+                        WHERE
+                            block_number > 16500000
                         ORDER BY
                             1
                         LIMIT
                             5000
-                    )
+                    ) A
+                    LEFT JOIN perms p
+                    ON A.block_number = p.block_number
             )
         GROUP BY
             grp
@@ -41,7 +100,15 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                'http://3.70.183.174:26657',{},
+                (
+                    SELECT
+                        url
+                    FROM
+                        sei._internal.api_keys
+                    WHERE
+                        provider = 'allthatnode_archive'
+                ),{},
+                {# 'https://sei-priv.kingnodes.com/',{ 'Referer': 'https://flipside.com' }, #}
                 calls
             ) DATA
         FROM

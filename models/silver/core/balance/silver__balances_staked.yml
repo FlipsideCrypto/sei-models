@@ -1,0 +1,54 @@
+version: 2
+models:
+  - name: silver__balances_staked
+    description: A table of each staked balance change for wallets on the Sei chain. 
+    columns:
+      - name: BLOCK_ID 
+        description: "{{ doc('block_id') }}"
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - TIMESTAMP_NTZ
+      - name: ADDRESS
+        description: "{{ doc('address') }}"
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+          - dbt_expectations.expect_column_values_to_match_regex:
+              regex: sei1[0-9a-z]{38,38}
+      - name: BALANCE 
+        description: The amount of the currency the wallet held at the given time
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: CURRENCY
+        description: "{{ doc('currency') }}"
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+      - name: _INSERTED_TIMESTAMP
+        description: "{{ doc('inserted_timestamp') }}"
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - TIMESTAMP_NTZ
+      

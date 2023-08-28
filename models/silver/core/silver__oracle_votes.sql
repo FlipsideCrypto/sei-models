@@ -2,7 +2,7 @@
     materialized = 'incremental',
     unique_key = "_unique_key",
     incremental_strategy = 'merge',
-    cluster_by = ['block_timestamp::DATE'],
+    cluster_by = ['block_timestamp::DATE']
 ) }}
 
 WITH base_ma AS (
@@ -173,7 +173,8 @@ SELECT
         A.tx_id,
         A.msg_group,
         A.msg_sub_group,
-        voter
+        voter,
+        currency
     ) AS _unique_key
 FROM
     agg A

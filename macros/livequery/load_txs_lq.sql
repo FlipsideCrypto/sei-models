@@ -24,7 +24,7 @@ INSERT INTO
                             bronze.lq_blocks
                         WHERE
                             block_number IS NOT NULL
-                            AND block_number > 9839243
+                            {# AND block_number > 9839243 #}
                             AND block_number NOT IN (
                                 1835256,
                                 2762450,
@@ -55,8 +55,10 @@ INSERT INTO
                             block_number
                         FROM
                             bronze.lq_txs A
-                        WHERE
-                            block_number > 9839243
+                        WHERE 1=1
+                            {# and block_number > 9839243 #}
+                            AND DATA [0] :error IS NULL
+                            AND DATA :error IS NULL
                         ORDER BY
                             1
                         LIMIT
