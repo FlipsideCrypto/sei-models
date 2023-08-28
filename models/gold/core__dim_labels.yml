@@ -13,6 +13,8 @@ models:
           - not_null
       - name: LABEL_TYPE
         description: A high-level category describing the addresses main function or ownership
+        tests:
+          - not_null
       - name: LABEL_SUBTYPE
         description: A sub-category nested within label type providing further detail
         tests:
