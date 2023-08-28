@@ -1,5 +1,5 @@
-name: dbt_run_scheduled_lq_load_mainnet
-run-name: dbt_run_scheduled_lq_load_mainnet
+name: dbt_run_lq_load_observe_backfill
+run-name: dbt_run_lq_load_observe_backfill
 
 on:
   workflow_dispatch:
