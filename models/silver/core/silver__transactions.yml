@@ -21,10 +21,6 @@ models:
         description: "{{ doc('tx_succeeded') }}"
       - name: CODESPACE
         description: "{{ doc('codespace') }}"
-      - name: FEE
-        description: "{{ doc('fee') }}"
-        tests: 
-          - not_null
       - name: GAS_USED
         description: "{{ doc('gas_used') }}"
       - name: GAS_WANTED
