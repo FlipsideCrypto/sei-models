@@ -1,73 +1,83 @@
 {{ config (
     materialized = "view",
     post_hook = if_data_call_function(
-        func = "{{this.schema}}.udf_bulk_get_json_rpc(object_construct('sql_source', '{{this.identifier}}', 'external_table', 'tx_search', 'exploded_key', '[\"result\", \"txs\"]', 'producer_limit_size', {{var('producer_limit_size','1000')}}, 'producer_batch_size', {{var('producer_batch_size','100')}}, 'worker_batch_size', {{var('worker_batch_size','1000')}}, 'batch_call_limit', {{var('batch_call_limit','1')}}))",
+        func = "{{this.schema}}.udf_bulk_json_rpc(object_construct('sql_source', '{{this.identifier}}', 'external_table', 'transactions', 'sql_limit', {{var('sql_limit','50000')}}, 'producer_batch_size', {{var('producer_batch_size','50000')}}, 'worker_batch_size', {{var('worker_batch_size','50000')}}, 'batch_call_limit', {{var('batch_call_limit','10')}}, 'exploded_key', '[\"result\", \"txs\"]', 'call_type', 'batch'))",
         target = "{{this.schema}}.{{this.identifier}}"
     )
 ) }}
 
-
-WITH last_3_days AS (
+WITH blocks AS (
 
     SELECT
         block_number
     FROM
-        {{ ref("_max_block_by_date") }}
-        qualify ROW_NUMBER() over (
-            ORDER BY
-                block_number DESC
-        ) = 3
-),
-blocks AS (
-    SELECT
-        block_number
-    FROM
-        {{ ref("streamline__blocks") }}
-    WHERE
-        (
-            block_number >= (
-                SELECT
-                    block_number
-                FROM
-                    last_3_days
-            )
-        )
+        {{ ref("streamline__complete_txcount") }}
     EXCEPT
     SELECT
         block_number
     FROM
         {{ ref("streamline__complete_tx_search") }}
+),
+transactions_counts_by_block AS (
+    SELECT
+        tc.block_number,
+        tc.data :: INTEGER AS txcount
+    FROM
+        {{ ref("bronze__streamline_txcount") }}
+        tc
+        INNER JOIN blocks b
+        ON tc.block_number = b.block_number
+),
+numbers AS (
+    -- Recursive CTE to generate numbers. We'll use the maximum txcount value to limit our recursion.
+    SELECT
+        1 AS n
+    UNION ALL
+    SELECT
+        n + 1
+    FROM
+        numbers
     WHERE
-        (
-            block_number >= (
-                SELECT
-                    block_number
-                FROM
-                    last_3_days
+        n < (
+            SELECT
+                CEIL(MAX(txcount) / 100.0)
+            FROM
+                transactions_counts_by_block)
+        ),
+        blocks_with_page_numbers AS (
+            SELECT
+                tt.block_number AS block_number,
+                n.n AS page_number
+            FROM
+                transactions_counts_by_block tt
+                JOIN numbers n
+                ON n.n <= CASE
+                    WHEN tt.txcount % 100 = 0 THEN tt.txcount / 100
+                    ELSE FLOOR(
+                        tt.txcount / 100
+                    ) + 1
+                END
+        )
+    SELECT
+        PARSE_JSON(
+            CONCAT(
+                '{"jsonrpc": "2.0",',
+                '"method": "tx_search", "params":["',
+                'tx.height=',
+                block_number :: STRING,
+                '",',
+                TRUE,
+                ',"',
+                page_number :: STRING,
+                '",',
+                '"100",',
+                '"asc"',
+                '],"id":"',
+                block_number :: STRING,
+                '"}'
             )
-        )
-)
-SELECT
-    PARSE_JSON(
-        CONCAT(
-            '{"jsonrpc": "2.0",',
-            '"method": "tx_search", "params":["',
-            'tx.height=',
-            block_number :: STRING,
-            '",',
-            TRUE,
-            ',',
-            '"1"',
-            ',',
-            '"1000"',
-            ',',
-            '"asc"',
-            '],"id":"',
-            block_number :: STRING,
-            '"}'
-        )
-    ) AS request
-FROM
-    blocks
-ORDER BY
-    block_number ASC
+        ) AS request
+    FROM
+        blocks_with_page_numbers
+    ORDER BY
+        block_number ASC

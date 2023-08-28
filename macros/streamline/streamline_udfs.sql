@@ -1,19 +1,20 @@
 {% macro create_udf_get_chainhead() %}
     CREATE
-    OR REPLACE EXTERNAL FUNCTION streamline.udf_get_chainhead() returns variant api_integration = aws_sei_api AS {% if target.name == "prod" %}
-        'https://XXX.execute-api.us-east-1.amazonaws.com/prod/get_chainhead'
+    OR REPLACE EXTERNAL FUNCTION streamline.udf_get_chainhead() returns variant api_integration =
+    {% if target.name == "prod" %}
+        aws_sei_api AS 'https://xxx.execute-api.us-east-1.amazonaws.com/prod/get_chainhead'
     {% else %}
-        'https://fv6hblo1a5.execute-api.us-east-1.amazonaws.com/dev/get_chainhead'
+        aws_sei_api_dev AS 'https://u1hda5gxml.execute-api.us-east-1.amazonaws.com/dev/get_chainhead'
     {%- endif %};
 {% endmacro %}
 
-{% macro create_udf_bulk_get_json_rpc() %}
+{% macro create_udf_bulk_json_rpc() %}
     CREATE
-    OR REPLACE EXTERNAL FUNCTION streamline.udf_bulk_get_json_rpc(
+    OR REPLACE EXTERNAL FUNCTION streamline.udf_bulk_json_rpc(
         json variant
-    ) returns text api_integration = aws_sei_api AS {% if target.name == "prod" %}
-        'https://XXX.execute-api.us-east-1.amazonaws.com/prod/bulk_get_json_rpc'
+    ) returns text api_integration = {% if target.name == "prod" %}
+        aws_sei_api AS 'https://xxx.execute-api.us-east-1.amazonaws.com/prod/udf_bulk_json_rpc'
     {% else %}
-        'https://fv6hblo1a5.execute-api.us-east-1.amazonaws.com/dev/bulk_get_json_rpc'
+        aws_sei_api_dev AS 'https://u1hda5gxml.execute-api.us-east-1.amazonaws.com/dev/udf_bulk_json_rpc'
     {%- endif %};
 {% endmacro %}

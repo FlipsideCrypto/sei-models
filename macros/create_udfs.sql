@@ -6,7 +6,7 @@
             schema = "streamline"
         ) }}
         {{ create_udf_get_chainhead() }}
-        {{ create_udf_bulk_get_json_rpc() }}
+        {{ create_udf_bulk_json_rpc() }}
 
         {% endset %}
         {% do run_query(sql) %}
