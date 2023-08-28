@@ -1,7 +1,7 @@
 version: 2
 models:
-  - name: core__fact_staking_rewards
-    description: Records of all claimed rewards earned from staking that have occurred on Osmosis, dating back to the genesis block. These actions include claim and withdrawal_rewards. The columns blockchain, chain_id, and tx_status will be deprecating soon.
+  - name: core__fact_staking
+    description: "Deprecating soon: This is a notice that we're replacing this table with gov.fact_staking. Please migrate queries to the new table by 9/11/23. There will be no column changes or any other changes of any kind."
     columns:
       - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
@@ -26,19 +26,15 @@ models:
       - name: ACTION
         description: "{{ doc('action') }}"
         tests: 
-          - dbt_expectations.expect_column_to_exist 
-      - name: DELEGATOR_ADDRESS
-        description: "{{ doc('delegator_address') }}"
-        tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: REWARDS_RECIPIENT
+      - name: DELEGATOR_ADDRESS
         description: "{{ doc('delegator_address') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
       - name: AMOUNT
         description: "{{ doc('amount') }}"
         tests:
-          - dbt_expectations.expect_column_to_exist 
+          - dbt_expectations.expect_column_to_exist
       - name: CURRENCY
         description: "{{ doc('currency') }}"
         tests: 
@@ -47,3 +43,7 @@ models:
         description: "{{ doc('validator_address') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
+      - name: REDELEGATE_SOURCE_VALIDATOR_ADDRESS
+        description: "{{ doc('redelegate_source_validator_address') }}"
+      - name: COMPLETION_TIME
+        description: "{{ doc('completion_time') }}"

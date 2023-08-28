@@ -1,7 +1,7 @@
 version: 2
 models:
-  - name: core__fact_transfers
-    description: Records of all transfers on Sei, including IBC transfers as on- and off-ramps to Osmosis and wallet to wallet transfers.
+  - name: core__fact_governance_submit_proposal
+    description: "Deprecating soon: This is a notice that we're replacing this table with gov.fact_governance_submit_proposal. Please migrate queries to the new table by 9/11/23. There will be no column changes or any other changes of any kind."
     columns:
       - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
@@ -19,23 +19,23 @@ models:
         description: "{{ doc('tx_succeeded') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: TRANSFER_TYPE
-        description: "{{ doc('transfer_type') }}"
+      - name: PROPOSER
+        description: "{{ doc('proposer') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: SENDER
-        description: "{{ doc('sender') }}"
+      - name: PROPOSAL_ID
+        description: "{{ doc('proposal_id') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: AMOUNT
-        description: "{{ doc('amount') }}"
+      - name: PROPOSAL_TYPE
+        description: "{{ doc('proposal_type') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: CURRENCY
-        description: "{{ doc('currency') }}"
+      - name: PROPOSAL_TITLE
+        description: "{{ doc('proposal_title') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: RECEIVER
-        description: "{{ doc('receiver') }}"
+      - name: PROPOSAL_DESCRIPTION
+        description: "{{ doc('proposal_description') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
