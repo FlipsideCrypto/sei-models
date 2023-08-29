@@ -33,7 +33,6 @@ sources:
     database: streamline
     schema:  "{{ 'SEI' if target.database == 'SEI' else 'SEI_DEV' }}"
     tables:
-      - name: tx_search
       - name: blocks
       - name: transactions
       - name: txcount
