@@ -27,3 +27,7 @@ WHERE
             {{ this }}
     )
 {% endif %}
+
+qualify(ROW_NUMBER() over (PARTITION BY contract_address
+ORDER BY
+    _inserted_timestamp DESC) = 1)
