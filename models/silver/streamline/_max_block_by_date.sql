@@ -7,7 +7,7 @@ WITH base AS (
 
     SELECT
         block_timestamp :: DATE AS block_date,
-        MAX(block_id) as block_id
+        MAX(block_id) as block_number
     FROM
         {{ ref("silver__blocks") }}
     GROUP BY
@@ -15,7 +15,7 @@ WITH base AS (
 )
 SELECT
     block_date,
-    block_id
+    block_number
 FROM
     base
 WHERE
