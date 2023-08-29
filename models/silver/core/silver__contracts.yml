@@ -1,0 +1,24 @@
+version: 2
+models:
+  - name: silver__contracts
+    tests: 
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - contract_address
+    columns:
+      - name: contract_address
+        tests:
+          - not_null
+      - name: admin
+      - name: INIT_BY_ACCOUNT_ADDRESS
+        tests:
+          - not_null
+      - name: INIT_BY_BLOCK_TIMESTAMP
+        tests:
+          - not_null
+      - name: LABEL
+        tests:
+          - not_null
+      - name: _inserted_timestamp
+        tests:
+          - not_null 
