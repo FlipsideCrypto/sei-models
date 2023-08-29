@@ -29,9 +29,10 @@ sources:
       - name: hourly_prices_coin_market_cap
       - name: hourly_prices_coin_gecko
       - name: number_sequence
-  - name: streamline
+  - name: bronze_streamline
     database: streamline
-    schema:  "{{ 'SEI' if target.database == 'SEI' else 'SEI_DEV' }}"
+    schema: |
+      {{ "SEI_DEV" if var("STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES", False) else "SEI" }}
     tables:
       - name: blocks
       - name: transactions
