@@ -6,4 +6,4 @@
 SELECT
     *
 FROM
-    {{ ref('defi__fact_staking') }}
+    {{ ref('gov__fact_staking') }}
