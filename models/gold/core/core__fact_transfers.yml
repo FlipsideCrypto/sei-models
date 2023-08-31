@@ -1,7 +1,7 @@
 version: 2
 models:
-  - name: core__fact_governance_votes
-    description: Records of all votes on proposals.
+  - name: core__fact_transfers
+    description: Records of all transfers on Sei, including IBC transfers as on- and off-ramps to Sei and wallet to wallet transfers.
     columns:
       - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
@@ -19,19 +19,23 @@ models:
         description: "{{ doc('tx_succeeded') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: VOTER
-        description: "{{ doc('voter') }}"
+      - name: TRANSFER_TYPE
+        description: "{{ doc('transfer_type') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: PROPOSAL_ID
-        description: "{{ doc('proposal_id') }}"
+      - name: SENDER
+        description: "{{ doc('sender') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: VOTE_OPTION
-        description: "{{ doc('vote_option') }}"
+      - name: AMOUNT
+        description: "{{ doc('amount') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: MEMO
-        description: "{{ doc('memo') }}"
+      - name: CURRENCY
+        description: "{{ doc('currency') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: RECEIVER
+        description: "{{ doc('receiver') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist

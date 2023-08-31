@@ -18,27 +18,28 @@ There is more information on how to use dbt docs in the last section of this doc
 **Click on the links below to jump to the documentation for each schema.**
 
 ### Core Tables (`SEI`.`CORE`.`<table_name>`)
+### Defi Tables (`SEI`.`DEFI`.`<table_name>`)
+### Governance Tables (`SEI`.`GOV`.`<table_name>`)
 
-**Dimension Tables:**
-- [dim_labels](#!/model/model.sei_models.core__dim_labels)
+**Core Dimension Tables:**
+- [dim_labels](#!/model/model.sei.core__dim_labels)
 
 
-**Fact Tables:**
+**Core Fact Tables:**
 - [fact_blocks](#!/model/model.sei.core__fact_blocks)
-- [fact_governance_proposal_deposits](#!/model/model.sei.core__fact_governance_proposal_deposits)
-- [fact_governance_submit_proposal](#!/model/model.sei.core__fact_governance_submit_proposal)
-- [fact_governance_validator_votes](#!/model/model.sei.core__fact_governance_validator_votes)
-- [fact_governance_votes](#!/model/model.sei.core__fact_governance_votes)
 - [fact_msg_attributes](#!/model/model.sei.core__fact_msg_attributes)
 - [fact_msgs](#!/model/model.sei.core__fact_msgs)
 - [fact_oracle_votes](#!/model/model.sei.core__fact_oracle_votes)
-- [fact_staking](#!/model/model.sei.core__fact_staking)
-- [fact_staking_rewards](#!/model/model.sei.core__fact_staking_rewards)
 - [fact_transactions](#!/model/model.sei.core__fact_transactions)
 - [fact_transfers](#!/model/model.sei.core__fact_transfers)
 
-**Convenience Tables:**
-
+**Governance Fact  Tables:**
+- [fact_governance_proposal_deposits](#!/model/model.sei.gov__fact_governance_proposal_deposits)
+- [fact_governance_submit_proposal](#!/model/model.sei.gov__fact_governance_submit_proposal)
+- [fact_governance_validator_votes](#!/model/model.sei.gov__fact_governance_validator_votes)
+- [fact_governance_votes](#!/model/model.sei.gov__fact_governance_votes)
+- [fact_staking](#!/model/model.sei.gov__fact_staking)
+- [fact_staking_rewards](#!/model/model.sei.gov__fact_staking_rewards)
 
 
 
@@ -49,7 +50,7 @@ The SEI
 
 - Bronze: Data is loaded in from the source as a view
 - Silver: All necessary parsing, filtering, de-duping, and other transformations are done here
-- Gold (or core): Final views and tables that are available publicly
+- Gold (core/defi/core/prices): Final views and tables that are available publicly
 
 The dimension tables are sourced from a variety of on-chain and off-chain sources.
 
@@ -77,7 +78,7 @@ Note that you can also right-click on models to interactively filter and explore
 
 ### **More information**
 - [Flipside](https://flipsidecrypto.xyz/)
-- [Velocity](https://app.flipsidecrypto.com/velocity?nav=Discover)
+- [Data Studio](https://flipsidecrypto.xyz/edit)
 - [Tutorials](https://docs.flipsidecrypto.com/our-data/tutorials)
 - [Github](https://github.com/FlipsideCrypto/sei-models)
 - [What is dbt?](https://docs.getdbt.com/docs/introduction)

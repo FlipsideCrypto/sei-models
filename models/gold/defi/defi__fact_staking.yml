@@ -1,0 +1,49 @@
+version: 2
+models:
+  - name: defi__fact_staking
+    description: Records of all staking related transactions that have occurred on Sei, dating back to the genesis block. These actions include delegate, undelegate, and redelegate.
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: TX_SUCCEEDED
+        description: "{{ doc('tx_succeeded') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: TX_CALLER_ADDRESS
+        description: "{{ doc('tx_caller_address') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: ACTION
+        description: "{{ doc('action') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: DELEGATOR_ADDRESS
+        description: "{{ doc('delegator_address') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: AMOUNT
+        description: "{{ doc('amount') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: CURRENCY
+        description: "{{ doc('currency') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: VALIDATOR_ADDRESS
+        description: "{{ doc('validator_address') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: REDELEGATE_SOURCE_VALIDATOR_ADDRESS
+        description: "{{ doc('redelegate_source_validator_address') }}"
+      - name: COMPLETION_TIME
+        description: "{{ doc('completion_time') }}"

@@ -1,0 +1,41 @@
+version: 2
+models:
+  - name: gov__fact_governance_submit_proposal
+    description: Records of all proposal submissions on Sei, dating back to the Genesis block. The columns blockchain, chain_id, and tx_status will be deprecating soon.
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: TX_SUCCEEDED
+        description: "{{ doc('tx_succeeded') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: PROPOSER
+        description: "{{ doc('proposer') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: PROPOSAL_ID
+        description: "{{ doc('proposal_id') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: PROPOSAL_TYPE
+        description: "{{ doc('proposal_type') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: PROPOSAL_TITLE
+        description: "{{ doc('proposal_title') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: PROPOSAL_DESCRIPTION
+        description: "{{ doc('proposal_description') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
