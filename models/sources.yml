@@ -7,7 +7,7 @@ sources:
     tables:
       - name: dim_date_hours
       - name: dim_dates
-      - name: dim_address_labels
+      - name: dim_labels
   - name: lq
     database: "{{ 'SEI_TESTNET' if target.database == 'SEI_TESTNET' else 'SEI' }}"
     schema: bronze
