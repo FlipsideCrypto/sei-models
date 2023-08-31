@@ -6,9 +6,8 @@ sources:
     schema: core
     tables:
       - name: dim_date_hours
-      - name: address_tags
       - name: dim_dates
-      - name: address_labels
+      - name: dim_address_labels
   - name: lq
     database: "{{ 'SEI_TESTNET' if target.database == 'SEI_TESTNET' else 'SEI' }}"
     schema: bronze
