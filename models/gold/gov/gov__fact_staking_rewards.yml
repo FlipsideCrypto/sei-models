@@ -1,6 +1,6 @@
 version: 2
 models:
-  - name: defi__fact_staking_rewards
+  - name: gov__fact_staking_rewards
     description: Records of all claimed rewards earned from staking that have occurred on Sei, dating back to the genesis block. These actions include claim and withdrawal_rewards.
     columns:
       - name: BLOCK_ID
