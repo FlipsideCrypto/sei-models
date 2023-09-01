@@ -1,6 +1,6 @@
 version: 2
 models:
-  - name: defi__fact_staking
+  - name: gov__fact_staking
     description: Records of all staking related transactions that have occurred on Sei, dating back to the genesis block. These actions include delegate, undelegate, and redelegate.
     columns:
       - name: BLOCK_ID
