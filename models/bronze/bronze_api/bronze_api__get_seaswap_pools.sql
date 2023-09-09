@@ -1,6 +1,7 @@
 {{ config(
     materialized = 'incremental',
-    full_refresh = false
+    full_refresh = false,
+    enabled = false
 ) }}
 
 WITH perms AS (
