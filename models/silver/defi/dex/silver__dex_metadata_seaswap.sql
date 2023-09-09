@@ -1,7 +1,8 @@
 {{ config(
     materialized = 'incremental',
     unique_key = 'pool_id',
-    incremental_strategy = 'merge'
+    incremental_strategy = 'merge',
+    enabled = false
 ) }}
 
 SELECT
