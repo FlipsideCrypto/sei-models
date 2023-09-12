@@ -1,7 +1,7 @@
 version: 2
 models:
-  - name: silver__dex_swaps_fuzio
-    description: Records of swaps that occurred on the Fuzio platform
+  - name: silver__dex_swaps_seaswap
+    description: Records of swaps that occurred on the SeaSwap platform
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:

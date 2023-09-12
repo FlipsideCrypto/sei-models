@@ -5,15 +5,38 @@
     cluster_by = ['_inserted_timestamp::DATE', 'block_timestamp::DATE' ]
 ) }}
 
-WITH rel_contracts AS (
+WITH all_contacts AS (
 
+    SELECT
+        contract_address,
+        label
+    FROM
+        {{ ref('silver__contracts') }}
+),
+rel_contracts AS (
     SELECT
         contract_address,
         label AS pool_name
     FROM
-        {{ ref('silver__contracts') }}
+        all_contacts
     WHERE
-        label = 'Astroport pair'
+        label ILIKE 'Fuzio%'
+),
+contract_info AS (
+    SELECT
+        contract_address,
+        DATA :lp_token_address :: STRING AS lp_token_address,
+        DATA :token1_denom :native :: STRING AS token1_currency,
+        DATA :token2_denom :native :: STRING AS token2_currency
+    FROM
+        {{ ref('silver__contract_info') }}
+),
+contract_config AS (
+    SELECT
+        contract_address,
+        DATA :lp_token_contract :: STRING AS lp_token_address
+    FROM
+        {{ ref('silver__contract_config') }}
 ),
 all_txns AS (
     SELECT
@@ -43,7 +66,7 @@ WHERE
 ),
 rel_txns AS (
     SELECT
-        DISTINCT tx_id,
+        tx_id,
         block_timestamp,
         msg_group,
         msg_sub_group
@@ -65,26 +88,9 @@ rel_txns AS (
     WHERE
         msg_type = 'wasm'
         AND attribute_key = 'action'
-        AND attribute_value = 'swap'
+        AND attribute_value = 'withdraw'
 ),
-fee_payer AS (
-    SELECT
-        A.tx_id,
-        attribute_value AS tx_fee_payer
-    FROM
-        all_txns A
-        JOIN (
-            SELECT
-                DISTINCT tx_id
-            FROM
-                rel_txns
-        ) b
-        ON A.tx_id = b.tx_id
-    WHERE
-        msg_type = 'tx'
-        AND attribute_key = 'fee_payer'
-),
-wasm AS (
+wasmtran AS (
     SELECT
         A.block_id,
         A.block_timestamp,
@@ -98,18 +104,12 @@ wasm AS (
             attribute_key :: STRING,
             attribute_value :: variant
         ) AS j,
-        j :_contract_address :: STRING AS _contract_address,
+        j :_contract_address :: STRING AS contract_address,
         j :action :: STRING AS action,
-        j :ask_asset :: STRING AS ask_asset,
-        j :commission_amount :: INT AS commission_amount,
-        j :maker_fee_amount :: INT AS maker_fee_amount,
-        j :offer_amount :: INT AS offer_amount,
-        j :offer_asset :: STRING AS offer_asset,
-        j :receiver :: STRING AS receiver,
-        j :return_amount :: INT AS return_amount,
+        j :owner :: STRING AS owner,
+        j :amount :: STRING AS amount,
         j :sender :: STRING AS sender,
-        j :spread_amount :: INT AS spread_amount,
-        j :tax_amount :: INT AS tax_amount
+        j :recipient :: STRING AS recipient
     FROM
         all_txns A
         JOIN rel_txns b
@@ -117,7 +117,10 @@ wasm AS (
         AND A.msg_group = b.msg_group
         AND A.msg_sub_group = b.msg_sub_group
     WHERE
-        msg_type = 'wasm'
+        msg_type IN(
+            'wasm',
+            'transfer'
+        )
     GROUP BY
         A.block_id,
         A.block_timestamp,
@@ -126,31 +129,46 @@ wasm AS (
         A.msg_group,
         A.msg_sub_group,
         A.msg_index,
-        _inserted_timestamp {# HAVING
-        action = 'swap' #}
+        _inserted_timestamp
 )
 SELECT
     A.block_id,
     A.block_timestamp,
     A.tx_succeeded,
     A.tx_id,
-    b.tx_fee_payer swapper,
     A.msg_group,
     A.msg_sub_group,
     A.msg_index,
-    offer_amount AS amount_in,
-    offer_asset AS currency_in,
-    return_amount AS amount_out,
-    ask_asset AS currency_out,
-    commission_amount,
-    maker_fee_amount,
-    spread_amount,
-    _contract_address AS pool_address,
-    C.pool_name,
+    A.owner AS liquidity_provider_address,
+    A.action AS lp_reward_action,
+    A.contract_address AS staking_pool_address,
+    b.pool_name AS staking_pool_name,
+    SPLIT_PART(
+        TRIM(
+            REGEXP_REPLACE(
+                a_tran.amount,
+                '[^[:digit:]]',
+                ' '
+            )
+        ),
+        ' ',
+        0
+    ) AS reward_amount,
+    RIGHT(a_tran.amount, LENGTH(a_tran.amount) - LENGTH(SPLIT_PART(TRIM(REGEXP_REPLACE(a_tran.amount, '[^[:digit:]]', ' ')), ' ', 0))) AS reward_currency,
+    C.lp_token_address AS pool_address,
+    d.label AS pool_name,
     A._inserted_timestamp
 FROM
-    wasm A
-    JOIN fee_payer b
-    ON A.tx_id = b.tx_id
-    JOIN rel_contracts C
-    ON A._contract_address = C.contract_address
+    wasmtran A
+    JOIN wasmtran a_tran
+    ON A.tx_id = a_tran.tx_id
+    AND A.msg_group = a_tran.msg_group
+    AND A.msg_sub_group = a_tran.msg_sub_group
+    AND A.owner = a_tran.recipient
+    AND A.contract_address = a_tran.sender
+    JOIN rel_contracts b
+    ON A.contract_address = b.contract_address
+    JOIN contract_config C
+    ON A.contract_address = C.contract_address
+    JOIN all_contacts d
+    ON C.lp_token_address = d.contract_address

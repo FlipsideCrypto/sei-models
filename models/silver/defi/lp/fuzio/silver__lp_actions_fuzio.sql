@@ -13,7 +13,16 @@ WITH rel_contracts AS (
     FROM
         {{ ref('silver__contracts') }}
     WHERE
-        label = 'Astroport pair'
+        label ILIKE 'Fuzio%'
+),
+contract_info AS (
+    SELECT
+        contract_address,
+        DATA :lp_token_address :: STRING AS lp_token_address,
+        DATA :token1_denom :native :: STRING AS token1_currency,
+        DATA :token2_denom :native :: STRING AS token2_currency
+    FROM
+        {{ ref('silver__contract_info') }}
 ),
 all_txns AS (
     SELECT
@@ -43,7 +52,7 @@ WHERE
 ),
 rel_txns AS (
     SELECT
-        DISTINCT tx_id,
+        tx_id,
         block_timestamp,
         msg_group,
         msg_sub_group
@@ -65,24 +74,12 @@ rel_txns AS (
     WHERE
         msg_type = 'wasm'
         AND attribute_key = 'action'
-        AND attribute_value = 'swap'
-),
-fee_payer AS (
-    SELECT
-        A.tx_id,
-        attribute_value AS tx_fee_payer
-    FROM
-        all_txns A
-        JOIN (
-            SELECT
-                DISTINCT tx_id
-            FROM
-                rel_txns
-        ) b
-        ON A.tx_id = b.tx_id
-    WHERE
-        msg_type = 'tx'
-        AND attribute_key = 'fee_payer'
+        AND attribute_value IN (
+            'add_liquidity',
+            'mint',
+            'remove_liquidity',
+            'burn_from'
+        )
 ),
 wasm AS (
     SELECT
@@ -98,18 +95,18 @@ wasm AS (
             attribute_key :: STRING,
             attribute_value :: variant
         ) AS j,
-        j :_contract_address :: STRING AS _contract_address,
+        j :_contract_address :: STRING AS contract_address,
         j :action :: STRING AS action,
-        j :ask_asset :: STRING AS ask_asset,
-        j :commission_amount :: INT AS commission_amount,
-        j :maker_fee_amount :: INT AS maker_fee_amount,
-        j :offer_amount :: INT AS offer_amount,
-        j :offer_asset :: STRING AS offer_asset,
-        j :receiver :: STRING AS receiver,
-        j :return_amount :: INT AS return_amount,
-        j :sender :: STRING AS sender,
-        j :spread_amount :: INT AS spread_amount,
-        j :tax_amount :: INT AS tax_amount
+        j :token1_amount :: INT AS token1_amount,
+        j :token2_amount :: INT AS token2_amount,
+        j :token1_returned :: INT AS token1_returned,
+        j :token2_returned :: INT AS token2_returned,
+        j :liquidity_received :: INT AS liquidity_received,
+        j :liquidity_burned :: INT AS liquidity_burned,
+        j :to :: STRING AS to_address,
+        j :from :: STRING AS from_address,
+        j :by :: STRING AS by_address,
+        j :amount :: INT AS amount
     FROM
         all_txns A
         JOIN rel_txns b
@@ -126,31 +123,55 @@ wasm AS (
         A.msg_group,
         A.msg_sub_group,
         A.msg_index,
-        _inserted_timestamp {# HAVING
-        action = 'swap' #}
+        _inserted_timestamp
 )
 SELECT
     A.block_id,
     A.block_timestamp,
     A.tx_succeeded,
     A.tx_id,
-    b.tx_fee_payer swapper,
     A.msg_group,
     A.msg_sub_group,
     A.msg_index,
-    offer_amount AS amount_in,
-    offer_asset AS currency_in,
-    return_amount AS amount_out,
-    ask_asset AS currency_out,
-    commission_amount,
-    maker_fee_amount,
-    spread_amount,
-    _contract_address AS pool_address,
+    COALESCE(
+        b.to_address,
+        b.from_address
+    ) AS liquidity_provider_address,
+    A.action AS lp_action,
+    A.contract_address AS pool_address,
     C.pool_name,
+    COALESCE(
+        A.token1_amount,
+        A.token1_returned
+    ) AS token1_amount,
+    d.token1_currency,
+    COALESCE(
+        A.token2_amount,
+        A.token2_returned
+    ) AS token2_amount,
+    d.token2_currency,
+    COALESCE(
+        A.liquidity_received,
+        A.liquidity_burned
+    ) AS lp_token_amount,
+    d.lp_token_address,
     A._inserted_timestamp
 FROM
     wasm A
-    JOIN fee_payer b
+    JOIN wasm b
     ON A.tx_id = b.tx_id
+    AND A.msg_group = b.msg_group
+    AND A.msg_sub_group = b.msg_sub_group
     JOIN rel_contracts C
-    ON A._contract_address = C.contract_address
+    ON A.contract_address = C.contract_address
+    JOIN contract_info d
+    ON A.contract_address = d.contract_address
+WHERE
+    A.action IN (
+        'add_liquidity',
+        'remove_liquidity'
+    )
+    AND b.action IN (
+        'mint',
+        'burn_from'
+    )
