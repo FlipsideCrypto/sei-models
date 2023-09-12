@@ -11,7 +11,7 @@ WITH contracts AS (
         {{ ref('silver__contracts') }} A
 
 {% if is_incremental() %}
-LEFT JOIN silver.contract_info b
+LEFT JOIN silver.contract_config b
 ON A.contract_address = b.contract_address
 WHERE
     (
