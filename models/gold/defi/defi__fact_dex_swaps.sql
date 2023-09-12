@@ -1,7 +1,7 @@
 {{ config(
     materialized = 'view',
     meta ={ 'database_tags':{ 'table':{ 'PURPOSE': 'SWAPS' }} },
-    enabled = FALSE
+    enabled = false
 ) }}
 
 SELECT
