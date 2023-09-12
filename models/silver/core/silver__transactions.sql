@@ -4,33 +4,38 @@
     incremental_strategy = 'merge',
     cluster_by = ['_inserted_timestamp::DATE', 'block_timestamp::DATE' ]
 ) }}
-
+-- depends_on: {{ ref('bronze__streamline_transactions') }}
 WITH base_table AS (
 
     SELECT
-        block_id,
-        tx_id,
-        tx :tx_result :codespace :: STRING AS codespace,
-        tx :tx_result :gas_used :: NUMBER AS gas_used,
-        tx :tx_result :gas_wanted :: NUMBER AS gas_wanted,
+        block_number AS block_id,
+        DATA :hash :: STRING AS tx_id,
+        DATA :tx_result :codespace :: STRING AS codespace,
+        DATA :tx_result :gas_used :: NUMBER AS gas_used,
+        DATA :tx_result :gas_wanted :: NUMBER AS gas_wanted,
         CASE
-            WHEN tx :tx_result :code :: NUMBER IS NOT NULL THEN FALSE
+            WHEN DATA :tx_result :code :: NUMBER IS NOT NULL THEN FALSE
             ELSE TRUE
         END AS tx_succeeded,
-        tx :tx_result :code :: NUMBER AS tx_code,
-        tx :tx_result :events AS msgs,
+        DATA :tx_result :code :: NUMBER AS tx_code,
+        DATA :tx_result :events AS msgs,
         TRY_PARSE_JSON(
-            tx :tx_result :log
+            DATA :tx_result :log
         ) AS tx_log,
         TRY_BASE64_DECODE_STRING(
-            tx :tx_result :data
+            DATA :tx_result :data
         ) AS tx_type,
-        tx,
+        DATA AS tx,
         _inserted_timestamp
     FROM
-        {{ ref('bronze__transactions') }}
-    WHERE
-        tx_id IS NOT NULL
+
+{% if is_incremental() %}
+{{ ref('bronze__streamline_transactions') }}
+{% else %}
+    {{ ref('bronze__streamline_FR_transactions') }}
+{% endif %}
+WHERE
+    tx_id IS NOT NULL
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
