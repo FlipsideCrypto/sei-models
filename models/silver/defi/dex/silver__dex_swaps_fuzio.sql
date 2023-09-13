@@ -16,15 +16,6 @@ WITH rel_contracts AS (
     WHERE
         label ILIKE 'Fuzio%Pool%'
 ),
-contract_info AS (
-    SELECT
-        contract_address,
-        DATA :lp_token_address :: STRING AS lp_token_address,
-        DATA :token1_denom :native :: STRING AS token1_currency,
-        DATA :token2_denom :native :: STRING AS token2_currency
-    FROM
-        {{ ref('silver__contract_info') }}
-),
 all_txns AS (
     SELECT
         block_id,
