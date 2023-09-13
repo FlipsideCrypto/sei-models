@@ -16,6 +16,15 @@ WITH rel_contracts AS (
     WHERE
         label ILIKE 'Fuzio%Pool%'
 ),
+contract_info AS (
+    SELECT
+        contract_address,
+        DATA :lp_token_address :: STRING AS lp_token_address,
+        DATA :token1_denom :native :: STRING AS token1_currency,
+        DATA :token2_denom :native :: STRING AS token2_currency
+    FROM
+        {{ ref('silver__contract_info') }}
+),
 all_txns AS (
     SELECT
         block_id,
@@ -31,15 +40,20 @@ all_txns AS (
         _inserted_timestamp
     FROM
         {{ ref('silver__msg_attributes') }} A
+    WHERE
+        msg_type IN (
+            'wasm',
+            'transfer',
+            'tx'
+        )
 
 {% if is_incremental() %}
-WHERE
-    _inserted_timestamp >= (
-        SELECT
-            MAX(_inserted_timestamp)
-        FROM
-            {{ this }}
-    )
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(_inserted_timestamp)
+    FROM
+        {{ this }}
+)
 {% endif %}
 ),
 rel_txns AS (
@@ -47,26 +61,33 @@ rel_txns AS (
         tx_id,
         block_timestamp,
         msg_group,
-        msg_sub_group
+        msg_sub_group,
+        msg_index
     FROM
         all_txns A
         JOIN rel_contracts b
         ON A.attribute_value = b.contract_address
     WHERE
-        msg_type = 'execute'
+        msg_type = 'wasm'
         AND attribute_key = '_contract_address'
     INTERSECT
     SELECT
         tx_id,
         block_timestamp,
         msg_group,
-        msg_sub_group
+        msg_sub_group,
+        msg_index
     FROM
         all_txns A
     WHERE
         msg_type = 'wasm'
-        AND attribute_key = 'action'
-        AND attribute_value = 'swap'
+        AND (
+            (
+                attribute_key = 'action'
+                AND attribute_value = 'swap'
+            )
+            OR attribute_key = 'native_transferred'
+        )
 ),
 fee_payer AS (
     SELECT
@@ -85,7 +106,7 @@ fee_payer AS (
         msg_type = 'tx'
         AND attribute_key = 'fee_payer'
 ),
-xfers AS (
+wasm AS (
     SELECT
         A.block_id,
         A.block_timestamp,
@@ -94,7 +115,47 @@ xfers AS (
         A.msg_group,
         A.msg_sub_group,
         A.msg_index,
-        tx_fee_payer,
+        _inserted_timestamp,
+        OBJECT_AGG(
+            attribute_key :: STRING,
+            attribute_value :: variant
+        ) AS j,
+        j :_contract_address :: STRING AS contract_address,
+        j :action :: STRING AS action,
+        COALESCE(
+            j :native_sold :: INT,
+            j :input_token_amount :: INT
+        ) AS amount_in,
+        COALESCE(
+            j :token_bought :: INT,
+            j :native_transferred :: INT
+        ) AS amount_out
+    FROM
+        all_txns A
+        JOIN rel_txns b
+        ON A.tx_id = b.tx_id
+        AND A.msg_index = b.msg_index
+    WHERE
+        msg_type = 'wasm'
+    GROUP BY
+        A.block_id,
+        A.block_timestamp,
+        A.tx_succeeded,
+        A.tx_id,
+        A.msg_group,
+        A.msg_sub_group,
+        A.msg_index,
+        _inserted_timestamp
+),
+xfer AS (
+    SELECT
+        A.block_id,
+        A.block_timestamp,
+        A.tx_succeeded,
+        A.tx_id,
+        A.msg_group,
+        A.msg_sub_group,
+        A.msg_index,
         _inserted_timestamp,
         OBJECT_AGG(
             attribute_key :: STRING,
@@ -102,11 +163,32 @@ xfers AS (
         ) AS j,
         j :sender :: STRING AS sender,
         j :recipient :: STRING AS recipient,
-        j :amount :: STRING AS amount
+        j :amount :: STRING AS amount_raw,
+        SPLIT_PART(
+            TRIM(
+                REGEXP_REPLACE(
+                    amount_raw,
+                    '[^[:digit:]]',
+                    ' '
+                )
+            ),
+            ' ',
+            0
+        ) AS amount,
+        RIGHT(amount_raw, LENGTH(amount_raw) - LENGTH(SPLIT_PART(TRIM(REGEXP_REPLACE(amount_raw, '[^[:digit:]]', ' ')), ' ', 0))) AS currency
     FROM
         all_txns A
-        JOIN fee_payer b
+        JOIN (
+            SELECT
+                DISTINCT tx_id,
+                msg_group,
+                msg_sub_group
+            FROM
+                rel_txns
+        ) b
         ON A.tx_id = b.tx_id
+        AND A.msg_group = b.msg_group
+        AND A.msg_sub_group = b.msg_sub_group
     WHERE
         msg_type = 'transfer'
     GROUP BY
@@ -117,155 +199,41 @@ xfers AS (
         A.msg_group,
         A.msg_sub_group,
         A.msg_index,
-        tx_fee_payer,
-        _inserted_timestamp
-    HAVING
-        (
-            tx_fee_payer = sender
-            OR tx_fee_payer = recipient
-            OR (len(sender) = 62
-            AND len(recipient) = 62))
-        ),
-        xfirst AS (
-            SELECT
-                *
-            FROM
-                xfers
-            WHERE
-                (len(sender) <> 62
-                AND len(recipient) = 62)),
-                middle AS (
-                    SELECT
-                        *
-                    FROM
-                        xfers
-                    WHERE
-                        (len(sender) = 62
-                        AND len(recipient) = 62)),
-                        xlast AS (
-                            SELECT
-                                *
-                            FROM
-                                xfers
-                            WHERE
-                                (len(sender) = 62
-                                AND len(recipient) <> 62)),
-                                fin AS(
-                                    SELECT
-                                        A.block_id,
-                                        A.block_timestamp,
-                                        A.tx_succeeded,
-                                        A.tx_id,
-                                        A.tx_fee_payer,
-                                        A.msg_group,
-                                        A.msg_sub_group,
-                                        A.msg_index,
-                                        {# A.sender,
-                                        A.recipient,
-                                        #}
-                                        A.amount AS amount_in,
-                                        b.amount AS amount_out,
-                                        A.recipient AS pool_address,
-                                        A._inserted_timestamp
-                                    FROM
-                                        xfirst A
-                                        JOIN middle b
-                                        ON A.tx_id = b.tx_id
-                                        AND A.msg_group = b.msg_group
-                                        AND A.msg_sub_group = b.msg_sub_group
-                                    UNION ALL
-                                    SELECT
-                                        A.block_id,
-                                        A.block_timestamp,
-                                        A.tx_succeeded,
-                                        A.tx_id,
-                                        A.tx_fee_payer,
-                                        A.msg_group,
-                                        A.msg_sub_group,
-                                        A.msg_index,
-                                        {# A.sender,
-                                        A.recipient,
-                                        #}
-                                        b.amount AS amount_in,
-                                        A.amount amount_out,
-                                        A.sender AS pool_address,
-                                        A._inserted_timestamp
-                                    FROM
-                                        xlast A
-                                        JOIN middle b
-                                        ON A.tx_id = b.tx_id
-                                        AND A.msg_group = b.msg_group
-                                        AND A.msg_sub_group = b.msg_sub_group
-                                    UNION ALL
-                                    SELECT
-                                        A.block_id,
-                                        A.block_timestamp,
-                                        A.tx_succeeded,
-                                        A.tx_id,
-                                        A.tx_fee_payer,
-                                        A.msg_group,
-                                        A.msg_sub_group,
-                                        A.msg_index,
-                                        {# A.sender,
-                                        A.recipient,
-                                        #}
-                                        A.amount AS amount_in,
-                                        b.amount AS amount_out,
-                                        A.recipient AS pool_address,
-                                        A._inserted_timestamp
-                                    FROM
-                                        xfirst A
-                                        JOIN xlast b
-                                        ON A.tx_id = b.tx_id
-                                        AND A.msg_group = b.msg_group
-                                        AND A.msg_sub_group = b.msg_sub_group
-                                        LEFT JOIN middle C
-                                        ON A.tx_id = C.tx_id
-                                    WHERE
-                                        C.tx_id IS NULL
-                                )
-                            SELECT
-                                A.block_id,
-                                A.block_timestamp,
-                                A.tx_succeeded,
-                                A.tx_id,
-                                A.tx_fee_payer AS swapper,
-                                A.msg_group,
-                                A.msg_sub_group,
-                                A.msg_index,
-                                {# A.sender,
-                                A.recipient,
-                                #}
-                                A.amount_in AS ain_raw,
-                                SPLIT_PART(
-                                    TRIM(
-                                        REGEXP_REPLACE(
-                                            amount_in,
-                                            '[^[:digit:]]',
-                                            ' '
-                                        )
-                                    ),
-                                    ' ',
-                                    0
-                                ) AS amount_in,
-                                RIGHT(amount_in, LENGTH(amount_in) - LENGTH(SPLIT_PART(TRIM(REGEXP_REPLACE(amount_in, '[^[:digit:]]', ' ')), ' ', 0))) AS currency_in,
-                                A.amount_out aou_raw,
-                                SPLIT_PART(
-                                    TRIM(
-                                        REGEXP_REPLACE(
-                                            amount_out,
-                                            '[^[:digit:]]',
-                                            ' '
-                                        )
-                                    ),
-                                    ' ',
-                                    0
-                                ) AS amount_out,
-                                RIGHT(amount_out, LENGTH(amount_out) - LENGTH(SPLIT_PART(TRIM(REGEXP_REPLACE(amount_out, '[^[:digit:]]', ' ')), ' ', 0))) AS currency_out,
-                                A.pool_address,
-                                b.pool_name,
-                                A._inserted_timestamp
-                            FROM
-                                fin A
-                                LEFT JOIN rel_contracts b
-                                ON A.pool_address = b.contract_address
+        _inserted_timestamp qualify(ROW_NUMBER() over(PARTITION BY A.tx_id, A.msg_group, A.msg_sub_group, amount_raw
+    ORDER BY
+        A.msg_index) = 1)
+)
+SELECT
+    A.block_id,
+    A.block_timestamp,
+    A.tx_succeeded,
+    A.tx_id,
+    fp.tx_fee_payer AS swapper,
+    A.msg_group,
+    A.msg_sub_group,
+    A.msg_index,
+    A.amount_in,
+    C.currency AS currency_in,
+    A.amount_out,
+    d.currency AS currency_out,
+    A.contract_address AS pool_address,
+    b.pool_name,
+    A._inserted_timestamp
+FROM
+    wasm A
+    JOIN fee_payer fp
+    ON A.tx_id = fp.tx_id
+    JOIN rel_contracts b
+    ON A.contract_address = b.contract_address
+    LEFT JOIN xfer C
+    ON A.tx_id = C.tx_id
+    AND A.msg_group = C.msg_group
+    AND A.msg_sub_group = C.msg_sub_group
+    AND A.amount_in = C.amount
+    AND A.msg_index > C.msg_index
+    LEFT JOIN xfer d
+    ON A.tx_id = d.tx_id
+    AND A.msg_group = d.msg_group
+    AND A.msg_sub_group = d.msg_sub_group
+    AND A.amount_out = d.amount
+    AND A.msg_index < d.msg_index
