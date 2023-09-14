@@ -1,0 +1,79 @@
+version: 2
+models:
+  - name: silver__lp_actions_seaswap
+    description: Records of liquidity provider that occurred on the Seaswap platform
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - TX_ID
+            - MSG_INDEX
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests: 
+          - not_null
+      - name: TX_SUCCEEDED
+        description: "{{ doc('tx_succeeded') }}"
+        tests: 
+          - not_null
+      - name: MSG_GROUP
+        description: "{{ doc('msg_group') }}"
+        tests: 
+          - not_null
+      - name: MSG_SUB_GROUP
+        description: "{{ doc('msg_sub_group') }}"
+        tests: 
+          - not_null
+      - name: MSG_INDEX
+        description: "{{ doc('msg_index') }}"
+        tests: 
+          - not_null
+      - name: LIQUIDITY_PROVIDER_ADDRESS
+        description: "{{ doc('liquidity_provider_address') }}"
+        tests: 
+          - not_null
+      - name: LP_ACTION
+        description: "{{ doc('lp_action') }}"
+        tests: 
+          - not_null
+      - name: POOL_ADDRESS
+        description: "{{ doc('pool_address') }}"
+        tests: 
+          - not_null
+      - name: POOL_NAME
+        description: "{{ doc('pool_name') }}"
+        tests: 
+          - not_null
+      - name: TOKEN1_AMOUNT
+        description: "The amount of the first token provided by the liquidity provider"
+        tests: 
+          - not_null
+      - name: TOKEN1_CURRENCY
+        description: "The currency of the first token provided by the liquidity provider"
+        tests: 
+          - not_null
+      - name: TOKEN2_AMOUNT
+        description: "The amount of the second token provided by the liquidity provider"
+        tests: 
+          - not_null
+      - name: TOKEN2_CURRENCY
+        description: "The currency of the second token provided by the liquidity provider"
+        tests: 
+          - not_null
+      - name: LP_TOKEN_AMOUNT
+        description: "{{ doc('lp_token_amount') }}"
+        tests: 
+          - not_null
+      - name: LP_TOKEN_ADDRESS
+        description: "{{ doc('lp_token_address') }}"
+        tests: 
+          - not_null
+  

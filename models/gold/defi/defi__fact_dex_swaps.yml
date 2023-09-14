@@ -2,6 +2,11 @@ version: 2
 models:
   - name: defi__fact_dex_swaps
     description: Records swap transactions on Sei for Astroport, Fuzio, and Seaswap
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - TX_ID
+            - MSG_INDEX
     columns:
       - name: BLOCK_ID
         description: "{{ doc('block_id') }}"

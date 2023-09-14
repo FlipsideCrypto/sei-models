@@ -38,8 +38,7 @@ all_txns AS (
         attribute_value,
         _inserted_timestamp
     FROM
-        {{ ref('silver__msg_attributes') }} A {# WHERE
-        block_timestamp :: DATE = '2023-08-23' #}
+        {{ ref('silver__msg_attributes') }} A
 
 {% if is_incremental() %}
 WHERE
