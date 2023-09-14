@@ -2,7 +2,7 @@
     materialized = 'incremental',
     full_refresh = false
 ) }}
-
+-- depends_on: {{ ref('bronze__streamline_transactions') }}
 WITH rel_blocks AS (
 
     SELECT
@@ -51,13 +51,13 @@ AND (
 ),
 bronze AS (
     SELECT
-        A.block_id,
+        A.block_number AS block_id,
         b.block_timestamp,
-        tx_id
+        DATA :hash :: STRING AS tx_id
     FROM
-        {{ ref('bronze__transactions') }} A
+        {{ ref('bronze__streamline_transactions') }} A
         JOIN rel_blocks b
-        ON A.block_id = b.block_id
+        ON A.block_number = b.block_id
 
 {% if is_incremental() %}
 WHERE
@@ -86,7 +86,7 @@ WHERE
     {% endif %}
 {% endif %}
 
-qualify(ROW_NUMBER() over(PARTITION BY A.block_id, tx_id
+qualify(ROW_NUMBER() over(PARTITION BY A.block_number, tx_id
 ORDER BY
     A._inserted_timestamp DESC) = 1)
 ),
@@ -102,6 +102,12 @@ bronze_count AS (
     GROUP BY
         block_id,
         block_timestamp
+),
+bronze_min AS (
+    SELECT
+        MIN(block_id) block_id
+    FROM
+        bronze
 ),
 bronze_api AS (
     SELECT
@@ -198,5 +204,7 @@ SELECT
     SYSDATE() AS test_timestamp
 FROM
     bronze_api A
+    JOIN bronze_min bm
+    ON A.block_id >= bm.block_id
     LEFT JOIN bronze_count b
     ON A.block_id = b.block_id
