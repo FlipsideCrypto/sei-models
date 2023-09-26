@@ -23,6 +23,7 @@ There is more information on how to use dbt docs in the last section of this doc
 
 **Core Dimension Tables:**
 - [dim_labels](#!/model/model.sei.core__dim_labels)
+- [dim_tokens](#!/model/model.sei.core__dim_tokens)
 
 
 **Core Fact Tables:**
@@ -41,6 +42,9 @@ There is more information on how to use dbt docs in the last section of this doc
 - [fact_staking](#!/model/model.sei.gov__fact_staking)
 - [fact_staking_rewards](#!/model/model.sei.gov__fact_staking_rewards)
 
+**Governance Fact  Tables:**
+- [fact_dex_swaps](#!/model/model.sei.defi__fact_dex_swaps)
+- [fact_lp_actions](#!/model/model.sei.defi__fact_lp_actions)
 
 
 ## **Data Model Overview**
