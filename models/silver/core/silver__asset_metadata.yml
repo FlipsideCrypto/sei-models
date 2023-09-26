@@ -1,0 +1,32 @@
+version: 2
+models:
+  - name: silver__asset_metadata
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - CURRENCY
+    columns:
+      - name: CURRENCY
+        description: "{{ doc('currency') }}"
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+      - name: DECIMALS
+        description: "{{ doc('decimals') }}"
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER    
+                - FLOAT
+      - name: TOKEN_NAME
+        description: The description of the token
+        tests: 
+          - not_null
+      - name: SYMBOL
+        description: The common symbol of the token
+        tests: 
+          - not_null

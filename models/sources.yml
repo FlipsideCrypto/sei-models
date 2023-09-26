@@ -46,3 +46,8 @@ sources:
     tables:
       - name: link_events
       - name: transfers
+  - name: osmosis
+    database: "{{ 'osmosis' if target.database == 'SEI' else 'osmosis_dev' }}"
+    schema: silver
+    tables:
+      - name: asset_metadata
