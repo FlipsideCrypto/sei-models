@@ -1,0 +1,33 @@
+version: 2
+models:
+  - name: core__dim_labels
+    description: Contains token and validator labels for Osmosis.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - ADDRESS
+    columns:
+      - name: ADDRESS
+        description: "{{ doc('address') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: BLOCKCHAIN
+        description: "{{ doc('blockchain') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: CREATOR
+        description: "{{ doc('creator') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: LABEL_TYPE
+        description: "{{ doc('label_type') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: LABEL_SUBTYPE
+        description: "{{ doc('label_subtype') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: LABEL 
+        description: "{{ doc('label') }}" 
+        tests: 
+          - dbt_expectations.expect_column_to_exist

@@ -1,0 +1,13 @@
+version: 2
+models:
+  - name: core__dim_tokens
+    description: Contains token metadata for assets on the Sei blockchain. This table may not contain every token. 
+    columns:
+      - name: CURRENCY
+        description: "{{ doc('currency') }}"
+      - name: DECIMALS
+        description: "{{ doc('decimals') }}"
+      - name: TOKEN_NAME
+        description: The description of the token
+      - name: SYMBOL
+        description: The common symbol of the token
