@@ -2,7 +2,8 @@
     materialized = 'incremental',
     unique_key = ["token_address","token_chain"],
     incremental_strategy = 'merge',
-    cluster_by = ['block_timestamp::DATE']
+    cluster_by = ['block_timestamp::DATE'],
+    enabled = false
 ) }}
 
 WITH msg_atts AS (
