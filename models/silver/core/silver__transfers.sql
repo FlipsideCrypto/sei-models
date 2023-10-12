@@ -24,9 +24,7 @@ WITH base_atts AS (
     WHERE
         msg_type IN (
             'tx',
-            'transfer',
-            'ibc_transfer',
-            'write_acknowledgement'
+            'transfer'
         )
 
 {% if is_incremental() %}
@@ -87,55 +85,6 @@ sender AS (
     ORDER BY
         msg_index)) = 1
 ),
-ibc_out_transfers AS (
-    SELECT
-        tx_id,
-        msg_group,
-        msg_sub_group,
-        msg_index,
-        OBJECT_AGG(
-            attribute_key :: STRING,
-            attribute_value :: variant
-        ) AS j,
-        j :sender :: STRING AS sender,
-        j :receiver :: STRING AS receiver
-    FROM
-        base_atts
-    WHERE
-        msg_type = 'ibc_transfer'
-    GROUP BY
-        tx_id,
-        msg_group,
-        msg_sub_group,
-        msg_index
-),
-ibc_in_transfers AS (
-    SELECT
-        tx_id,
-        msg_group,
-        msg_sub_group,
-        msg_index,
-        OBJECT_AGG(
-            attribute_key :: STRING,
-            TRY_PARSE_JSON(
-                attribute_value
-            ) :: variant
-        ) AS j,
-        j :packet_data :amount :: INT amount,
-        j :packet_data :denom :: STRING denom,
-        j :packet_data :receiver :: STRING receiver,
-        j :packet_data :sender :: STRING sender
-    FROM
-        base_atts
-    WHERE
-        msg_type = 'write_acknowledgement'
-        AND attribute_key = 'packet_data'
-    GROUP BY
-        tx_id,
-        msg_group,
-        msg_sub_group,
-        msg_index
-),
 new_fin AS (
     SELECT
         A.block_id,
@@ -163,20 +112,9 @@ new_fin AS (
             ' ',
             0
         ) AS amount_INT,
-        RIGHT(A.amount, LENGTH(A.amount) - LENGTH(SPLIT_PART(TRIM(REGEXP_REPLACE(A.amount, '[^[:digit:]]', ' ')), ' ', 0))) AS currency,
-        b_out.receiver AS ibc_out_receiver,
-        c_in.sender AS ibc_in_sender
+        RIGHT(A.amount, LENGTH(A.amount) - LENGTH(SPLIT_PART(TRIM(REGEXP_REPLACE(A.amount, '[^[:digit:]]', ' ')), ' ', 0))) AS currency
     FROM
         all_transfers A
-        LEFT JOIN ibc_out_transfers b_out
-        ON A.tx_id = b_out.tx_id
-        AND A.msg_group = b_out.msg_group
-        AND A.sender = b_out.sender
-        LEFT JOIN ibc_in_transfers c_in
-        ON A.tx_id = c_in.tx_id
-        AND A.msg_group = c_in.msg_group
-        AND A.msg_sub_group = c_in.msg_sub_group
-        AND A.recipient = c_in.receiver
         JOIN sender s
         ON A.tx_id = s.tx_id
 )
@@ -185,20 +123,10 @@ SELECT
     block_timestamp,
     tx_id,
     tx_succeeded,
-    CASE
-        WHEN ibc_out_receiver IS NOT NULL THEN 'IBC_TRANSFER_OUT'
-        WHEN ibc_in_sender IS NOT NULL THEN 'IBC_TRANSFER_IN'
-        ELSE 'SEI'
-    END AS transfer_type,
+    'SEI' AS transfer_type,
     msg_index,
-    COALESCE(
-        ibc_in_sender,
-        sender
-    ) sender,
-    COALESCE(
-        ibc_out_receiver,
-        receiver
-    ) AS receiver,
+    sender,
+    receiver AS receiver,
     amount_int :: INT AS amount,
     currency,
     _inserted_timestamp
