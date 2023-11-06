@@ -47,6 +47,8 @@ vars:
   STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES: False
   UPDATE_UDFS_AND_SPS: False
   WAIT: 0
+  START_GHA_TASKS: False
+
 
 tests:
   +store_failures: true # all tests

@@ -3,9 +3,9 @@ run-name: dbt_run_incremental
 
 on:
   workflow_dispatch:
-  schedule:
-    # Runs "at minute 7 and 37, every hour" (see https://crontab.guru)
-    - cron: '7,37 * * * *'
+  # schedule:
+  #   # Runs "at minute 7 and 37, every hour" (see https://crontab.guru)
+  #   - cron: '7,37 * * * *'
 
 env:
   USE_VARS: "${{ vars.USE_VARS }}"
@@ -28,7 +28,7 @@ jobs:
     uses: FlipsideCrypto/analytics-workflow-templates/.github/workflows/dbt_run_template.yml@main
     with:
       dbt_command: |
-         dbt run -m ./models --exclude models/silver/_observability/silver_observabilit* models/silver/streamline
+         dbt run -m models/bronze models/silver models/gold --exclude models/silver/_observability/silver_observabilit* models/silver/streamline
          dbt run -m models/bronze/bronze_api/bronze_api__get_blockchain.sql;
          dbt run -m models/silver/core/silver__blockchain.sql;
          dbt run -m models/bronze/bronze_api/bronze_api__get_blockchain.sql;
