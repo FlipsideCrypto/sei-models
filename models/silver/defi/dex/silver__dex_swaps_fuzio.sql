@@ -3,7 +3,8 @@
     unique_key = ['tx_id','msg_index'],
     incremental_strategy = 'merge',
     cluster_by = ['_inserted_timestamp::DATE', 'block_timestamp::DATE' ],
-    enabled = true
+    enabled = true,
+    tags = ['noncore']
 ) }}
 
 WITH rel_contracts AS (

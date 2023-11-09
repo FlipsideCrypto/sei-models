@@ -2,7 +2,8 @@
     materialized = 'incremental',
     unique_key = "tx_id",
     incremental_strategy = 'merge',
-    cluster_by = ['block_timestamp::DATE']
+    cluster_by = ['block_timestamp::DATE'],
+    tags = ['noncore']
 ) }}
 
 WITH

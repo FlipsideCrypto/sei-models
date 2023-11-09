@@ -1,6 +1,7 @@
 {{ config(
     materialized = 'view',
-    meta ={ 'database_tags':{ 'table':{ 'PURPOSE': 'PRICE' }} }
+    meta ={ 'database_tags':{ 'table':{ 'PURPOSE': 'PRICE' }} },
+    tags = ['daily']
 ) }}
 
 SELECT

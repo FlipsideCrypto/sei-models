@@ -3,6 +3,7 @@
     unique_key = "block_id",
     incremental_strategy = 'merge',
     cluster_by = ['block_timestamp::DATE'],
+    tags = ['noncore']
 ) }}
 
 WITH base AS (

@@ -1,7 +1,8 @@
 {{ config(
     materialized = 'incremental',
     unique_key = "_inserted_timestamp",
-    incremental_strategy = 'delete+insert'
+    incremental_strategy = 'delete+insert',
+    tags = ['noncore']
 ) }}
 
 SELECT

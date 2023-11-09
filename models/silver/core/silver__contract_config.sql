@@ -1,7 +1,8 @@
 {{ config(
     materialized = 'incremental',
     unique_key = "contract_address",
-    incremental_strategy = 'merge'
+    incremental_strategy = 'merge',
+    tags = ['noncore']
 ) }}
 
 SELECT

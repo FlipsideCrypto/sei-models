@@ -3,7 +3,8 @@
     unique_key = ['date', 'address', 'currency'],
     incremental_strategy = 'merge',
     cluster_by = ['DATE'],
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(address);"
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(address);",
+    tags = ['daily']
 ) }}
 
 WITH all_staked AS (

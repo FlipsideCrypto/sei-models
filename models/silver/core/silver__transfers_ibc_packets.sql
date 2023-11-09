@@ -2,7 +2,8 @@
     materialized = 'incremental',
     unique_key = ['tx_id','msg_index'],
     incremental_strategy = 'merge',
-    cluster_by = ['block_timestamp::DATE']
+    cluster_by = ['block_timestamp::DATE'],
+    tags = ['core']
 ) }}
 
 WITH base_atts AS (

@@ -2,7 +2,8 @@
     materialized = 'incremental',
     unique_key = 'pool_id',
     incremental_strategy = 'merge',
-    enabled = true
+    enabled = true,
+    tags = ['noncore']
 ) }}
 
 SELECT

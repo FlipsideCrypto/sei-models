@@ -1,8 +1,10 @@
 {{ config(
     materialized = 'incremental',
+    incremental_predicates = ['DBT_INTERNAL_DEST.block_timestamp::DATE >= (select min(block_timestamp::DATE) from ' ~ generate_tmp_view_name(this) ~ ')'],
     unique_key = "_unique_key",
     incremental_strategy = 'merge',
     cluster_by = ['block_timestamp::DATE'],
+    tags = ['noncore']
 ) }}
 
 WITH base_ma AS (
