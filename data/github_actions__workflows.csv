@@ -1,5 +1,6 @@
 workflow_name,workflow_schedule
-dbt_run_incremental,"8,23,38,53 * * * *"
-dbt_run_streamline_blocks_txcount_realtime,"0,15,30,45 * * * *"
-dbt_run_streamline_transactions_realtime,"3,18,33,48 * * * *"
-dbt_test_tasks,"0,30 * * * *"
+dbt_run_core,"6,36 * * * *"
+dbt_run_non_core,"17 * * * *"
+dbt_run_streamline_blocks_txcount_realtime,"24,54 * * * *"
+dbt_run_streamline_transactions_realtime,"29,59 * * * *"
+dbt_test_tasks,"5,35 * * * *"
