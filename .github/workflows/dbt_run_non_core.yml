@@ -28,7 +28,7 @@ jobs:
     uses: FlipsideCrypto/analytics-workflow-templates/.github/workflows/dbt_run_template.yml@main
     with:
       dbt_command: |
-             dbt run -m "sei_model,tag:noncore"
+             dbt run -m "sei_models,tag:noncore"
          
       environment: workflow_prod
       warehouse: ${{ vars.WAREHOUSE }}
