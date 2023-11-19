@@ -2,6 +2,7 @@
     materialized = 'incremental',
     unique_key = ['tx_id','msg_index'],
     incremental_strategy = 'merge',
+    merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['_inserted_timestamp::DATE', 'block_timestamp::DATE' ],
     tags = ['noncore']
 ) }}
@@ -143,7 +144,13 @@ SELECT
         A.liquidity_burned
     ) AS lp_token_amount,
     C.lp_token_address,
-    A._inserted_timestamp
+    {{ dbt_utils.generate_surrogate_key(
+        ['a.tx_id','a.msg_index']
+    ) }} AS dex_lp_actions_seaswap_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    A._inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     wasm A
     JOIN wasm b

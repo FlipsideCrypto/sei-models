@@ -2,6 +2,7 @@
     materialized = 'incremental',
     unique_key = ['date', 'address', 'currency'],
     incremental_strategy = 'merge',
+    merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['DATE'],
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(address);",
     tags = ['daily']
@@ -173,6 +174,12 @@ SELECT
         balance_type
         ORDER BY
             DATE ASC rows unbounded preceding
-    ) AS balance
+    ) AS balance,
+    {{ dbt_utils.generate_surrogate_key(
+        ['address','currency','balance_type']
+    ) }} AS daily_balances_staked_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     balance_temp

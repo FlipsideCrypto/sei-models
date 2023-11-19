@@ -2,6 +2,7 @@
     materialized = 'incremental',
     unique_key = ['tx_id','msg_index'],
     incremental_strategy = 'merge',
+    merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['block_timestamp::DATE'],
     tags = ['core']
 ) }}
@@ -88,6 +89,12 @@ SELECT
     packet_sequence,
     packet_src_channel,
     packet_dst_channel,
-    _inserted_timestamp
+    {{ dbt_utils.generate_surrogate_key(
+        ['tx_id','msg_index']
+    ) }} AS transfers_ibc_packets_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    _inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     all_data

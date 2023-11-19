@@ -25,7 +25,13 @@ SELECT
   TRY_BASE64_DECODE_STRING(
     b.value :value :: STRING
   ) AS attribute_value,
-  _inserted_timestamp
+  {{ dbt_utils.generate_surrogate_key(
+    ['tx_id','msg_index','attribute_index']
+  ) }} AS msg_attributes_id,
+  SYSDATE() AS inserted_timestamp,
+  SYSDATE() AS modified_timestamp,
+  _inserted_timestamp,
+  '{{ invocation_id }}' AS _invocation_id
 FROM
   {{ ref('silver__msgs') }} A,
   LATERAL FLATTEN(

@@ -43,7 +43,13 @@ SELECT
     contract_address AS currency,
     decimals,
     token_name,
-    symbol
+    symbol,
+    {{ dbt_utils.generate_surrogate_key(
+        ['currency']
+    ) }} AS asset_metadata_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     base qualify(ROW_NUMBER() over (PARTITION BY contract_address
 ORDER BY

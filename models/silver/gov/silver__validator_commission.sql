@@ -2,6 +2,7 @@
     materialized = 'incremental',
     unique_key = ["tx_id","msg_group","msg_sub_group"],
     incremental_strategy = 'merge',
+    merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['block_timestamp::DATE'],
     tags = ['noncore']
 ) }}

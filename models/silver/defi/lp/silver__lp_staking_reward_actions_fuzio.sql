@@ -3,7 +3,8 @@
     unique_key = ['tx_id','msg_index'],
     incremental_strategy = 'merge',
     cluster_by = ['_inserted_timestamp::DATE', 'block_timestamp::DATE' ],
-    tags = ['noncore']
+    tags = ['noncore'],
+    enabled = false
 ) }}
 
 WITH all_contacts AS (

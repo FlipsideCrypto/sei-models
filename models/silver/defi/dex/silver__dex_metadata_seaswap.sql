@@ -2,6 +2,7 @@
     materialized = 'incremental',
     unique_key = 'pool_id',
     incremental_strategy = 'merge',
+    merge_exclude_columns = ["inserted_timestamp"],
     enabled = true,
     tags = ['noncore']
 ) }}
@@ -25,7 +26,13 @@ SELECT
     token2_supply,
     token2_symbol,
     token2_type,
-    _inserted_timestamp
+    {{ dbt_utils.generate_surrogate_key(
+        ['pool_id']
+    ) }} AS dex_metadata_seaswap_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    _inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     {{ ref('bronze_api__get_seaswap_pools') }}
 
