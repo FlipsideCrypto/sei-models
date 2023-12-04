@@ -67,7 +67,7 @@ SELECT
     tx_log :: STRING AS tx_log,
     tx AS full_tx,
     {{ dbt_utils.generate_surrogate_key(
-        ['t.tx_id']
+        ['tx_id']
     ) }} AS transactions_final_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,

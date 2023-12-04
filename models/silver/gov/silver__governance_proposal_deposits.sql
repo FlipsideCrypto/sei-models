@@ -113,7 +113,13 @@ SELECT
     p.proposal_id :: NUMBER AS proposal_id,
     v.amount :: FLOAT AS amount,
     v.currency,
-    _inserted_timestamp
+    {{ dbt_utils.generate_surrogate_key(
+        ['tx_id']
+    ) }} AS governance_proposal_deposits_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    _inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     deposit_value v
     INNER JOIN proposal_ids p

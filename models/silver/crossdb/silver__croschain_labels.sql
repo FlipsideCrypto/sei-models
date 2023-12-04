@@ -21,7 +21,6 @@ SELECT
     ) }} AS crosschain_labels_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
-    _inserted_timestamp,
     '{{ invocation_id }}' AS _invocation_id
 FROM
     {{ source(

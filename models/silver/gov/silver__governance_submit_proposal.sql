@@ -114,7 +114,13 @@ COALESCE(
     tx_body :messages [0] :msgs [0] :content :description
 ) :: STRING AS proposal_description,
 #}
-_inserted_timestamp
+{{ dbt_utils.generate_surrogate_key(
+    ['tx_id']
+) }} AS governance_submit_proposal_id,
+SYSDATE() AS inserted_timestamp,
+SYSDATE() AS modified_timestamp,
+_inserted_timestamp,
+'{{ invocation_id }}' AS _invocation_id
 FROM
     proposal_ids p
     INNER JOIN proposal_type y

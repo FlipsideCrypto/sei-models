@@ -125,13 +125,19 @@ SELECT
     vote_option,
     vote_weight,
     NULL AS memo,
-    _inserted_timestamp,
     concat_ws(
         '-',
         tx_id,
         msg_group,
         msg_sub_group,
         voter
-    ) AS _unique_key
+    ) AS _unique_key,
+    {{ dbt_utils.generate_surrogate_key(
+        ['_unique_key']
+    ) }} AS governance_votes_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    _inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     agg

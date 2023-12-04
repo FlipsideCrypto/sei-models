@@ -1,5 +1,5 @@
 {% docs inserted_timestamp %}
 
-The time the block was inserted into to the Flipside database. 
+The utc timestamp at which the row was inserted into the table.
 
 {% enddocs %}

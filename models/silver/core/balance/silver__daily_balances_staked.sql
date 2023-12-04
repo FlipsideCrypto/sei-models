@@ -176,7 +176,7 @@ SELECT
             DATE ASC rows unbounded preceding
     ) AS balance,
     {{ dbt_utils.generate_surrogate_key(
-        ['address','currency','balance_type']
+        ['address','currency','date']
     ) }} AS daily_balances_staked_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,

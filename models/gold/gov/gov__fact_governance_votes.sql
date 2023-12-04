@@ -13,6 +13,20 @@ SELECT
     proposal_id,
     vote_option,
     vote_weight,
-    memo
+    memo,
+    COALESCE (
+        governance_votes_id,
+        {{ dbt_utils.generate_surrogate_key(
+            ['_unique_id']
+        ) }}
+    ) AS fact_governance_votes_id,
+    COALESCE(
+        inserted_timestamp,
+        '2000-01-01'
+    ) AS inserted_timestamp,
+    COALESCE(
+        modified_timestamp,
+        '2000-01-01'
+    ) AS modified_timestamp
 FROM
     {{ ref('silver__governance_votes') }}
