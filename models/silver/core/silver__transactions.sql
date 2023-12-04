@@ -68,7 +68,7 @@ SELECT
     tx AS full_tx,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_id']
-    ) }} AS transactions_final_id,
+    ) }} AS transactions_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     b._inserted_timestamp,
