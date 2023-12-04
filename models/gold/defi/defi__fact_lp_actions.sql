@@ -142,7 +142,7 @@ SELECT
     lp_token_address,
     A._inserted_timestamp,
     COALESCE (
-        lp_actions_levanna_id,
+        lp_actions_levana_id,
         {{ dbt_utils.generate_surrogate_key(
             ['tx_id','msg_index']
         ) }}

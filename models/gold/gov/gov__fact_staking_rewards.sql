@@ -19,7 +19,7 @@ SELECT
     COALESCE (
         staking_rewards_id,
         {{ dbt_utils.generate_surrogate_key(
-            ['_unique_id']
+            ['_unique_key']
         ) }}
     ) AS fact_staking_rewards_id,
     COALESCE(

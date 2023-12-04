@@ -78,7 +78,7 @@ SELECT
     ) }} AS transactions_final_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
-    A._inserted_timestamp,
+    t._inserted_timestamp,
     '{{ invocation_id }}' AS _invocation_id
 FROM
     {{ ref('silver__transactions') }}

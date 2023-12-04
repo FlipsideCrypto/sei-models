@@ -146,7 +146,7 @@ SELECT
     C.lp_token_address,
     {{ dbt_utils.generate_surrogate_key(
         ['a.tx_id','a.msg_index']
-    ) }} AS dex_lp_actions_seaswap_id,
+    ) }} AS lp_actions_seaswap_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     A._inserted_timestamp,

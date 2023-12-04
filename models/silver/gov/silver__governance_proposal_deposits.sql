@@ -114,7 +114,7 @@ SELECT
     v.amount :: FLOAT AS amount,
     v.currency,
     {{ dbt_utils.generate_surrogate_key(
-        ['tx_id']
+        ['v.tx_id']
     ) }} AS governance_proposal_deposits_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,

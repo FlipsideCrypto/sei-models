@@ -17,7 +17,7 @@ SELECT
     COALESCE (
         governance_votes_id,
         {{ dbt_utils.generate_surrogate_key(
-            ['_unique_id']
+            ['_unique_key']
         ) }}
     ) AS fact_governance_votes_id,
     COALESCE(

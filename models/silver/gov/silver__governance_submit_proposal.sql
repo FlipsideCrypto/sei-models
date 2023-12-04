@@ -115,7 +115,7 @@ COALESCE(
 ) :: STRING AS proposal_description,
 #}
 {{ dbt_utils.generate_surrogate_key(
-    ['tx_id']
+    ['p.tx_id']
 ) }} AS governance_submit_proposal_id,
 SYSDATE() AS inserted_timestamp,
 SYSDATE() AS modified_timestamp,

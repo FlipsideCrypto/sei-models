@@ -16,7 +16,7 @@ SELECT
     tx_code,
     msgs,
     COALESCE (
-        transactions_id,
+        transactions_final_id,
         {{ dbt_utils.generate_surrogate_key(
             ['tx_id']
         ) }}

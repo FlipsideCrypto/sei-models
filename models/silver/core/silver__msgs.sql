@@ -5,10 +5,9 @@
   incremental_strategy = 'merge',
   merge_exclude_columns = ["inserted_timestamp"],
   cluster_by = ['block_timestamp::DATE','_inserted_timestamp::DATE'],
-  post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(msg_type, msg:attributes);",
   tags = ['core']
 ) }}
-
+{# post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(msg_type, msg:attributes);", #}
 WITH b AS (
 
   SELECT
@@ -147,7 +146,7 @@ SELECT
   msg_type,
   msg,
   {{ dbt_utils.generate_surrogate_key(
-    ['tx_id','msg_index']
+    ['a.tx_id','a.msg_index']
   ) }} AS msgs_id,
   SYSDATE() AS inserted_timestamp,
   SYSDATE() AS modified_timestamp,
