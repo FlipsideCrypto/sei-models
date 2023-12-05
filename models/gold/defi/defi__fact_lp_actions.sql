@@ -25,7 +25,21 @@ SELECT
     A.token2_amount,
     A.token2_currency,
     lp_token_address,
-    A._inserted_timestamp
+    A._inserted_timestamp,
+    COALESCE (
+        lp_actions_astroport_id,
+        {{ dbt_utils.generate_surrogate_key(
+            ['tx_id','msg_index']
+        ) }}
+    ) AS fact_lp_actions_id,
+    COALESCE(
+        inserted_timestamp,
+        '2000-01-01'
+    ) AS inserted_timestamp,
+    COALESCE(
+        modified_timestamp,
+        '2000-01-01'
+    ) AS modified_timestamp
 FROM
     {{ ref('silver__lp_actions_astroport') }} A
 UNION ALL
@@ -47,7 +61,21 @@ SELECT
     A.token2_amount,
     A.token2_currency,
     lp_token_address,
-    A._inserted_timestamp
+    A._inserted_timestamp,
+    COALESCE (
+        lp_actions_fuzio_id,
+        {{ dbt_utils.generate_surrogate_key(
+            ['tx_id','msg_index']
+        ) }}
+    ) AS fact_lp_actions_id,
+    COALESCE(
+        inserted_timestamp,
+        '2000-01-01'
+    ) AS inserted_timestamp,
+    COALESCE(
+        modified_timestamp,
+        '2000-01-01'
+    ) AS modified_timestamp
 FROM
     {{ ref('silver__lp_actions_fuzio') }} A
 UNION ALL
@@ -69,7 +97,21 @@ SELECT
     A.token2_amount,
     A.token2_currency,
     lp_token_address,
-    A._inserted_timestamp
+    A._inserted_timestamp,
+    COALESCE (
+        lp_actions_seaswap_id,
+        {{ dbt_utils.generate_surrogate_key(
+            ['tx_id','msg_index']
+        ) }}
+    ) AS fact_lp_actions_id,
+    COALESCE(
+        inserted_timestamp,
+        '2000-01-01'
+    ) AS inserted_timestamp,
+    COALESCE(
+        modified_timestamp,
+        '2000-01-01'
+    ) AS modified_timestamp
 FROM
     {{ ref('silver__lp_actions_seaswap') }} A
 UNION ALL
@@ -98,7 +140,21 @@ SELECT
     A.token2_amount,
     A.token2_currency,
     lp_token_address,
-    A._inserted_timestamp
+    A._inserted_timestamp,
+    COALESCE (
+        lp_actions_levana_id,
+        {{ dbt_utils.generate_surrogate_key(
+            ['tx_id','msg_index']
+        ) }}
+    ) AS fact_lp_actions_id,
+    COALESCE(
+        inserted_timestamp,
+        '2000-01-01'
+    ) AS inserted_timestamp,
+    COALESCE(
+        modified_timestamp,
+        '2000-01-01'
+    ) AS modified_timestamp
 FROM
     {{ ref('silver__lp_actions_levana') }} A
 WHERE

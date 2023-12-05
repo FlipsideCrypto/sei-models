@@ -12,7 +12,21 @@ SELECT
     sender,
     amount,
     currency,
-    receiver
+    receiver,
+    COALESCE (
+        transfers_id,
+        {{ dbt_utils.generate_surrogate_key(
+            ['tx_id','msg_index']
+        ) }}
+    ) AS fact_transfers_id,
+    COALESCE(
+        inserted_timestamp,
+        '2000-01-01'
+    ) AS inserted_timestamp,
+    COALESCE(
+        modified_timestamp,
+        '2000-01-01'
+    ) AS modified_timestamp
 FROM
     {{ ref('silver__transfers') }}
 UNION ALL
@@ -25,6 +39,20 @@ SELECT
     sender,
     amount,
     currency,
-    receiver
+    receiver,
+    COALESCE (
+        transfers_ibc_id,
+        {{ dbt_utils.generate_surrogate_key(
+            ['tx_id','msg_index']
+        ) }}
+    ) AS fact_transfers_id,
+    COALESCE(
+        inserted_timestamp,
+        '2000-01-01'
+    ) AS inserted_timestamp,
+    COALESCE(
+        modified_timestamp,
+        '2000-01-01'
+    ) AS modified_timestamp
 FROM
     {{ ref('silver__transfers_ibc') }}

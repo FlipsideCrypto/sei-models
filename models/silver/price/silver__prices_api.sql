@@ -16,7 +16,13 @@ SELECT
     b.value :slugs AS slugs,
     b.value :symbol :: STRING AS symbol,
     b.value :type :: STRING AS TYPE,
-    _inserted_timestamp
+    {{ dbt_utils.generate_surrogate_key(
+        ['contract_address']
+    ) }} AS prices_api_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    _inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     {{ ref(
         'bronze_api__get_prices_api'

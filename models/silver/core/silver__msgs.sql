@@ -3,11 +3,11 @@
   incremental_predicates = ['DBT_INTERNAL_DEST.block_timestamp::DATE >= (select min(block_timestamp::DATE) from ' ~ generate_tmp_view_name(this) ~ ')'],
   unique_key = ["tx_id","msg_index"],
   incremental_strategy = 'merge',
+  merge_exclude_columns = ["inserted_timestamp"],
   cluster_by = ['block_timestamp::DATE','_inserted_timestamp::DATE'],
-  post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(msg_type, msg:attributes);",
   tags = ['core']
 ) }}
-
+{# post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(msg_type, msg:attributes);", #}
 WITH b AS (
 
   SELECT
@@ -145,7 +145,13 @@ SELECT
   A.msg_index,
   msg_type,
   msg,
-  _inserted_timestamp
+  {{ dbt_utils.generate_surrogate_key(
+    ['a.tx_id','a.msg_index']
+  ) }} AS msgs_id,
+  SYSDATE() AS inserted_timestamp,
+  SYSDATE() AS modified_timestamp,
+  _inserted_timestamp,
+  '{{ invocation_id }}' AS _invocation_id
 FROM
   prefinal A
   LEFT JOIN grp b

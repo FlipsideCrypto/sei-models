@@ -2,6 +2,7 @@
     materialized = 'incremental',
     unique_key = ['tx_id','msg_index'],
     incremental_strategy = 'merge',
+    merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['_inserted_timestamp::DATE', 'block_timestamp::DATE' ],
     enabled = true,
     tags = ['noncore']
@@ -210,7 +211,13 @@ SELECT
     d.currency AS currency_out,
     A.contract_address AS pool_address,
     b.pool_name,
-    A._inserted_timestamp
+    {{ dbt_utils.generate_surrogate_key(
+        ['a.tx_id','a.msg_index']
+    ) }} AS dex_swaps_fuzio_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    A._inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     wasm A
     JOIN fee_payer fp

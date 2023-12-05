@@ -2,6 +2,7 @@
     materialized = 'incremental',
     unique_key = "contract_address",
     incremental_strategy = 'merge',
+    merge_exclude_columns = ["inserted_timestamp"],
     tags = ['noncore']
 ) }}
 
@@ -11,7 +12,13 @@ SELECT
     init_by_account_address,
     init_by_block_timestamp,
     label,
-    _inserted_timestamp
+    {{ dbt_utils.generate_surrogate_key(
+        ['contract_address']
+    ) }} AS contracts_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    _inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     {{ ref(
         'bronze_api__get_contract_list'

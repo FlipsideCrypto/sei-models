@@ -3,6 +3,7 @@
     incremental_predicates = ['DBT_INTERNAL_DEST.block_timestamp::DATE >= (select min(block_timestamp::DATE) from ' ~ generate_tmp_view_name(this) ~ ')'],
     unique_key = "_unique_key",
     incremental_strategy = 'merge',
+    merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['block_timestamp::DATE'],
     tags = ['noncore']
 ) }}
@@ -124,13 +125,19 @@ SELECT
     vote_option,
     vote_weight,
     NULL AS memo,
-    _inserted_timestamp,
     concat_ws(
         '-',
         tx_id,
         msg_group,
         msg_sub_group,
         voter
-    ) AS _unique_key
+    ) AS _unique_key,
+    {{ dbt_utils.generate_surrogate_key(
+        ['_unique_key']
+    ) }} AS governance_votes_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    _inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     agg

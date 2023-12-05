@@ -2,6 +2,7 @@
     materialized = 'incremental',
     unique_key = "tx_id",
     incremental_strategy = 'merge',
+    merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['block_timestamp::DATE'],
     tags = ['noncore']
 ) }}
@@ -113,7 +114,13 @@ COALESCE(
     tx_body :messages [0] :msgs [0] :content :description
 ) :: STRING AS proposal_description,
 #}
-_inserted_timestamp
+{{ dbt_utils.generate_surrogate_key(
+    ['p.tx_id']
+) }} AS governance_submit_proposal_id,
+SYSDATE() AS inserted_timestamp,
+SYSDATE() AS modified_timestamp,
+_inserted_timestamp,
+'{{ invocation_id }}' AS _invocation_id
 FROM
     proposal_ids p
     INNER JOIN proposal_type y

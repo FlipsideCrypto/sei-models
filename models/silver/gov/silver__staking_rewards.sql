@@ -2,6 +2,7 @@
     materialized = 'incremental',
     unique_key = "_unique_key",
     incremental_strategy = 'merge',
+    merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['block_timestamp::DATE'],
     tags = ['noncore']
 ) }}
@@ -212,7 +213,6 @@ SELECT
     A.currency,
     A.validator_address,
     'withdraw_rewards' AS action,
-    A._inserted_timestamp,
     concat_ws(
         '-',
         A.tx_id,
@@ -221,6 +221,13 @@ SELECT
         A.currency,
         A.delegator_address,
         A.validator_address
-    ) AS _unique_key
+    ) AS _unique_key,
+    {{ dbt_utils.generate_surrogate_key(
+        ['_unique_key']
+    ) }} AS staking_rewards_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    A._inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     prefinal A

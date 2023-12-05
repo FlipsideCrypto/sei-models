@@ -14,6 +14,20 @@ SELECT
     A.tx_sender,
     A.voter,
     A.amount,
-    A.currency
+    A.currency,
+    COALESCE (
+        oracle_votes_id,
+        {{ dbt_utils.generate_surrogate_key(
+            ['_unique_key']
+        ) }}
+    ) AS fact_oracle_votes_id,
+    COALESCE(
+        inserted_timestamp,
+        '2000-01-01'
+    ) AS inserted_timestamp,
+    COALESCE(
+        modified_timestamp,
+        '2000-01-01'
+    ) AS modified_timestamp
 FROM
     {{ ref('silver__oracle_votes') }} A

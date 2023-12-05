@@ -69,7 +69,7 @@ models:
       - name: MSG
         description: "The underlying json from the message or event within the transactions"
       - name: _INSERTED_TIMESTAMP
-        description: "{{ doc('inserted_timestamp') }}"
+        description: "{{ doc('_inserted_timestamp') }}"
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_in_type_list:

@@ -2,6 +2,7 @@
     materialized = 'incremental',
     unique_key = ["tx_id","msg_group","msg_sub_group"],
     incremental_strategy = 'merge',
+    merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['block_timestamp::DATE'],
     tags = ['noncore']
 ) }}
@@ -182,7 +183,13 @@ SELECT
     RIGHT(am.value, LENGTH(am.value) - LENGTH(SPLIT_PART(TRIM(REGEXP_REPLACE(am.value, '[^[:digit:]]', ' ')), ' ', 0))) AS currency,
     A.validator_address_operator,
     d.validator_address_reward,
-    b._inserted_timestamp
+    {{ dbt_utils.generate_surrogate_key(
+        ['a.tx_id','a.msg_group','a.msg_sub_group']
+    ) }} AS validator_commission_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    b._inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     combo A
     JOIN LATERAL SPLIT_TO_TABLE(

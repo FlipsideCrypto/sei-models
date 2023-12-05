@@ -3,6 +3,7 @@
     incremental_predicates = ['DBT_INTERNAL_DEST.block_timestamp::DATE >= (select min(block_timestamp::DATE) from ' ~ generate_tmp_view_name(this) ~ ')'],
     unique_key = "_unique_key",
     incremental_strategy = 'merge',
+    merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['block_timestamp::DATE'],
     tags = ['daily']
 ) }}
@@ -169,7 +170,6 @@ SELECT
     ) AS amount,
     RIGHT(split_rates, LENGTH(split_rates) - LENGTH(SPLIT_PART(TRIM(REGEXP_REPLACE(split_rates, '[^[:digit:].]', ' ')), ' ', 0))) :: STRING AS currency,
     split_rates AS raw_exchange_rates,
-    A._inserted_timestamp,
     concat_ws(
         '-',
         A.tx_id,
@@ -177,7 +177,14 @@ SELECT
         A.msg_sub_group,
         voter,
         currency
-    ) AS _unique_key
+    ) AS _unique_key,
+    {{ dbt_utils.generate_surrogate_key(
+        ['_unique_key']
+    ) }} AS oracle_votes_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    A._inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     agg A
     JOIN tx_sender b
