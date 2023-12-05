@@ -55,7 +55,13 @@ bronze AS (
         b.block_timestamp,
         DATA :hash :: STRING AS tx_id
     FROM
-        {{ ref('bronze__streamline_transactions') }} A
+        {% if var('OBSERV_FULL_TEST') %}
+            {{ ref('bronze__streamline_FR_transactions') }}
+        {% else %}
+            {{ ref('bronze__streamline_transactions') }}
+        {% endif %}
+
+        A
         JOIN rel_blocks b
         ON A.block_number = b.block_id
 
