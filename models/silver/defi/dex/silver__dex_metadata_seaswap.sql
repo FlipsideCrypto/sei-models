@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = 'pool_id',
+    unique_key = 'pool_address',
     incremental_strategy = 'merge',
     merge_exclude_columns = ["inserted_timestamp"],
     enabled = true,
@@ -27,7 +27,7 @@ SELECT
     token2_symbol,
     token2_type,
     {{ dbt_utils.generate_surrogate_key(
-        ['pool_id']
+        ['pool_address']
     ) }} AS dex_metadata_seaswap_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
