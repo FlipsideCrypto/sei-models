@@ -46,6 +46,6 @@ WHERE
     )
 {% endif %}
 
-qualify (ROW_NUMBER() over (PARTITION BY pool_id
+qualify (ROW_NUMBER() over (PARTITION BY pool_address
 ORDER BY
     _inserted_timestamp DESC) = 1)
