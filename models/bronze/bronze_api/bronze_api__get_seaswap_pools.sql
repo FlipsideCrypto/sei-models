@@ -16,7 +16,7 @@ WITH perms AS (
 ),
 base AS(
     SELECT
-        ethereum.streamline.udf_api(
+        {{ target.database }}.live.udf_api(
             'GET',
             'https://db.seaswap.io/v1/pools?page=' || id,{},{}
         ) AS DATA,

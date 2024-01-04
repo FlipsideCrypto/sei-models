@@ -38,7 +38,7 @@ params AS (
 ),
 res AS (
     SELECT
-        livequery_dev.live.udf_api(
+        {{ target.database }}.live.udf_api(
             'POST',
             'https://pacific-1-graphql.alleslabs.dev/v1/graphql',
             OBJECT_CONSTRUCT(

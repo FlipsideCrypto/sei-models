@@ -23,7 +23,7 @@ WHERE
 base AS (
     SELECT
         contract_address,
-        ethereum.streamline.udf_api(
+        {{ target.database }}.live.udf_api(
             'get',
             (
                 SELECT
