@@ -17,6 +17,36 @@ WITH blocks AS (
         block_number
     FROM
         {{ ref("streamline__complete_txcount") }}
+),
+fix_blocks AS (
+    SELECT
+        block_number
+    FROM
+        (
+            SELECT
+                *
+            FROM
+                {{ ref("bronze__streamline_txcount") }}
+                qualify(ROW_NUMBER() over (PARTITION BY id
+            ORDER BY
+                _inserted_timestamp DESC)) = 1
+        ) b
+        JOIN {{ ref("silver__blockchain") }} A
+        ON A.block_id = b.block_number
+    WHERE
+        A.num_txs > 0
+        AND b.data :: INTEGER = 0
+),
+union_blocks AS (
+    SELECT
+        block_number
+    FROM
+        blocks
+    UNION
+    SELECT
+        block_number
+    FROM
+        fix_blocks
 )
 SELECT
     PARSE_JSON(
