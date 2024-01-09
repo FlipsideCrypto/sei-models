@@ -50,8 +50,6 @@ models:
           - not_null
       - name: POOL_NAME
         description: "{{ doc('pool_name') }}"
-        tests: 
-          - not_null
       - name: TOKEN1_AMOUNT
         description: "The amount of the first token provided by the liquidity provider"
         tests: 

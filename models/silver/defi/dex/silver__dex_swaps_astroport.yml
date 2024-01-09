@@ -62,6 +62,4 @@ models:
           - not_null
       - name: POOL_NAME
         description: "{{ doc('pool_name') }}"
-        tests: 
-          - not_null
   

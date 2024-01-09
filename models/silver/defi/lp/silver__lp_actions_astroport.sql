@@ -10,21 +10,15 @@
 WITH rel_contracts AS (
 
     SELECT
-        contract_address,
-        label AS pool_name
+        A.contract_address,
+        b.label AS pool_name
     FROM
-        {{ ref('silver__contracts') }}
+        {{ ref('silver__dex_metadata_astroport') }} A
+        LEFT JOIN {{ ref('silver__contracts') }}
+        b
+        ON A.contract_address = b.contract_address
     WHERE
-        label ILIKE 'Astroport%'
-),
-contract_info AS (
-    SELECT
-        contract_address,
-        DATA :lp_token_address :: STRING AS lp_token_address,
-        DATA :token1_denom :native :: STRING AS token1_currency,
-        DATA :token2_denom :native :: STRING AS token2_currency
-    FROM
-        {{ ref('silver__contract_info') }}
+        A.type = 'pair_contract_addr'
 ),
 all_txns AS (
     SELECT

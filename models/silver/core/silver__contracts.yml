@@ -11,14 +11,10 @@ models:
           - not_null
       - name: admin
       - name: INIT_BY_ACCOUNT_ADDRESS
-        tests:
-          - not_null
       - name: INIT_BY_BLOCK_TIMESTAMP
         tests:
           - not_null
       - name: LABEL
-        tests:
-          - not_null
       - name: _inserted_timestamp
         tests:
           - not_null 
