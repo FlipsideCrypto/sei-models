@@ -15,15 +15,19 @@ FROM
 
 {% if is_incremental() %}
 {{ ref('bronze__streamline_transactions') }}
-WHERE
-    _inserted_timestamp >= (
-        SELECT
-            MAX(_inserted_timestamp) _inserted_timestamp
-        FROM
-            {{ this }}
-    )
 {% else %}
     {{ ref('bronze__streamline_FR_transactions') }}
+{% endif %}
+WHERE
+    DATA <> '[]'
+
+{% if is_incremental() %}
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(_inserted_timestamp) _inserted_timestamp
+    FROM
+        {{ this }}
+)
 {% endif %}
 
 qualify(ROW_NUMBER() over (PARTITION BY id
