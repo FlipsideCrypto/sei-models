@@ -23,12 +23,23 @@ concurrency:
   group: ${{ github.workflow }}
 
 jobs:
-  called_workflow_template:
-    uses: FlipsideCrypto/analytics-workflow-templates/.github/workflows/dbt_run_template.yml@main
-    with:
-      dbt_command: |
-          dbt run -m models/silver/_observability/silver_observability* --vars "OBSERV_FULL_TEST: true"
-      environment: workflow_prod
-      warehouse: ${{ vars.WAREHOUSE }}
-    secrets: inherit 
+  run_dbt_jobs:
+    runs-on: ubuntu-latest
+    environment: 
+      name: workflow_prod
 
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "${{ vars.PYTHON_VERSION }}"
+          cache: "pip"
+
+      - name: install dependencies
+        run: |
+          pip3 install dbt-snowflake==${{ vars.DBT_VERSION }} cli_passthrough requests click
+          dbt deps
+      - name: Run DBT Jobs
+        run: |
+          dbt run -m models/silver/_observability/silver_observability* --vars "OBSERV_FULL_TEST: true"
