@@ -129,7 +129,13 @@ SELECT
     msg_index,
     sender,
     receiver AS receiver,
-    amount_int :: INT AS amount,
+    CASE
+        WHEN len(amount_int) > 38 THEN LEFT(
+            amount_int,
+            38
+        )
+        ELSE amount_int
+    END :: INT AS amount,
     currency,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_id','msg_index']
