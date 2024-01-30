@@ -28,6 +28,7 @@ sources:
       - name: hourly_prices_coin_market_cap
       - name: hourly_prices_coin_gecko
       - name: number_sequence
+      - name: labels_combined
   - name: bronze_streamline
     database: streamline
     schema: |
