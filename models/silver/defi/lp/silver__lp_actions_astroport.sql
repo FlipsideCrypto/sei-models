@@ -95,6 +95,7 @@ wasm AS (
         j :action :: STRING AS action,
         j :sender :: STRING AS sender,
         j :receiver :: STRING AS receiver,
+        j :to :: STRING AS to_address,
         j :assets :: STRING AS assets,
         j :refund_assets :: STRING AS refund_assets,
         j :share :: INT AS SHARE,
@@ -154,6 +155,21 @@ wasm AS (
             'withdraw_liquidity',
             'burn'
         )
+),
+tx_sender AS (
+    SELECT
+        tx_id,
+        SPLIT_PART(
+            attribute_value,
+            '/',
+            0
+        ) AS tx_sender
+    FROM
+        all_txns
+    WHERE
+        attribute_key = 'acc_seq' qualify(ROW_NUMBER() over(PARTITION BY tx_id
+    ORDER BY
+        msg_index)) = 1
 )
 SELECT
     A.block_id,
@@ -163,7 +179,12 @@ SELECT
     A.msg_group,
     A.msg_sub_group,
     A.msg_index,
-    A.sender AS liquidity_provider_address,
+    COALESCE(
+        A.sender,
+        A.to_address,
+        A.receiver,
+        d.tx_sender
+    ) AS liquidity_provider_address,
     A.action AS lp_action,
     A.contract_address AS pool_address,
     C.pool_name,
@@ -197,6 +218,8 @@ FROM
     ) = b.amount
     JOIN rel_contracts C
     ON A.contract_address = C.contract_address
+    JOIN tx_sender d
+    ON A.tx_id = d.tx_id
 WHERE
     A.action IN (
         'provide_liquidity',
