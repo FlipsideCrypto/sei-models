@@ -104,7 +104,7 @@ wasm AS (
             attribute_value :: variant
         ) AS j,
         j :_contract_address :: STRING AS _contract_address,
-        j :action :: STRING AS action,
+        {# j :action :: STRING AS action, #}
         j :ask_asset :: STRING AS ask_asset,
         j :commission_amount :: INT AS commission_amount,
         j :maker_fee_amount :: INT AS maker_fee_amount,
@@ -123,6 +123,7 @@ wasm AS (
         AND A.msg_sub_group = b.msg_sub_group
     WHERE
         msg_type = 'wasm'
+        AND attribute_key <> 'action'
     GROUP BY
         A.block_id,
         A.block_timestamp,
