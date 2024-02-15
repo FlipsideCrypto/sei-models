@@ -139,6 +139,16 @@ wasm AS (
         AND A.msg_sub_group = b.msg_sub_group
     WHERE
         msg_type = 'wasm'
+        AND attribute_key <> 'user'
+        AND NOT (
+            attribute_key = 'action'
+            AND attribute_value NOT IN (
+                'provide_liquidity',
+                'mint',
+                'withdraw_liquidity',
+                'burn'
+            )
+        )
     GROUP BY
         A.block_id,
         A.block_timestamp,
