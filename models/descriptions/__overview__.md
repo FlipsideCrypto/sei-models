@@ -46,6 +46,8 @@ There is more information on how to use dbt docs in the last section of this doc
 - [fact_dex_swaps](#!/model/model.sei.defi__fact_dex_swaps)
 - [fact_lp_actions](#!/model/model.sei.defi__fact_lp_actions)
 
+**Stats EZ Tables:**
+- [ez_core_metrics_hourly](#!/model/model.sei.ez_core_metrics_hourly)
 
 ## **Data Model Overview**
 
