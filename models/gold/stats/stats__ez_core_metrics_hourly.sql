@@ -5,13 +5,10 @@
     }} }
 ) }}
 
-WITH base AS (
+WITH txs AS (
 
     SELECT
         block_timestamp_hour,
-        block_number_min,
-        block_number_max,
-        block_count,
         transaction_count,
         transaction_count_success,
         transaction_count_failed,
@@ -35,21 +32,29 @@ WITH base AS (
         AND p.id = 'sei-network'
 )
 SELECT
-    block_timestamp_hour,
-    block_number_min,
-    block_number_max,
-    block_count,
-    transaction_count,
-    transaction_count_success,
-    transaction_count_failed,
-    unique_from_count,
-    total_fees_native,
+    A.block_timestamp_hour,
+    A.block_number_min,
+    A.block_number_max,
+    A.block_count,
+    b.transaction_count,
+    b.transaction_count_success,
+    b.transaction_count_failed,
+    b.unique_from_count,
+    b.total_fees_native,
     ROUND(
-        total_fees_native * imputed_close,
+        b.total_fees_native * b.imputed_close,
         2
     ) AS total_fees_usd,
-    ez_core_metrics_hourly_id,
-    inserted_timestamp,
-    modified_timestamp
+    A.core_metrics_block_hourly_id AS ez_core_metrics_hourly_id,
+    GREATEST(
+        A.inserted_timestamp,
+        b.inserted_timestamp
+    ) AS inserted_timestamp,
+    GREATEST(
+        A.modified_timestamp,
+        b.modified_timestamp
+    ) AS modified_timestamp
 FROM
-    base
+    {{ ref('silver_stats__core_metrics_block_hourly') }} A
+    JOIN txs b
+    ON A.block_timestamp_hour = b.block_timestamp_hour
