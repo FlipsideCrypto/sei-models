@@ -38,6 +38,9 @@ SELECT
             ),
             ' ',
             0
+        ) / pow(
+            10,
+            6
         )
     ) AS total_fees,
     MAX(_inserted_timestamp) AS _inserted_timestamp,
