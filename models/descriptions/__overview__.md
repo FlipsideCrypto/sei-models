@@ -20,32 +20,35 @@ There is more information on how to use dbt docs in the last section of this doc
 ### Core Tables (`SEI`.`CORE`.`<table_name>`)
 ### Defi Tables (`SEI`.`DEFI`.`<table_name>`)
 ### Governance Tables (`SEI`.`GOV`.`<table_name>`)
+### Statistics/Analytics Tables (`SEI`.`STATS`.`<table_name>`)
 
 **Core Dimension Tables:**
-- [dim_labels](#!/model/model.sei.core__dim_labels)
-- [dim_tokens](#!/model/model.sei.core__dim_tokens)
+- [dim_labels](#!/model/model.sei_models.core__dim_labels)
+- [dim_tokens](#!/model/model.sei_models.core__dim_tokens)
 
 
 **Core Fact Tables:**
-- [fact_blocks](#!/model/model.sei.core__fact_blocks)
-- [fact_msg_attributes](#!/model/model.sei.core__fact_msg_attributes)
-- [fact_msgs](#!/model/model.sei.core__fact_msgs)
-- [fact_oracle_votes](#!/model/model.sei.core__fact_oracle_votes)
-- [fact_transactions](#!/model/model.sei.core__fact_transactions)
-- [fact_transfers](#!/model/model.sei.core__fact_transfers)
+- [fact_blocks](#!/model/model.sei_models.core__fact_blocks)
+- [fact_msg_attributes](#!/model/model.sei_models.core__fact_msg_attributes)
+- [fact_msgs](#!/model/model.sei_models.core__fact_msgs)
+- [fact_oracle_votes](#!/model/model.sei_models.core__fact_oracle_votes)
+- [fact_transactions](#!/model/model.sei_models.core__fact_transactions)
+- [fact_transfers](#!/model/model.sei_models.core__fact_transfers)
 
 **Governance Fact  Tables:**
-- [fact_governance_proposal_deposits](#!/model/model.sei.gov__fact_governance_proposal_deposits)
-- [fact_governance_submit_proposal](#!/model/model.sei.gov__fact_governance_submit_proposal)
-- [fact_governance_validator_votes](#!/model/model.sei.gov__fact_governance_validator_votes)
-- [fact_governance_votes](#!/model/model.sei.gov__fact_governance_votes)
-- [fact_staking](#!/model/model.sei.gov__fact_staking)
-- [fact_staking_rewards](#!/model/model.sei.gov__fact_staking_rewards)
+- [fact_governance_proposal_deposits](#!/model/model.sei_models.gov__fact_governance_proposal_deposits)
+- [fact_governance_submit_proposal](#!/model/model.sei_models.gov__fact_governance_submit_proposal)
+- [fact_governance_validator_votes](#!/model/model.sei_models.gov__fact_governance_validator_votes)
+- [fact_governance_votes](#!/model/model.sei_models.gov__fact_governance_votes)
+- [fact_staking](#!/model/model.sei_models.gov__fact_staking)
+- [fact_staking_rewards](#!/model/model.sei_models.gov__fact_staking_rewards)
 
 **Defi Fact  Tables:**
-- [fact_dex_swaps](#!/model/model.sei.defi__fact_dex_swaps)
-- [fact_lp_actions](#!/model/model.sei.defi__fact_lp_actions)
+- [fact_dex_swaps](#!/model/model.sei_models.defi__fact_dex_swaps)
+- [fact_lp_actions](#!/model/model.sei_models.defi__fact_lp_actions)
 
+**Stats EZ Tables:**
+- [ez_core_metrics_hourly](#!/model/model.sei_models.ez_core_metrics_hourly)
 
 ## **Data Model Overview**
 
