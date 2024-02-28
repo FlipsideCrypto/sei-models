@@ -1,7 +1,8 @@
 {{ config(
     materialized = 'incremental',
     full_refresh = false,
-    enabled = true
+    enabled = true,
+    tags = ['daily']
 ) }}
 
 WITH perms AS (
