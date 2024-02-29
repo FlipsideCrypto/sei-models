@@ -43,4 +43,4 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-         dbt run -m "sei_models,tag:daily"
+         dbt run -m "sei_models,tag:daily" --exclude models/bronze/bronze_api/bronze_api__get_seaswap_pools.sql
