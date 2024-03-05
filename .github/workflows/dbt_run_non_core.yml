@@ -39,8 +39,9 @@ jobs:
 
       - name: install dependencies
         run: |
-          pip3 install dbt-snowflake==${{ vars.DBT_VERSION }} cli_passthrough requests click
+          pip3 install dbt-snowflake==${{ vars.DBT_VERSION }} cli_passthrough requests click workstream-dbt-core
           dbt deps
       - name: Run DBT Jobs
         run: |
-             dbt run -m "sei_models,tag:noncore" models/bronze/bronze_api --exclude models/bronze/bronze_api/bronze_api__get_seaswap_pools.sql
+             dbt run -m "sei_models,tag:noncore" models/bronze/bronze_api --exclude models/bronze/bronze_api/bronze_api__get_seaswap_pools.sql || true
+          workstream report --exit-nonzero  

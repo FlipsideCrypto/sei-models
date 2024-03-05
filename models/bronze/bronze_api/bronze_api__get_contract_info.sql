@@ -25,14 +25,12 @@ base AS (
         contract_address,
         {{ target.database }}.live.udf_api(
             'get',
-            (
-                SELECT
-                    url
-                FROM
-                    sei._internal.api_keys
-                WHERE
-                    provider = 'allthatnode_archive_rest'
-            ) || '/cosmwasm/wasm/v1/contract/' || contract_address || '/smart/ewogICJpbmZvIjoge30KfQ==',{},{}
+            '{service}/{Authentication}' || '/cosmwasm/wasm/v1/contract/' || contract_address || '/smart/ewogICJpbmZvIjoge30KfQ==',
+            OBJECT_CONSTRUCT(
+                'Content-Type',
+                'application/json'
+            ),{},
+            'Vault/prod/sei/node/rest/mainnet'
         ) AS DATA,
         SYSDATE() AS _inserted_timestamp
     FROM

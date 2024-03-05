@@ -98,16 +98,15 @@ calls AS (
 )
 SELECT
     call,
-    ethereum.streamline.udf_json_rpc_call(
-        (
-            SELECT
-                url
-            FROM
-                sei._internal.api_keys
-            WHERE
-                provider = 'allthatnode_archive'
-        ),{},
-        call
+    {{ target.database }}.live.udf_api(
+        'POST',
+        '{service}/{Authentication}',
+        OBJECT_CONSTRUCT(
+            'Content-Type',
+            'application/json'
+        ),
+        call,
+        'Vault/prod/sei/allthatnode/mainnet'
     ) AS DATA,
     SYSDATE() AS _inserted_timestamp
 FROM

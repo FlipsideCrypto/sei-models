@@ -38,8 +38,9 @@ jobs:
 
       - name: install dependencies
         run: |
-          pip3 install dbt-snowflake==${{ vars.DBT_VERSION }} cli_passthrough requests click
+          pip3 install dbt-snowflake==${{ vars.DBT_VERSION }} cli_passthrough requests click workstream-dbt-core
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt run-operation run_sp_create_prod_clone
+          dbt run-operation run_sp_create_prod_clone || true
+          workstream report --exit-nonzero  

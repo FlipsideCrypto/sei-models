@@ -38,8 +38,9 @@ jobs:
 
       - name: install dependencies
         run: |
-          pip3 install dbt-snowflake==${{ vars.DBT_VERSION }} cli_passthrough requests click
+          pip3 install dbt-snowflake==${{ vars.DBT_VERSION }} cli_passthrough requests click workstream-dbt-core
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt run -m models/silver/_observability/silver_observability* --vars "OBSERV_FULL_TEST: true"
+          dbt run -m models/silver/_observability/silver_observability* --vars "OBSERV_FULL_TEST: true" || true
+          workstream report --exit-nonzero  

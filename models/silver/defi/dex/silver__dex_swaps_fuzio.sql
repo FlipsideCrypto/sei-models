@@ -192,7 +192,7 @@ xfer AS (
         A.msg_group,
         A.msg_sub_group,
         A.msg_index,
-        _inserted_timestamp qualify(ROW_NUMBER() over(PARTITION BY A.tx_id, A.msg_group, A.msg_sub_group, amount_raw
+        _inserted_timestamp qualify(ROW_NUMBER() over(PARTITION BY A.tx_id, A.msg_group, A.msg_sub_group, amount
     ORDER BY
         A.msg_index) = 1)
 )
