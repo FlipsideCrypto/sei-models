@@ -44,4 +44,4 @@ jobs:
       - name: Run DBT Jobs
         run: |
              dbt run -m "sei_models,tag:noncore" models/bronze/bronze_api --exclude models/bronze/bronze_api/bronze_api__get_seaswap_pools.sql || true
-          workstream report --exit-nonzero  
+             workstream report --exit-nonzero  
