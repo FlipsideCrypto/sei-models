@@ -43,5 +43,8 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-         dbt run -m "sei_models,tag:daily" --exclude models/bronze/bronze_api/bronze_api__get_seaswap_pools.sql || true
-         workstream report --exit-nonzero  
+          dbt run -m "sei_models,tag:daily" --exclude models/bronze/bronze_api/bronze_api__get_seaswap_pools.sql || true
+          workstream report --exit-nonzero  
+        env:
+          WORKSTREAM_DBT_CLIENT_ID: ${{ secrets.WORKSTREAM_DBT_CLIENT_ID }}
+          WORKSTREAM_DBT_CLIENT_SECRET: ${{ secrets.WORKSTREAM_DBT_CLIENT_SECRET }}

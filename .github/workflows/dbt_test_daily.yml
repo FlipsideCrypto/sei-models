@@ -43,5 +43,8 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-         dbt test -m models/bronze models/silver models/gold  --exclude models/silver/_observability/silver_observabilit* || true
+          dbt test -m models/bronze models/silver models/gold  --exclude models/silver/_observability/silver_observabilit* || true
           workstream report --exit-nonzero  
+        env:
+          WORKSTREAM_DBT_CLIENT_ID: ${{ secrets.WORKSTREAM_DBT_CLIENT_ID }}
+          WORKSTREAM_DBT_CLIENT_SECRET: ${{ secrets.WORKSTREAM_DBT_CLIENT_SECRET }}

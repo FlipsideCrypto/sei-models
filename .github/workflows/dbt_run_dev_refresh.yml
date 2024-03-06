@@ -44,3 +44,6 @@ jobs:
         run: |
           dbt run-operation run_sp_create_prod_clone || true
           workstream report --exit-nonzero  
+        env:
+          WORKSTREAM_DBT_CLIENT_ID: ${{ secrets.WORKSTREAM_DBT_CLIENT_ID }}
+          WORKSTREAM_DBT_CLIENT_SECRET: ${{ secrets.WORKSTREAM_DBT_CLIENT_SECRET }}

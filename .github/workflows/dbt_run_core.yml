@@ -43,5 +43,8 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-         dbt run -m  models/bronze/core "sei_models,tag:core" || true
-         workstream report --exit-nonzero  
+          dbt run -m  models/bronze/core "sei_models,tag:core" || true
+          workstream report --exit-nonzero 
+        env:
+          WORKSTREAM_DBT_CLIENT_ID: ${{ secrets.WORKSTREAM_DBT_CLIENT_ID }}
+          WORKSTREAM_DBT_CLIENT_SECRET: ${{ secrets.WORKSTREAM_DBT_CLIENT_SECRET }}
