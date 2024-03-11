@@ -23,14 +23,7 @@ INSERT INTO
         SELECT
             ethereum.streamline.udf_api(
                 'get',
-                (
-                    SELECT
-                        url
-                    FROM
-                        sei._internal.api_keys
-                    WHERE
-                        provider = 'allthatnode_archive_rest'
-                ) || calls,{},{}
+                'url' || calls,{},{}
             ) DATA,
             block_id
         FROM

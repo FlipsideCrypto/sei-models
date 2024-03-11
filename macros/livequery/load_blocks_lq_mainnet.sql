@@ -9,14 +9,7 @@
         (
             SELECT
                 ethereum.streamline.udf_json_rpc_call(
-                    (
-                        SELECT
-                            url
-                        FROM
-                            sei._internal.api_keys
-                        WHERE
-                            provider = 'allthatnode_archive'
-                    ),{},
+                    'url',{},
                     {# 'https://sei-priv.kingnodes.com/',{ 'Referer': 'https://flipside.com' }, #}
                     [ { 'id': 1, 'jsonrpc': '2.0', 'method': 'abci_info' } ]
                 ) DATA
@@ -83,14 +76,7 @@ INSERT INTO
     results AS (
         SELECT
             ethereum.streamline.udf_json_rpc_call(
-                (
-                    SELECT
-                        url
-                    FROM
-                        sei._internal.api_keys
-                    WHERE
-                        provider = 'allthatnode_archive'
-                ),{},
+                'url',{},
                 {# 'https://sei-priv.kingnodes.com/',{ 'Referer': 'https://flipside.com' }, #}
                 calls
             ) DATA
