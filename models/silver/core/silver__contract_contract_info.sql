@@ -8,7 +8,7 @@
 
 SELECT
     contract_address,
-    DATA,
+    DATA :data AS DATA,
     DATA :error :code AS code,
     {{ dbt_utils.generate_surrogate_key(
         ['contract_address']
