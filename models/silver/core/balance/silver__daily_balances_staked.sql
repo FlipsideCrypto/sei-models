@@ -5,7 +5,7 @@
     merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['DATE'],
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(address);",
-    tags = ['daily']
+    tags = ['daily','recent_test']
 ) }}
 
 WITH all_staked AS (

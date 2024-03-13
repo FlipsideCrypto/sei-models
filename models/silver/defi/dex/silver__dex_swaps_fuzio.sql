@@ -5,7 +5,7 @@
     merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['_inserted_timestamp::DATE', 'block_timestamp::DATE' ],
     enabled = true,
-    tags = ['noncore']
+    tags = ['noncore','recent_test']
 ) }}
 
 WITH rel_contracts AS (

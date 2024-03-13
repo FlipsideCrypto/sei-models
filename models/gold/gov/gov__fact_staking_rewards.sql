@@ -1,7 +1,7 @@
 {{ config(
     materialized = 'view',
     meta ={ 'database_tags':{ 'table':{ 'PURPOSE': 'STAKING' }} },
-    tags = ['noncore']
+    tags = ['noncore','recent_test']
 ) }}
 
 SELECT

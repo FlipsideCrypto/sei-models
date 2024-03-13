@@ -4,7 +4,7 @@
     incremental_strategy = 'merge',
     merge_exclude_columns = ["inserted_timestamp"],
     enabled = true,
-    tags = ['noncore']
+    tags = ['noncore','recent_test']
 ) }}
 
 WITH
