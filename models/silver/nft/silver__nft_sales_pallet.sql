@@ -4,8 +4,7 @@
     incremental_strategy = 'merge',
     merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['_inserted_timestamp::DATE', 'block_timestamp::DATE' ],
-    tags = ['noncore'],
-    enabled = false
+    tags = ['noncore']
 ) }}
 
 WITH msg_atts_base AS (
@@ -26,6 +25,12 @@ WITH msg_atts_base AS (
         {{ ref('silver__msg_attributes') }}
     WHERE
         tx_succeeded
+        AND msg_type IN (
+            'wasm-buy_now',
+            'wasm-accept_bid',
+            'wasm',
+            'tx'
+        )
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
@@ -35,6 +40,21 @@ AND _inserted_timestamp >= (
         {{ this }}
 )
 {% endif %}
+),
+sender AS (
+    SELECT
+        tx_id,
+        SPLIT_PART(
+            attribute_value,
+            '/',
+            0
+        ) AS tx_from
+    FROM
+        msg_atts_base
+    WHERE
+        attribute_key = 'acc_seq' qualify(ROW_NUMBER() over(PARTITION BY tx_id
+    ORDER BY
+        msg_index)) = 1
 ),
 nft_sales_tx AS (
     SELECT
@@ -70,8 +90,16 @@ nft_sales_buydata AS (
         j :nft_address :: STRING AS nft_address,
         j :nft_token_id :: STRING AS token_id,
         j :nft_seller :: STRING AS nft_seller,
+        j :sold_to :: STRING AS nft_sold_to,
         j :_contract_address :: STRING AS marketplace_contract,
-        j :sale_price :: STRING AS amount_raw,
+        j :sale_price :: STRING AS sale_price,
+        REPLACE(
+            REPLACE(
+                j :sale_price,
+                'native:'
+            ),
+            'usei:'
+        ) :: STRING AS amount_raw,
         SPLIT_PART(
             TRIM(
                 REGEXP_REPLACE(
@@ -82,8 +110,11 @@ nft_sales_buydata AS (
             ),
             ' ',
             0
-        ) AS amount,
-        RIGHT(amount_raw, LENGTH(amount_raw) - LENGTH(SPLIT_PART(TRIM(REGEXP_REPLACE(amount_raw, '[^[:digit:]]', ' ')), ' ', 0))) AS currency
+        ) :: INT AS amount,
+        CASE
+            WHEN sale_price LIKE 'usei:%' THEN 'usei'
+            ELSE RIGHT(amount_raw, LENGTH(amount_raw) - LENGTH(SPLIT_PART(TRIM(REGEXP_REPLACE(amount_raw, '[^[:digit:]]', ' ')), ' ', 0)))
+        END AS currency
     FROM
         msg_atts_base A
         INNER JOIN nft_sales_tx s USING (tx_id)
@@ -147,8 +178,15 @@ SELECT
     A.msg_type,
     A.nft_address,
     A.token_id,
-    b.nft_buyer AS buyer_address,
-    A.nft_seller AS seller_address,
+    COALESCE(
+        b.nft_buyer,
+        A.nft_sold_to,
+        C.tx_from
+    ) AS buyer_address,
+    COALESCE(
+        A.nft_seller,
+        C.tx_from
+    ) AS seller_address,
     A.amount_raw,
     A.amount,
     A.currency,
@@ -167,3 +205,5 @@ FROM
     AND A.nft_address = b.nft_address
     AND A.token_id = b.token_id
     AND A.marketplace_contract = b.marketplace_contract
+    JOIN sender C
+    ON A.tx_id = C.tx_id
