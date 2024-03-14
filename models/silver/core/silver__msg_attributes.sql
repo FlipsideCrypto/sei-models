@@ -5,7 +5,7 @@
   incremental_strategy = 'merge',
   cluster_by = ['block_timestamp::DATE','_inserted_timestamp::DATE'],
   post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(tx_id,msg_type,attribute_key,attribute_value);",
-  tags = ['core']
+  tags = ['core','full_test']
 ) }}
 
 SELECT

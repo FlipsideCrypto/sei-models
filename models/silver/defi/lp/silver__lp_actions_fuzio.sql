@@ -4,7 +4,7 @@
     incremental_strategy = 'merge',
     merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['_inserted_timestamp::DATE', 'block_timestamp::DATE' ],
-    tags = ['noncore']
+    tags = ['noncore','recent_test']
 ) }}
 
 WITH rel_contracts AS (

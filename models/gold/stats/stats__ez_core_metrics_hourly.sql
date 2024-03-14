@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'view',
-    tags = ['noncore'],
+    tags = ['noncore','recent_test'],
     meta ={ 'database_tags':{ 'table':{ 'PURPOSE': 'STATS, METRICS, CORE, HOURLY',
     }} }
 ) }}
