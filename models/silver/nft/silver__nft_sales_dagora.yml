@@ -1,0 +1,65 @@
+version: 2
+models:
+  - name: silver__nft_sales_dagora
+    description: Records of nft sales on dagora
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - TX_ID
+            - MSG_INDEX
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests: 
+          - not_null
+      - name: TX_SUCCEEDED
+        description: "{{ doc('tx_succeeded') }}"
+        tests: 
+          - not_null
+      - name: MSG_GROUP
+        description: "{{ doc('msg_group') }}"
+        tests: 
+          - not_null
+      - name: MSG_SUB_GROUP
+        description: "{{ doc('msg_sub_group') }}"
+        tests: 
+          - not_null
+      - name: MSG_INDEX
+        description: "{{ doc('msg_index') }}"
+        tests: 
+          - not_null
+      - name: NFT_ADDRESS
+        # description: "{{ doc('nft_address') }}"
+        tests: 
+          - not_null
+      - name: BUYER_ADDRESS
+        # description: "{{ doc('buyer_address') }}"
+        tests: 
+          - not_null
+      - name: SELLER_ADDRESS
+        # description: "{{ doc('seller_address') }}"
+        tests: 
+          - not_null
+      - name: AMOUNT
+        description: "{{ doc('amount') }}"
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER    
+                - FLOAT            
+      - name: CURRENCY
+        description: "{{ doc('currency') }}"
+        tests: 
+          - not_null
+      - name: MARKETPLACE_CONTRACT
+        # description: "{{ doc('marketplace_contract') }}"
+  
