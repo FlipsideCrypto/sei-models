@@ -1,7 +1,7 @@
 version: 2
 models:
-  - name: silver__nft_sales_dagora
-    description: Records of nft sales on dagora
+  - name: silver__nft_sales_combined
+    description: Records of nft sales on sei
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:

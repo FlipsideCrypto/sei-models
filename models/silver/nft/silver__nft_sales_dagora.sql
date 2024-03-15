@@ -64,7 +64,7 @@ nft_sales_tx AS (
         msg_atts_base
     WHERE
         msg_type IN(
-            'wasm-execute-exchangee',
+            'wasm-execute-exchange',
             'wasm'
         )
         AND attribute_key = '_contract_address'
@@ -133,12 +133,12 @@ nft_sales_transfer_data AS (
         SPLIT_PART(
             j :nft,
             ', ',
-            0
+            1
         ) AS token_id,
         SPLIT_PART(
             j :nft,
             ', ',
-            1
+            2
         ) AS nft_address
     FROM
         msg_atts_base A
@@ -178,7 +178,7 @@ SELECT
     A.marketplace_contract,
     {{ dbt_utils.generate_surrogate_key(
         ['a.tx_id','a.msg_index']
-    ) }} AS nft_sales_pallet_id,
+    ) }} AS nft_sales_dagora_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     A._inserted_timestamp,
