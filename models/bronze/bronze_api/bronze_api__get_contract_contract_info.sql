@@ -12,7 +12,7 @@ WITH contracts AS (
 
 {% if is_incremental() %}
 LEFT JOIN silver.contract_contract_info b
-ON A.nft_address = b.contract_address
+ON A.contract_address = b.contract_address
 WHERE
     (
         b.contract_address IS NULL
