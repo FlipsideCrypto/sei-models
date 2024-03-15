@@ -1,0 +1,21 @@
+version: 2
+models:
+  - name: test_silver__blocks_recent
+
+    tests:
+      - fsc_utils.sequence_gaps:
+          column_name: BLOCK_ID
+          config:
+            severity: error
+            error_if: ">10"
+    columns:
+      - name: BLOCK_ID
+        tests:
+          - unique
+          - not_null  
+      - name: BLOCK_TIMESTAMP
+        tests:
+          - not_null
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: hour
+              interval: 3

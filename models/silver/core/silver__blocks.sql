@@ -4,7 +4,7 @@
     incremental_strategy = 'merge',
     merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['block_timestamp::DATE','_inserted_timestamp::DATE'],
-    tags = ['core']
+    tags = ['core','full_test']
 ) }}
 -- depends_on: {{ ref('bronze__streamline_blocks') }}
 WITH base AS (

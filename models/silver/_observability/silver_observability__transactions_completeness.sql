@@ -1,6 +1,7 @@
 {{ config(
     materialized = 'incremental',
-    full_refresh = false
+    full_refresh = false,
+    tags = ['recent_test']
 ) }}
 -- depends_on: {{ ref('bronze__streamline_transactions') }}
 WITH rel_blocks AS (

@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'table',
-    tags = ['daily']
+    tags = ['daily','recent_test']
 ) }}
 
 WITH base AS (
