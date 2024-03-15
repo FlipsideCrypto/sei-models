@@ -8,8 +8,7 @@ WITH contracts AS (
     SELECT
         top 20 A.nft_address AS contract_address
     FROM
-        {# {{ ref('silver__contracts') }} A #}
-        sei_dev.silver.nft_sales_pallet A
+        {{ ref('silver__contracts') }} A
 
 {% if is_incremental() %}
 LEFT JOIN silver.contract_contract_info b
