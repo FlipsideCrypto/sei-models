@@ -3,7 +3,7 @@
     unique_key = ['tx_id','msg_index'],
     incremental_strategy = 'merge',
     merge_exclude_columns = ["inserted_timestamp"],
-    cluster_by = ['_inserted_timestamp::DATE', 'block_timestamp::DATE' ],
+    cluster_by = ['_inserted_timestamp::DATE' ],
     tags = ['noncore']
 ) }}
 
@@ -168,7 +168,7 @@ SELECT
     A.msg_group,
     A.msg_sub_group,
     A.msg_index,
-    b.exchange_type,
+    'sale' AS event_type,
     b.nft_address,
     b.token_id,
     A.buyer AS buyer_address,

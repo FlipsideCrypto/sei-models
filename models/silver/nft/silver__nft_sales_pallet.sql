@@ -3,7 +3,7 @@
     unique_key = ['tx_id','msg_index'],
     incremental_strategy = 'merge',
     merge_exclude_columns = ["inserted_timestamp"],
-    cluster_by = ['_inserted_timestamp::DATE', 'block_timestamp::DATE' ],
+    cluster_by = ['_inserted_timestamp::DATE' ],
     tags = ['noncore']
 ) }}
 
@@ -191,8 +191,6 @@ SELECT
         A.nft_seller,
         C.tx_from
     ) AS seller_address,
-    sale_price,
-    A.amount_raw,
     A.amount,
     A.currency,
     A.marketplace_contract,

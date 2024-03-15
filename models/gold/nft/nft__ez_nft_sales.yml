@@ -1,0 +1,63 @@
+version: 2
+models:
+  - name: nft__ez_nft_sales
+    description: A convenience model that combines fact nft sales with tokens and prices
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - ez_nft_sales_id
+    columns:
+      - name: BLOCK_NUMBER
+        description: '{{ doc("nft_block_number") }}'
+      - name: BLOCK_TIMESTAMP
+        description: '{{ doc("nft_blocktime") }}'   
+      - name: TX_HASH
+        description: '{{ doc("nft_tx_hash") }}'   
+      - name: EVENT_INDEX
+        description: '{{ doc("nft_event_index") }}'   
+      - name: EVENT_TYPE
+        description: '{{ doc("nft_event_type") }}'   
+      - name: SELLER_ADDRES 
+        description: '{{ doc("nft_seller_address") }}'
+      - name: BUYER_ADDRESS
+        description: '{{ doc("nft_buyer_address") }}'
+      - name: NFT_ADDRESS
+        description: '{{ doc("nft_nft_address") }}'
+      - name: TOKEN_VERSION
+        description: '{{ doc("nft_token_version") }}'
+      - name: PLATFORM_ADDRESS
+        description: '{{ doc("nft_platform_address") }}'
+      - name: PROJECT_NAME
+        description: '{{ doc("nft_project_name") }}'
+      - name: TOKENID
+        description: '{{ doc("nft_tokenid") }}'
+      - name: PLATFORM_NAME
+        description: '{{ doc("nft_platform_name") }}'
+      - name: PLATFORM_EXCHANGE_VERSION
+        description: '{{ doc("nft_platform_exchange_version") }}'
+      - name: TOTAL_PRICE
+        description: '{{ doc("nft_price") }}'
+      - name: PLATFORM_FEE
+        description: '{{ doc("nft_platform_fee") }}'
+      - name: CREATOR_FEE
+        description: '{{ doc("nft_creator_fee") }}'
+      - name: TOTAL_FEES
+        description: '{{ doc("nft_total_fees") }}'
+      - name: TOTAL_PRICE_USD
+        description: '{{ doc("nft_price_usd") }}'
+      - name: PLATFORM_FEE_USD
+        description: '{{ doc("nft_platform_fee_usd") }}'
+      - name: CREATOR_FEE_USD
+        description: '{{ doc("nft_creator_fee_usd") }}'
+      - name: TOTAL_FEES_USD
+        description: '{{ doc("nft_total_fees_usd") }}'
+      - name: AGGREGATOR_NAME
+        description: '{{ doc("nft_aggregator_name") }}'
+      - name: CURRENCY_ADDRESS
+        description: '{{ doc("nft_currency_address") }}'
+      - name: EZ_NFT_SALES_ID
+        description: '{{ doc("pk") }}'   
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'   
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}' 
