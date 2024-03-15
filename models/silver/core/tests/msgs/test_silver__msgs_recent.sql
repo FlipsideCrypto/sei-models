@@ -17,7 +17,7 @@ WITH last_3_days AS (
 SELECT
     *
 FROM
-    {{ ref('silver__msg_attributes') }}
+    {{ ref('silver__msgs') }}
 WHERE
     block_timestamp :: DATE >= (
         SELECT
