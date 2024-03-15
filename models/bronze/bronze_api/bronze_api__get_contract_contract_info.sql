@@ -6,7 +6,7 @@
 WITH contracts AS (
 
     SELECT
-        top 20 A.nft_address AS contract_address
+        top 20 A.contract_address
     FROM
         {{ ref('silver__contracts') }} A
 
