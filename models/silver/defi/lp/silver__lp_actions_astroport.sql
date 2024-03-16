@@ -139,7 +139,10 @@ wasm AS (
         AND A.msg_sub_group = b.msg_sub_group
     WHERE
         msg_type = 'wasm'
-        AND attribute_key <> 'user'
+        AND attribute_key NOT IN (
+            'user',
+            'claimed_reward'
+        )
         AND NOT (
             attribute_key = 'action'
             AND attribute_value NOT IN (
