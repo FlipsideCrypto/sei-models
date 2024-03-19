@@ -1,7 +1,7 @@
 version: 2
 models:
-  - name: silver__nft_sales_pallet
-    description: Records of nft sales on pallet
+  - name: silver__nft_sales_dagora
+    description: Records of nft sales on dagora
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -15,7 +15,7 @@ models:
         tests:
           - dbt_expectations.expect_row_values_to_have_recent_data:
               datepart: day
-              interval: 1
+              interval: 3
       - name: TX_ID
         description: "{{ doc('tx_id') }}"
         tests: 

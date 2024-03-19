@@ -25,7 +25,17 @@ FROM
         'hourly_prices_coin_gecko'
     ) }}
 WHERE
-    id = 'sei-network'
+    id IN (
+        SELECT
+            DISTINCT coingecko
+        FROM
+            {{ ref('silver__prices_api') }}
+        WHERE
+            COALESCE(
+                coingecko,
+                ''
+            ) <> ''
+    )
 
 {% if is_incremental() %}
 AND modified_timestamp >= (
