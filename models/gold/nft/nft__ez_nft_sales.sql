@@ -70,6 +70,7 @@ SELECT
     seller_address,
     nft_address,
     token_id,
+    project_name,
     platform_address,
     platform_name,
     amount,

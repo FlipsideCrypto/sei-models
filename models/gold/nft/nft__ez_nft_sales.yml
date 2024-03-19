@@ -27,6 +27,8 @@ models:
         description: '{{ doc("nft_nft_address") }}'
       - name: TOKEN_ID
         description: '{{ doc("nft_token_id") }}'
+      - name: PROJECT_NAME
+        description: '{{ doc("nft_project_name") }}'   
       - name: BUYER_ADDRESS
         description: '{{ doc("nft_buyer_address") }}'
       - name: amount
