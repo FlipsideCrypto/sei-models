@@ -17,7 +17,7 @@ SELECT
     token_id,
     buyer_address,
     seller_address,
-    amount,
+    amount AS amount_raw,
     currency,
     platform_address,
     platform_name,

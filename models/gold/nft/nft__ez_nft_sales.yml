@@ -1,7 +1,11 @@
 version: 2
 models:
-  - name: nft__fact_nft_sales
-    description: This table contains NFT sale events from pallet and dagora
+  - name: nft__ez_nft_sales
+    description: A convenience model that combines fact nft sales with tokens and prices
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - ez_nft_sales_id
     columns:
       - name: BLOCK_ID
         description: '{{ doc("nft_block_id") }}'
@@ -25,8 +29,8 @@ models:
         description: '{{ doc("nft_token_id") }}'
       - name: BUYER_ADDRESS
         description: '{{ doc("nft_buyer_address") }}'
-      - name: amount_raw
-        description: '{{ doc("nft_amount_raw") }}'
+      - name: amount
+        description: '{{ doc("nft_amount") }}'
       - name: currency
         description: '{{ doc("nft_currency") }}'
       - name: PLATFORM_ADDRESS

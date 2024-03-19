@@ -191,7 +191,7 @@ SELECT
         A.nft_seller,
         C.tx_from
     ) AS seller_address,
-    A.amount,
+    A.amount :: INT AS amount,
     A.currency,
     A.marketplace_contract,
     {{ dbt_utils.generate_surrogate_key(
