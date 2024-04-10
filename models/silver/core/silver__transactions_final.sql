@@ -1,11 +1,6 @@
 {{ config(
-    materialized = 'incremental',
-    incremental_predicates = ['DBT_INTERNAL_DEST.block_timestamp::DATE >= (select min(block_timestamp::DATE) from ' ~ generate_tmp_view_name(this) ~ ')'],
-    unique_key = "tx_id",
-    incremental_strategy = 'merge',
-    merge_exclude_columns = ["inserted_timestamp"],
-    cluster_by = ['block_timestamp::DATE'],
-    tags = ['core','full_test']
+    materialized = 'view',
+    tags = ['v2']
 ) }}
 
 WITH atts AS (
@@ -19,18 +14,10 @@ WITH atts AS (
         {{ ref('silver__msg_attributes') }}
     WHERE
         msg_type = 'tx'
-        AND attribute_key IN ('fee', 'acc_seq')
-
-{% if is_incremental() %}
-AND _inserted_timestamp >= (
-    SELECT
-        MAX(
-            _inserted_timestamp
+        AND attribute_key IN (
+            'fee',
+            'acc_seq'
         )
-    FROM
-        {{ this }}
-)
-{% endif %}
 ),
 fee AS (
     SELECT
@@ -87,15 +74,3 @@ FROM
     ON t.tx_id = f.tx_id
     LEFT OUTER JOIN spender s
     ON t.tx_id = s.tx_id
-
-{% if is_incremental() %}
-WHERE
-    _inserted_timestamp >= (
-        SELECT
-            MAX(
-                _inserted_timestamp
-            )
-        FROM
-            {{ this }}
-    )
-{% endif %}

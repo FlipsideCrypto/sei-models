@@ -1,10 +1,6 @@
 {{ config(
-    materialized = 'incremental',
-    unique_key = ['tx_id','msg_index'],
-    incremental_strategy = 'merge',
-    merge_exclude_columns = ["inserted_timestamp"],
-    cluster_by = ['block_timestamp::DATE'],
-    tags = ['core','recent_test']
+    materialized = 'view',
+    tags = ['v2']
 ) }}
 
 WITH base_atts AS (
@@ -34,17 +30,6 @@ WITH base_atts AS (
             'packet_src_channel',
             'packet_dst_channel'
         )
-
-{% if is_incremental() %}
-AND _inserted_timestamp >= (
-    SELECT
-        MAX(
-            _inserted_timestamp
-        )
-    FROM
-        {{ this }}
-)
-{% endif %}
 ),
 all_data AS (
     SELECT

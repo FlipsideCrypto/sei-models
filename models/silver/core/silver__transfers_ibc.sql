@@ -1,10 +1,6 @@
 {{ config(
-    materialized = 'incremental',
-    unique_key = ['tx_id','msg_index'],
-    incremental_strategy = 'merge',
-    merge_exclude_columns = ["inserted_timestamp"],
-    cluster_by = ['block_timestamp::DATE'],
-    tags = ['core','recent_test']
+    materialized = 'view',
+    tags = ['v2']
 ) }}
 
 WITH base_atts AS (
@@ -30,21 +26,6 @@ WITH base_atts AS (
             'ibc_transfer',
             'write_acknowledgement'
         )
-
-{% if is_incremental() %}
-AND _inserted_timestamp >= DATEADD(
-    DAY,
-    -1,
-    (
-        SELECT
-            MAX(
-                _inserted_timestamp
-            )
-        FROM
-            {{ this }}
-    )
-)
-{% endif %}
 ),
 all_packets AS (
     SELECT
@@ -57,22 +38,6 @@ all_packets AS (
         packet_dst_channel
     FROM
         {{ ref('silver__transfers_ibc_packets') }}
-
-{% if is_incremental() %}
-WHERE
-    _inserted_timestamp >= DATEADD(
-        DAY,
-        -2,
-        (
-            SELECT
-                MAX(
-                    _inserted_timestamp
-                )
-            FROM
-                {{ this }}
-        )
-    )
-{% endif %}
 ),
 ack_pack AS (
     SELECT

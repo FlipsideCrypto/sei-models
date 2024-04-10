@@ -1,0 +1,45 @@
+name: dbt_run_lq_testnet
+run-name: dbt_run_lq_testnet
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs "At every 15th minute." (see https://crontab.guru)
+    - cron: '*/15 * * * *'
+
+env:
+  DBT_PROFILES_DIR: ./
+
+  ACCOUNT: "${{ vars.ACCOUNT }}"
+  ROLE: "${{ vars.ROLE }}"
+  USER: "${{ vars.USER }}"
+  PASSWORD: "${{ secrets.PASSWORD }}"
+  REGION: "${{ vars.REGION }}"
+  DATABASE: "${{ vars.DATABASE }}"
+  WAREHOUSE: "${{ vars.WAREHOUSE }}"
+  SCHEMA: "${{ vars.SCHEMA }}"
+
+concurrency:
+  group: ${{ github.workflow }}
+
+jobs:
+  run_dbt_jobs:
+    runs-on: ubuntu-latest
+    environment: 
+      name: workflow_testnet
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "${{ vars.PYTHON_VERSION }}"
+          cache: "pip"
+
+      - name: install dependencies
+        run: |
+          pip install -r requirements.txt workstream-dbt-core
+          dbt deps
+      - name: Run DBT Jobs
+        run: |
+          dbt run -m models/streamline

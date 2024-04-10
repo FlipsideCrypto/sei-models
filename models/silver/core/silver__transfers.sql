@@ -1,10 +1,6 @@
 {{ config(
-    materialized = 'incremental',
-    unique_key = ['tx_id','msg_index'],
-    incremental_strategy = 'merge',
-    merge_exclude_columns = ["inserted_timestamp"],
-    cluster_by = ['block_timestamp::DATE'],
-    tags = ['core','full_test']
+    materialized = 'view',
+    tags = ['v2']
 ) }}
 
 WITH base_atts AS (
@@ -28,17 +24,6 @@ WITH base_atts AS (
             'tx',
             'transfer'
         )
-
-{% if is_incremental() %}
-AND _inserted_timestamp >= (
-    SELECT
-        MAX(
-            _inserted_timestamp
-        )
-    FROM
-        {{ this }}
-)
-{% endif %}
 ),
 all_transfers AS (
     SELECT

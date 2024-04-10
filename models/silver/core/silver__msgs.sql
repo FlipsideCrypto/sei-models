@@ -1,11 +1,6 @@
 {{ config(
-  materialized = 'incremental',
-  incremental_predicates = ['DBT_INTERNAL_DEST.block_timestamp::DATE >= (select min(block_timestamp::DATE) from ' ~ generate_tmp_view_name(this) ~ ')'],
-  unique_key = ["tx_id","msg_index"],
-  incremental_strategy = 'merge',
-  merge_exclude_columns = ["inserted_timestamp"],
-  cluster_by = ['block_timestamp::DATE','_inserted_timestamp::DATE'],
-  tags = ['core','full_test']
+  materialized = 'view',
+  tags = ['v2']
 ) }}
 {# post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(msg_type, msg:attributes);", #}
 WITH b AS (
@@ -45,18 +40,6 @@ WITH b AS (
     LATERAL FLATTEN(
       input => A.msgs
     )
-
-{% if is_incremental() %}
-WHERE
-  _inserted_timestamp >= (
-    SELECT
-      MAX(
-        _inserted_timestamp
-      )
-    FROM
-      {{ this }}
-  )
-{% endif %}
 ),
 prefinal AS (
   SELECT
