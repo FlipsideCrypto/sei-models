@@ -23,5 +23,5 @@ SELECT
             'params',
             []
         ),
-        'vault/prod/sei/node/mainnet'
+        'Vault/prod/sei/allthatnode/mainnet'
     ) :data :result :sync_info :latest_block_height :: INT AS block_number

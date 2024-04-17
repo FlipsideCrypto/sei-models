@@ -17,6 +17,8 @@ WITH blocks AS (
         block_number
     FROM
         {{ ref("streamline__complete_blocks") }}
+    ORDER BY
+        1 DESC
     LIMIT
         100
 )
@@ -46,7 +48,7 @@ SELECT
                 block_number :: STRING
             )
         ),
-        'vault/prod/sei/node/mainnet'
+        'Vault/prod/sei/allthatnode/mainnet'
     ) AS request
 FROM
     blocks
