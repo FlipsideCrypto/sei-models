@@ -43,15 +43,35 @@ vars:
   "dbt_date:time_zone": GMT
   OBSERV_FULL_TEST: FALSE
   UPDATE_SNOWFLAKE_TAGS: TRUE
-  STREAMLINE_INVOKE_STREAMS: False
-  STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES: False
+  STREAMLINE_INVOKE_STREAMS: true
+  STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES: TRUE
   UPDATE_UDFS_AND_SPS: False
   WAIT: 0
   START_GHA_TASKS: False
-  API_INTEGRATION: '{{ var("config")[target.name]["API_INTEGRATION"] if var("config")[target.name] else var("config")["dev"]["API_INTEGRATION"] }}' 
+
+#### STREAMLINE 2.0 BEGIN ####
+
+  API_INTEGRATION: '{{ var("config")[target.name]["API_INTEGRATION"] if var("config")[target.name] else var("config")["dev"]["API_INTEGRATION"] }}'
   EXTERNAL_FUNCTION_URI: '{{ var("config")[target.name]["EXTERNAL_FUNCTION_URI"] if var("config")[target.name] else var("config")["dev"]["EXTERNAL_FUNCTION_URI"] }}'
-  ROLES: |
-      ["INTERNAL_DEV"]
+  ROLES: '{{ var("config")[target.name]["ROLES"] }}'
+
+  config:
+  # The keys correspond to dbt profiles and are case sensitive
+    dev:
+      API_INTEGRATION: aws_sei_api_dev
+      EXTERNAL_FUNCTION_URI: ibj933oi6f.execute-api.us-east-1.amazonaws.com/stg/
+      ROLES:
+        - AWS_LAMBDA_SEI_API
+        - INTERNAL_DEV
+    # prod:
+    #   API_INTEGRATION: aws_sei_api
+    #   EXTERNAL_FUNCTION_URI: sfl36j9j2c.execute-api.us-east-1.amazonaws.com/prod/
+    #   ROLES:
+    #     - AWS_LAMBDA_AXELAR_API
+    #     - DBT_CLOUD_AXELAR
+    #     - INTERNAL_DEV
+
+#### STREAMLINE 2.0 END ####
 
 
 tests:

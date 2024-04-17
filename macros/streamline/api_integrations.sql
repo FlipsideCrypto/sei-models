@@ -12,8 +12,8 @@
         {% do run_query(sql) %}
         {% elif target.name == "dev" %}
         {% set sql %}
-        CREATE api integration IF NOT EXISTS aws_sei_api_dev api_provider = aws_api_gateway api_aws_role_arn = 'arn:aws:iam::490041342817:role/sei-api-dev-rolesnowflakeudfsAF733095-4GCHXFFK8LJ7' api_allowed_prefixes = (
-            'https://u1hda5gxml.execute-api.us-east-1.amazonaws.com/dev/'
+        CREATE api integration IF NOT EXISTS aws_sei_api_dev api_provider = aws_api_gateway api_aws_role_arn = 'arn:aws:iam::704693948482:role/sei-api-stg-rolesnowflakeudfsAF733095-YX1gTAavoOYe' api_allowed_prefixes = (
+            'https://ibj933oi6f.execute-api.us-east-1.amazonaws.com/stg/'
         ) enabled = TRUE;
 {% endset %}
         {% do run_query(sql) %}

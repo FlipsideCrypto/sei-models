@@ -37,6 +37,9 @@ sources:
       - name: blocks
       - name: transactions
       - name: txcount
+      - name: blocks_v2
+      - name: transactions_v2
+      - name: txcount_v2
   - name: bronze
     schema: bronze
     tables:

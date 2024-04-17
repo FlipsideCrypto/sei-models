@@ -89,6 +89,7 @@ WHERE
                     COALESCE(CAST({{ unique_key }} AS text), '' :: STRING) AS text
                 )
             ) AS id,
+            s.metadata,
             s.{{ partition_name }},
             s.value AS VALUE
         FROM
@@ -148,6 +149,7 @@ SELECT
             COALESCE(CAST({{ unique_key }} AS text), '' :: STRING) AS text
         )
     ) AS id,
+    s.metadata,
     s.{{ partition_name }},
     s.value AS VALUE
 FROM

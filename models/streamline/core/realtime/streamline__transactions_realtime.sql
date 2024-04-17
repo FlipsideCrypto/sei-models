@@ -11,19 +11,19 @@ WITH blocks AS (
     SELECT
         block_number
     FROM
-        {{ ref("streamline__complete_txcount") }}
+        {{ ref("streamline__complete_tx_counts") }}
     EXCEPT
     SELECT
         block_number
     FROM
-        {{ ref("streamline__complete_tx_search") }}
+        {{ ref("streamline__complete_transactions") }}
 ),
 transactions_counts_by_block AS (
     SELECT
         tc.block_number,
         tc.data :: INTEGER AS txcount
     FROM
-        {{ ref("bronze__streamline_txcount") }}
+        {{ ref("bronze__streamline_tx_counts") }}
         tc
         INNER JOIN blocks b
         ON tc.block_number = b.block_number

@@ -16,7 +16,7 @@ WITH blocks AS (
     SELECT
         block_number
     FROM
-        {{ ref("streamline__complete_txcount") }}
+        {{ ref("streamline__complete_tx_counts") }}
 ),
 fix_blocks AS (
     SELECT
@@ -26,7 +26,7 @@ fix_blocks AS (
             SELECT
                 *
             FROM
-                {{ ref("bronze__streamline_txcount") }}
+                {{ ref("bronze__streamline_tx_counts") }}
                 qualify(ROW_NUMBER() over (PARTITION BY id
             ORDER BY
                 _inserted_timestamp DESC)) = 1
