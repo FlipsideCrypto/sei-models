@@ -40,6 +40,10 @@ AND _inserted_timestamp >= (
         {{ this }}
 )
 {% endif %}
+
+qualify(ROW_NUMBER() over(PARTITION BY tx_id, msg_index, attribute_key
+ORDER BY
+    attribute_index) = 1) -- this is needed to handle the case where the same attribute key "collection_address" is repeated in the same message
 ),
 sender AS (
     SELECT
