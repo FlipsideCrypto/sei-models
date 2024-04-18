@@ -63,13 +63,13 @@ vars:
       ROLES:
         - AWS_LAMBDA_SEI_API
         - INTERNAL_DEV
-    # prod:
-    #   API_INTEGRATION: aws_sei_api
-    #   EXTERNAL_FUNCTION_URI: sfl36j9j2c.execute-api.us-east-1.amazonaws.com/prod/
-    #   ROLES:
-    #     - AWS_LAMBDA_AXELAR_API
-    #     - DBT_CLOUD_AXELAR
-    #     - INTERNAL_DEV
+    prod:
+      API_INTEGRATION: aws_sei_api
+      EXTERNAL_FUNCTION_URI:  
+      ROLES:
+        - AWS_LAMBDA_AXELAR_API
+        - DBT_CLOUD_AXELAR
+        - INTERNAL_DEV
 
 #### STREAMLINE 2.0 END ####
 
