@@ -221,7 +221,23 @@ SELECT
     '{{ invocation_id }}' AS _invocation_id
 FROM
     wasm A
-    JOIN wasm b
+    JOIN (
+        SELECT
+            tx_id,
+            msg_group,
+            msg_sub_group,
+            amount,
+            contract_address
+        FROM
+            wasm
+        WHERE
+            action IN (
+                'mint',
+                'burn'
+            ) qualify(ROW_NUMBER() over(PARTITION BY tx_id, msg_group, msg_sub_group, amount
+        ORDER BY
+            msg_index) = 1)
+    ) b
     ON A.tx_id = b.tx_id
     AND A.msg_group = b.msg_group
     AND A.msg_sub_group = b.msg_sub_group
@@ -237,8 +253,4 @@ WHERE
     A.action IN (
         'provide_liquidity',
         'withdraw_liquidity'
-    )
-    AND b.action IN (
-        'mint',
-        'burn'
     )
