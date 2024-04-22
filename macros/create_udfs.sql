@@ -5,7 +5,7 @@
 {{ create_udtf_get_base_table(
             schema = "streamline"
         ) }}
-        {{ create_udf_rest_api() }}
+        {{ create_udf_bulk_rest_api_v2() }}
 
         {% endset %}
         {% do run_query(sql) %}

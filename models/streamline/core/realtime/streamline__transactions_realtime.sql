@@ -1,34 +1,35 @@
 {{ config (
     materialized = "view",
-    post_hook = if_data_call_function(
-        func = "{{this.schema}}.udf_bulk_json_rpc(object_construct('sql_source', '{{this.identifier}}', 'external_table', 'transactions', 'sql_limit', {{var('sql_limit','6000000')}}, 'producer_batch_size', {{var('producer_batch_size','3000000')}}, 'worker_batch_size', {{var('worker_batch_size','15000')}}, 'batch_call_limit', {{var('batch_call_limit','10')}}, 'exploded_key', '[\"result\", \"txs\"]', 'call_type', 'batch'))",
-        target = "{{this.schema}}.{{this.identifier}}"
+    post_hook = fsc_utils.if_data_call_function_v2(
+        func = 'streamline.udf_bulk_rest_api_v2',
+        target = "{{this.schema}}.{{this.identifier}}",
+        params ={ "external_table" :"transactions",
+        "sql_limit" :"100000",
+        "producer_batch_size" :"100000",
+        "worker_batch_size" :"200",
+        "exploded_key": "[\"result\", \"txs\"]",
+        "sql_source" :"{{this.identifier}}" }
     )
 ) }}
-
+-- depends_on: {{ ref('streamline__complete_transactions') }}
+-- depends_on: {{ ref('streamline__complete_tx_counts') }}
 WITH blocks AS (
 
     SELECT
-        block_number
+        A.block_number,
+        tx_count
     FROM
-        {{ ref("streamline__complete_tx_counts") }}
-    EXCEPT
-    SELECT
-        block_number
-    FROM
-        {{ ref("streamline__complete_transactions") }}
-),
-transactions_counts_by_block AS (
-    SELECT
-        tc.block_number,
-        tc.data :: INTEGER AS txcount
-    FROM
-        {{ ref("bronze__streamline_tx_counts") }}
-        tc
-        INNER JOIN blocks b
-        ON tc.block_number = b.block_number
-),
-numbers AS (
+        {{ ref("streamline__complete_tx_counts") }} A
+        LEFT JOIN {{ ref("streamline__complete_transactions") }}
+        b
+        ON A.block_number = b.block_number
+    WHERE
+        b.block_number IS NULL
+    ORDER BY
+        1 DESC
+    LIMIT
+        100
+), numbers AS (
     -- Recursive CTE to generate numbers. We'll use the maximum txcount value to limit our recursion.
     SELECT
         1 AS n
@@ -40,44 +41,59 @@ numbers AS (
     WHERE
         n < (
             SELECT
-                CEIL(MAX(txcount) / 100.0)
+                CEIL(MAX(tx_count) / 100.0)
             FROM
-                transactions_counts_by_block)
+                blocks)
         ),
         blocks_with_page_numbers AS (
             SELECT
                 tt.block_number AS block_number,
                 n.n AS page_number
             FROM
-                transactions_counts_by_block tt
+                blocks tt
                 JOIN numbers n
                 ON n.n <= CASE
-                    WHEN tt.txcount % 100 = 0 THEN tt.txcount / 100
+                    WHEN tt.tx_count % 100 = 0 THEN tt.tx_count / 100
                     ELSE FLOOR(
-                        tt.txcount / 100
+                        tt.tx_count / 100
                     ) + 1
                 END
+            WHERE
+                tt.tx_count > 0
         )
     SELECT
-        PARSE_JSON(
-            CONCAT(
-                '{"jsonrpc": "2.0",',
-                '"method": "tx_search", "params":["',
-                'tx.height=',
-                block_number :: STRING,
-                '",',
-                TRUE,
-                ',"',
-                page_number :: STRING,
-                '",',
-                '"100",',
-                '"asc"',
-                '],"id":"',
-                block_number :: STRING,
-                '"}'
-            )
-        ) AS request
+        ROUND(
+            block_number,
+            -3
+        ) AS partition_key,
+        live.udf_api(
+            'POST',
+            '{service}/{Authentication}',
+            OBJECT_CONSTRUCT(
+                'Content-Type',
+                'application/json'
+            ),
+            OBJECT_CONSTRUCT(
+                'id',
+                block_number,
+                'jsonrpc',
+                '2.0',
+                'method',
+                'tx_search',
+                'params',
+                ARRAY_CONSTRUCT(
+                    'tx.height=' || block_number :: STRING,
+                    TRUE,
+                    page_number :: STRING,
+                    '100',
+                    'asc'
+                )
+            ),
+            'Vault/prod/sei/allthatnode/mainnet'
+        ) AS request,
+        page_number,
+        block_number AS block_number_requested
     FROM
         blocks_with_page_numbers
     ORDER BY
-        block_number ASC
+        block_number
