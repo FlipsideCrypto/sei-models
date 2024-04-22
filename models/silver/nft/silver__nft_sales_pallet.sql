@@ -92,7 +92,9 @@ nft_sales_buydata AS (
             attribute_value :: variant
         ) AS j,
         j :nft_address :: STRING AS nft_address,
-        j :nft_token_id :: STRING AS token_id,
+        j: collection_address :: STRING AS collection_address,
+        j :nft_token_id :: STRING AS nft_token_id,
+        j :token_id :: STRING AS token_id,
         j :nft_seller :: STRING AS nft_seller,
         j :sold_to :: STRING AS nft_sold_to,
         j :_contract_address :: STRING AS marketplace_contract,
@@ -184,8 +186,14 @@ SELECT
         WHEN 'wasm-buy_now' THEN 'sale'
         WHEN 'wasm-accept_bid' THEN 'bid_won'
     END AS event_type,
-    A.nft_address,
-    A.token_id,
+    COALESCE(
+        A.nft_address,
+        A.collection_address
+    ) AS nft_address,
+    COALESCE(
+        A.nft_token_id,
+        A.token_id
+    ) AS token_id,
     COALESCE(
         b.nft_buyer,
         A.nft_sold_to,
