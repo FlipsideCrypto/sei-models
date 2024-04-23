@@ -6,7 +6,7 @@
         params ={ "external_table" :"transactions",
         "sql_limit" :"100000",
         "producer_batch_size" :"100000",
-        "worker_batch_size" :"200",
+        "worker_batch_size" :"100",
         "exploded_key": "[\"result\", \"txs\"]",
         "sql_source" :"{{this.identifier}}" }
     )
@@ -20,16 +20,10 @@ WITH blocks AS (
         tx_count
     FROM
         {{ ref("streamline__complete_tx_counts") }} A
-        LEFT JOIN {{ ref("streamline__complete_transactions") }}
-        b
-        ON A.block_number = b.block_number
     WHERE
-        b.block_number IS NULL
-    ORDER BY
-        1 DESC
-    LIMIT
-        100
-), numbers AS (
+        tx_count > 0
+),
+numbers AS (
     -- Recursive CTE to generate numbers. We'll use the maximum txcount value to limit our recursion.
     SELECT
         1 AS n
@@ -58,14 +52,22 @@ WITH blocks AS (
                         tt.tx_count / 100
                     ) + 1
                 END
-            WHERE
-                tt.tx_count > 0
+            EXCEPT
+            SELECT
+                block_number,
+                page_number
+            FROM
+                {{ ref("streamline__complete_transactions") }}
+            ORDER BY
+                1 DESC
+            LIMIT
+                10
         )
     SELECT
         ROUND(
             block_number,
             -3
-        ) AS partition_key,
+        ) :: INT AS partition_key,
         live.udf_api(
             'POST',
             '{service}/{Authentication}',

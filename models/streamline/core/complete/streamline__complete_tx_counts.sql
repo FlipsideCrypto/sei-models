@@ -7,8 +7,20 @@
 ) }}
 
 SELECT
-    DATA :block_number AS block_number,
-    DATA :result :total_count :: INT AS tx_count,
+    COALESCE(
+        VALUE :BLOCK_NUMBER,
+        REPLACE(
+            COALESCE(
+                metadata :request :data :params [0],
+                metadata :request :params [0]
+            ),
+            'tx.height='
+        ) :: INT
+    ) AS block_number,
+    COALESCE(
+        DATA :result :total_count,
+        DATA
+    ) :: INT AS tx_count,
     {{ dbt_utils.generate_surrogate_key(
         ['block_number']
     ) }} AS complete_tx_counts_id,

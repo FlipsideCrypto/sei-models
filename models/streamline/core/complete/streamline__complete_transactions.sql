@@ -9,11 +9,12 @@
 SELECT
     DATA :height :: INT AS block_number,
     COALESCE(
+        VALUE :PAGE_NUMBER,
         metadata :request :data :params [2],
         metadata :request :params [2]
-    ) :: INT AS page,
+    ) :: INT AS page_number,
     {{ dbt_utils.generate_surrogate_key(
-        ['block_number','page']
+        ['block_number','page_number']
     ) }} AS complete_transactions_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
