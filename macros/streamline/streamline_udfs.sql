@@ -3,7 +3,7 @@
     OR REPLACE EXTERNAL FUNCTION streamline.udf_bulk_rest_api_v2(
         json OBJECT
     ) returns ARRAY api_integration = {% if target.name == "prod" %}
-        aws_sei_api AS ''
+        aws_sei_api AS 'https://dbtc9lfp0k.execute-api.us-east-1.amazonaws.com/prod/udf_bulk_rest_api'
     {% else %}
         aws_sei_api_dev AS 'https://ibj933oi6f.execute-api.us-east-1.amazonaws.com/stg/udf_bulk_rest_api'
     {%- endif %};
