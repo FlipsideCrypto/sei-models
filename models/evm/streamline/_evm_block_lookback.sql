@@ -4,4 +4,4 @@
 {# replace this with regular logic after silver is built#}
 
 SELECT
-    17523634 AS block_number
+    17539970 AS block_number
