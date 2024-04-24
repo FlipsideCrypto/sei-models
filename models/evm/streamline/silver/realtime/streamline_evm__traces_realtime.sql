@@ -1,8 +1,14 @@
 {{ config (
     materialized = "view",
-    post_hook = if_data_call_function(
-        func = "{{this.schema}}.udf_rest_api(object_construct('sql_source', '{{this.identifier}}', 'external_table', 'evm_traces_testnet', 'exploded_key','[\"result\"]', 'sql_limit', {{var('sql_limit','100000')}}, 'producer_batch_size', {{var('producer_batch_size','100000')}}, 'worker_batch_size', {{var('worker_batch_size','50000')}}, 'sm_secret_name','Vault/prod/sei/quicknode/arctic1'))",
-        target = "{{this.schema}}.{{this.identifier}}"
+    post_hook = fsc_utils.if_data_call_function_v2(
+        func = 'streamline.udf_bulk_rest_api_v2',
+        target = "{{this.schema}}.{{this.identifier}}",
+        params ={ "external_table" :"evm_traces_testnet",
+        "sql_limit" :"100000",
+        "producer_batch_size" :"100000",
+        "worker_batch_size" :"50000",
+        "sql_source" :"{{this.identifier}}",
+        "exploded_key": "[\"result\"]" }
     ),
     tags = ['streamline_core_realtime']
 ) }}
@@ -52,22 +58,24 @@ ready_blocks AS (
         block_number
     FROM
         to_do {# add retry here #}
+    ORDER BY
+        block_number ASC
+    LIMIT
+        100
 )
 SELECT
-    block_number AS partition_key,
-    OBJECT_CONSTRUCT(
-        'method',
+    block_number,
+    ROUND(
+        block_number,
+        -3
+    ) AS partition_key,
+    {{ target.database }}.live.udf_api(
         'POST',
-        'url',
         '{Service}/{Authentication}',
-        'headers',
         OBJECT_CONSTRUCT(
             'Content-Type',
             'application/json'
         ),
-        'params',
-        PARSE_JSON('{}'),
-        'data',
         OBJECT_CONSTRUCT(
             'id',
             block_number :: STRING,
@@ -77,7 +85,8 @@ SELECT
             'debug_traceBlockByNumber',
             'params',
             ARRAY_CONSTRUCT(utils.udf_int_to_hex(block_number), OBJECT_CONSTRUCT('tracer', 'callTracer', 'timeout', '30s'))
-        ) :: STRING
+        ),
+        'Vault/prod/sei/quicknode/arctic1'
     ) AS request
 FROM
     ready_blocks
