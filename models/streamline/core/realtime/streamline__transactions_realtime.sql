@@ -3,7 +3,7 @@
     post_hook = fsc_utils.if_data_call_function_v2(
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
-        params ={ "external_table" :"transactions",
+        params ={ "external_table" :"transactions_v2",
         "sql_limit" :"100000",
         "producer_batch_size" :"100000",
         "worker_batch_size" :"100",
@@ -59,9 +59,7 @@ numbers AS (
             FROM
                 {{ ref("streamline__complete_transactions") }}
             ORDER BY
-                1 DESC
-            LIMIT
-                10
+                1
         )
     SELECT
         ROUND(

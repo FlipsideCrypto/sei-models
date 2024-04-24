@@ -23,15 +23,13 @@ WITH blocks AS (
     FROM
         {{ ref("streamline__complete_tx_counts") }}
     ORDER BY
-        1 DESC
-    LIMIT
-        100
+        1
 )
 SELECT
     ROUND(
         block_number,
         -3
-    ) AS partition_key,
+    ) :: INT AS partition_key,
     live.udf_api(
         'POST',
         '{service}/{Authentication}',
