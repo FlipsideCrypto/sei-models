@@ -52,7 +52,7 @@ AND (
 ),
 bronze AS (
     SELECT
-        A.block_number AS block_id,
+        A.data :height :: INT AS block_id,
         b.block_timestamp,
         DATA :hash :: STRING AS tx_id
     FROM
@@ -64,7 +64,7 @@ bronze AS (
 
         A
         JOIN rel_blocks b
-        ON A.block_number = b.block_id
+        ON A.data :height :: INT = b.block_id
 
 {% if is_incremental() %}
 WHERE
@@ -93,7 +93,7 @@ WHERE
     {% endif %}
 {% endif %}
 
-qualify(ROW_NUMBER() over(PARTITION BY A.block_number, tx_id
+qualify(ROW_NUMBER() over(PARTITION BY A.data :height :: INT, tx_id
 ORDER BY
     A._inserted_timestamp DESC) = 1)
 ),

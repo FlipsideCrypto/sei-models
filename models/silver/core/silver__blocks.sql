@@ -10,7 +10,7 @@
 WITH base AS (
 
     SELECT
-        block_number AS block_id,
+        DATA :result :block :header :height :: INT AS block_id,
         DATA :result :block :header AS header,
         COALESCE(ARRAY_SIZE(DATA :result :block :data :txs) :: NUMBER, 0) AS tx_count,
         header :chain_id :: STRING AS chain_id,

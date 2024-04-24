@@ -42,6 +42,9 @@ sources:
       - name: evm_confirm_blocks_testnet
       - name: evm_receipts_testnet
       - name: evm_traces_testnet
+      - name: blocks_v2
+      - name: transactions_v2
+      - name: txcount_v2
   - name: bronze
     schema: bronze
     tables:

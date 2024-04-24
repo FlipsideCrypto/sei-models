@@ -11,7 +11,7 @@
 WITH base_table AS (
 
     SELECT
-        block_number AS block_id,
+        DATA :height :: INT AS block_id,
         DATA :hash :: STRING AS tx_id,
         DATA :tx_result :codespace :: STRING AS codespace,
         DATA :tx_result :gas_used :: NUMBER AS gas_used,

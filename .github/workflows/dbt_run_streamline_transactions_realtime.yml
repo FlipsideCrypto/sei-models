@@ -42,7 +42,7 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt run --vars '{"STREAMLINE_INVOKE_STREAMS":True}' -m 1+models/silver/streamline/core/realtime/streamline__tx_search_realtime.sql || true
+          dbt run --vars '{"STREAMLINE_INVOKE_STREAMS":True}' -m 1+models/streamline/core/realtime/streamline__transactions_realtime.sql || true
           workstream report --exit-nonzero  
         env:
           WORKSTREAM_DBT_CLIENT_ID: ${{ secrets.WORKSTREAM_DBT_CLIENT_ID }}
