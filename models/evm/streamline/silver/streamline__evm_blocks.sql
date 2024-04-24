@@ -11,7 +11,10 @@ SELECT
         ''
     ) AS block_number_hex
 FROM
-    {{ ref("silver__number_sequence") }}
+    {{ source(
+        'crosschain_silver',
+        'number_sequence'
+    ) }}
 WHERE
     _id <= (
         SELECT
@@ -20,7 +23,7 @@ WHERE
                 0
             )
         FROM
-            {{ ref("streamline_evm__get_chainhead") }}
+            {{ ref("streamline__evm_get_chainhead") }}
     )
 ORDER BY
     _id ASC

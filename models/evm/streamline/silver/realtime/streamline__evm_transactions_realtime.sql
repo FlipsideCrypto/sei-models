@@ -24,7 +24,7 @@ to_do AS (
     SELECT
         block_number
     FROM
-        {{ ref("streamline_evm__blocks") }}
+        {{ ref("streamline__evm_blocks") }}
     WHERE
         (
             block_number >= (
@@ -58,10 +58,6 @@ ready_blocks AS (
         block_number
     FROM
         to_do {# add retry here #}
-    ORDER BY
-        block_number ASC
-    LIMIT
-        100
 )
 SELECT
     block_number,
