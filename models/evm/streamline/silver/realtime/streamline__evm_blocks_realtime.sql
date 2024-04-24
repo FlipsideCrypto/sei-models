@@ -6,7 +6,7 @@
         params ={ "external_table" :"evm_blocks_testnet",
         "sql_limit" :"100000",
         "producer_batch_size" :"100000",
-        "worker_batch_size" :"50000",
+        "worker_batch_size" :"500",
         "sql_source" :"{{this.identifier}}" }
     ),
     tags = ['streamline_core_realtime']
