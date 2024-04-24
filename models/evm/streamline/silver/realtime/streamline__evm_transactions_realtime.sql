@@ -39,7 +39,7 @@ to_do AS (
     SELECT
         block_number
     FROM
-        {{ ref("streamline_evm__complete_transactions") }}
+        {{ ref("streamline__complete_evm_transactions") }}
     WHERE
         block_number >= (
             SELECT
