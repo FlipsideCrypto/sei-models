@@ -3,12 +3,12 @@
     post_hook = fsc_utils.if_data_call_function_v2(
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
-        params ={ "external_table" :"evm_transactions_testnet",
+        params ={ "external_table" :"evm_traces_testnet",
         "sql_limit" :"100000",
         "producer_batch_size" :"100000",
         "worker_batch_size" :"50000",
         "sql_source" :"{{this.identifier}}",
-        "exploded_key": "[\"result\", \"transactions\"]" }
+        "exploded_key": "[\"result\"]" }
     ),
     tags = ['streamline_core_realtime']
 ) }}
@@ -39,7 +39,7 @@ to_do AS (
     SELECT
         block_number
     FROM
-        {{ ref("streamline_evm__complete_transactions") }}
+        {{ ref("streamline_evm__complete_traces") }}
     WHERE
         block_number >= (
             SELECT
@@ -68,7 +68,7 @@ SELECT
     ROUND(
         block_number,
         -3
-    ) AS partition_key,
+    ) :: INT AS partition_key,
     {{ target.database }}.live.udf_api(
         'POST',
         '{Service}/{Authentication}',
@@ -82,12 +82,13 @@ SELECT
             'jsonrpc',
             '2.0',
             'method',
-            'eth_getBlockByNumber',
+            'debug_traceBlockByNumber',
             'params',
-            ARRAY_CONSTRUCT(utils.udf_int_to_hex(block_number), TRUE)),
-            'Vault/prod/sei/quicknode/arctic1'
-        ) AS request
-        FROM
-            ready_blocks
-        ORDER BY
-            block_number ASC
+            ARRAY_CONSTRUCT(utils.udf_int_to_hex(block_number), OBJECT_CONSTRUCT('tracer', 'callTracer', 'timeout', '30s'))
+        ),
+        'Vault/prod/sei/quicknode/arctic1'
+    ) AS request
+FROM
+    ready_blocks
+ORDER BY
+    block_number ASC
