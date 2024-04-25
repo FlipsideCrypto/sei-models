@@ -146,24 +146,8 @@ WHERE
             AND b.partition_key = s.partition_key
         WHERE
             b.partition_key = s.partition_key
-            AND (
-                DATA :error :code IS NULL
-                OR DATA :error :code NOT IN (
-                    '-32000',
-                    '-32001',
-                    '-32002',
-                    '-32003',
-                    '-32004',
-                    '-32005',
-                    '-32006',
-                    '-32007',
-                    '-32008',
-                    '-32009',
-                    '-32010',
-                    '-32602',
-                    '-32603'
-                )
-            )
+            AND DATA :error IS NULL
+             
 {% endmacro %}
 
 {% macro streamline_external_table_FR_query_v2(
@@ -197,22 +181,5 @@ FROM
     AND b.partition_key = s.partition_key
 WHERE
     b.partition_key = s.partition_key
-    AND (
-        DATA :error :code IS NULL
-        OR DATA :error :code NOT IN (
-            '-32000',
-            '-32001',
-            '-32002',
-            '-32003',
-            '-32004',
-            '-32005',
-            '-32006',
-            '-32007',
-            '-32008',
-            '-32009',
-            '-32010',
-            '-32602',
-            '-32603'
-        )
-    )
+    AND DATA :error IS NULL
 {% endmacro %}

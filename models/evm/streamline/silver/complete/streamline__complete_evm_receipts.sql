@@ -11,7 +11,7 @@ SELECT
     VALUE :BLOCK_NUMBER :: INT AS block_number,
     {{ dbt_utils.generate_surrogate_key(
         ['block_number']
-    ) }} AS complete_receipts_id,
+    ) }} AS complete_evm_receipts_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     _inserted_timestamp,
