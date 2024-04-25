@@ -42,7 +42,7 @@ numbers AS (
         ),
         blocks_with_page_numbers AS (
             SELECT
-                tt.block_number AS block_number,
+                tt.block_number :: INT AS block_number,
                 n.n AS page_number
             FROM
                 blocks tt
