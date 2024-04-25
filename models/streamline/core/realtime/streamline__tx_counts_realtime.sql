@@ -19,7 +19,7 @@ WITH blocks AS (
         {{ ref("streamline__blocks") }}
     EXCEPT
     SELECT
-        block_number
+        block_number :: INT
     FROM
         {{ ref("streamline__complete_tx_counts") }}
     ORDER BY
