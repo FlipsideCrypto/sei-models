@@ -6,7 +6,7 @@
         params ={ "external_table" :"evm_transactions_testnet",
         "sql_limit" :"100000",
         "producer_batch_size" :"100000",
-        "worker_batch_size" :"500",
+        "worker_batch_size" :"100",
         "sql_source" :"{{this.identifier}}",
         "exploded_key": "[\"result\", \"transactions\"]" }
     ),
