@@ -3,23 +3,21 @@
 ) }}
 
 SELECT
+    VALUE,
     partition_key,
-    DATA,
-    _INSERTED_TIMESTAMP,
-    id,
     metadata,
-    _PARTITION_BY_BLOCK_ID,
-    VALUE
+    DATA,
+    file_name,
+    _INSERTED_TIMESTAMP
 FROM
     {{ ref('bronze__streamline_FR_transactions_v2') }}
 UNION ALL
 SELECT
-    block_number,
-    DATA,
-    _INSERTED_TIMESTAMP,
-    id,
+    VALUE,
+    _partition_by_block_id AS partition_key,
     metadata,
-    _PARTITION_BY_BLOCK_ID,
-    VALUE
+    DATA,
+    file_name,
+    _INSERTED_TIMESTAMP
 FROM
     {{ ref('bronze__streamline_FR_transactions_v1') }}
