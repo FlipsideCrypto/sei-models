@@ -9,7 +9,7 @@
         "worker_batch_size" :"500",
         "sql_source" :"{{this.identifier}}" }
     ),
-    tags = ['streamline_core_realtime']
+    tags = ['streamline_core_evm_realtime']
 ) }}
 
 WITH last_3_days AS (

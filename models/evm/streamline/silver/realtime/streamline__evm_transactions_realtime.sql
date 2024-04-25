@@ -10,7 +10,7 @@
         "sql_source" :"{{this.identifier}}",
         "exploded_key": "[\"result\", \"transactions\"]" }
     ),
-    tags = ['streamline_core_realtime']
+    tags = ['streamline_core_evm_realtime']
 ) }}
 
 WITH last_3_days AS (
