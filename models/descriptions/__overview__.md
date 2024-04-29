@@ -21,6 +21,7 @@ There is more information on how to use dbt docs in the last section of this doc
 ### Defi Tables (`SEI`.`DEFI`.`<table_name>`)
 ### Governance Tables (`SEI`.`GOV`.`<table_name>`)
 ### Statistics/Analytics Tables (`SEI`.`STATS`.`<table_name>`)
+### EVM Tables (`SEI`.`CORE_EVM`.`<table_name>`)
 
 **Core Dimension Tables:**
 - [dim_labels](#!/model/model.sei_models.core__dim_labels)
@@ -50,7 +51,7 @@ There is more information on how to use dbt docs in the last section of this doc
 **Stats EZ Tables:**
 - [ez_core_metrics_hourly](#!/model/model.sei_models.ez_core_metrics_hourly)
 
-## EVM Tables (`core_evm`)
+## EVM Tables (`SEI.CORE_EVM`)
 - [fact_blocks](#!/model/model.sei_models.core_evm__fact_blocks)
 - [fact_transactions](#!/model/model.sei_models.core_evm__fact_transactions)
 - [fact_event_logs](#!/model/model.sei_models.core_evm__fact_event_logs)
