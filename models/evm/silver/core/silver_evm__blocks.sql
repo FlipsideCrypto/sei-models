@@ -3,7 +3,7 @@
     materialized = 'incremental',
     unique_key = "block_number",
     cluster_by = "block_timestamp::date",
-    tags = ['non_realtime'],
+    tags = ['core'],
     merge_exclude_columns = ["inserted_timestamp"]
 ) }}
 
