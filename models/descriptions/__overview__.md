@@ -50,6 +50,12 @@ There is more information on how to use dbt docs in the last section of this doc
 **Stats EZ Tables:**
 - [ez_core_metrics_hourly](#!/model/model.sei_models.ez_core_metrics_hourly)
 
+## EVM Tables (`core_evm`)
+- [fact_blocks](#!/model/model.sei_models.core_evm__fact_blocks)
+- [fact_transactions](#!/model/model.sei_models.core_evm__fact_transactions)
+- [fact_event_logs](#!/model/model.sei_models.core_evm__fact_event_logs)
+- [fact_traces](#!/model/model.sei_models.core_evm__fact_traces)
+
 ## **Data Model Overview**
 
 The SEI
