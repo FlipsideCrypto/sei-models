@@ -23,13 +23,16 @@ WITH base AS (
 {% if is_incremental() %}
 {{ ref('bronze__streamline_blocks') }}
 WHERE
-    _inserted_timestamp >= (
-        SELECT
-            MAX(
-                _inserted_timestamp
-            )
-        FROM
-            {{ this }}
+    _inserted_timestamp >= DATEADD(
+        MINUTE,
+        -90,(
+            SELECT
+                MAX(
+                    _inserted_timestamp
+                )
+            FROM
+                {{ this }}
+        )
     )
 {% else %}
     {{ ref('bronze__streamline_FR_blocks') }}

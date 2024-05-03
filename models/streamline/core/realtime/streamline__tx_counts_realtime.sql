@@ -24,6 +24,28 @@ WITH blocks AS (
         {{ ref("streamline__complete_tx_counts") }}
     ORDER BY
         1
+),
+retry AS (
+    SELECT
+        A.block_number
+    FROM
+        {{ ref("streamline__complete_tx_counts") }} A
+        JOIN {{ ref("silver__blockchain") }}
+        b
+        ON A.block_number = b.block_id
+    WHERE
+        A.tx_count <> b.num_txs
+),
+combo AS (
+    SELECT
+        block_number
+    FROM
+        blocks
+    UNION
+    SELECT
+        block_number
+    FROM
+        retry
 )
 SELECT
     ROUND(
@@ -57,6 +79,6 @@ SELECT
     ) AS request,
     block_number
 FROM
-    blocks
+    combo
 ORDER BY
     block_number
