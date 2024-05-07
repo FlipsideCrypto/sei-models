@@ -17,6 +17,7 @@ WITH rel_blocks AS (
             -24,
             SYSDATE()
         )
+        AND block_id > 71797620
 
 {% if is_incremental() %}
 AND (
