@@ -38,18 +38,7 @@ WITH base_table AS (
     {{ ref('bronze__streamline_FR_transactions') }}
 {% endif %}
 WHERE
-    tx_id IS NOT NULL
-
-{% if is_incremental() %}
-AND _inserted_timestamp >= (
-    SELECT
-        MAX(_inserted_timestamp)
-    FROM
-        {{ this }}
-)
-{% endif %}
-
-qualify(ROW_NUMBER() over (PARTITION BY tx_id
+    tx_id IS NOT NULL qualify(ROW_NUMBER() over (PARTITION BY tx_id
 ORDER BY
     _inserted_timestamp DESC)) = 1
 )
@@ -81,9 +70,12 @@ FROM
 
 {% if is_incremental() %}
 WHERE
-    bb._inserted_timestamp :: DATE >= (
+    GREATEST (
+        b._inserted_timestamp,
+        bb._inserted_timestamp
+    ) >= (
         SELECT
-            MAX(_inserted_timestamp) :: DATE - 2
+            MAX(_inserted_timestamp)
         FROM
             {{ this }}
     )
