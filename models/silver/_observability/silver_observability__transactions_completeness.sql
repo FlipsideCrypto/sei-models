@@ -14,7 +14,7 @@ WITH rel_blocks AS (
     WHERE
         block_timestamp < DATEADD(
             HOUR,
-            -24,
+            -12,
             SYSDATE()
         )
         AND block_id > 71797620
@@ -23,7 +23,7 @@ WITH rel_blocks AS (
 AND (
     block_timestamp >= DATEADD(
         HOUR,
-        -96,(
+        -72,(
             SELECT
                 MAX(
                     max_block_timestamp
