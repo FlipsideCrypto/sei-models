@@ -69,7 +69,7 @@ numbers AS (
         ) :: INT AS partition_key,
         live.udf_api(
             'POST',
-            '{service}/{Authentication}',
+            '{Service}/{Authentication}',
             OBJECT_CONSTRUCT(
                 'Content-Type',
                 'application/json'
@@ -90,7 +90,7 @@ numbers AS (
                     'asc'
                 )
             ),
-            'Vault/prod/sei/allthatnode/mainnet'
+            'Vault/prod/sei/quicknode/mainnet'
         ) AS request,
         page_number,
         block_number AS block_number_requested

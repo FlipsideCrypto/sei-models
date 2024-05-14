@@ -54,7 +54,7 @@ SELECT
     ) :: INT AS partition_key,
     live.udf_api(
         'POST',
-        '{service}/{Authentication}',
+        '{Service}/{Authentication}',
         OBJECT_CONSTRUCT(
             'Content-Type',
             'application/json'
@@ -75,7 +75,7 @@ SELECT
                 'asc'
             )
         ),
-        'Vault/prod/sei/allthatnode/mainnet'
+        'Vault/prod/sei/quicknode/mainnet'
     ) AS request,
     block_number
 FROM

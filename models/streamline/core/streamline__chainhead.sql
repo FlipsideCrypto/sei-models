@@ -6,7 +6,7 @@
 SELECT
     {{ target.database }}.live.udf_api(
         'POST',
-        '{service}/{Authentication}',
+        '{Service}/{Authentication}',
         OBJECT_CONSTRUCT(
             'Content-Type',
             'application/json',
@@ -23,5 +23,5 @@ SELECT
             'params',
             []
         ),
-        'Vault/prod/sei/allthatnode/mainnet'
+        'Vault/prod/sei/quicknode/mainnet'
     ) :data :result :sync_info :latest_block_height :: INT AS block_number
