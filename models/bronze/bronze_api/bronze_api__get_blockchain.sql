@@ -100,13 +100,13 @@ SELECT
     call,
     {{ target.database }}.live.udf_api(
         'POST',
-        '{service}/{Authentication}',
+        '{Service}/{Authentication}',
         OBJECT_CONSTRUCT(
             'Content-Type',
             'application/json'
         ),
         call,
-        'Vault/prod/sei/allthatnode/mainnet'
+        'Vault/prod/sei/quicknode/mainnet'
     ) AS DATA,
     SYSDATE() AS _inserted_timestamp
 FROM
