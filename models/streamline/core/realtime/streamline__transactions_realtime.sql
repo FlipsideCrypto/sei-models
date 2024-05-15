@@ -7,7 +7,7 @@
         "sql_limit" :"100000",
         "producer_batch_size" :"100000",
         "worker_batch_size" :"100",
-        "exploded_key": "[\"result\", \"txs\"]",
+        "exploded_key": tojson(["result.txs"]),
         "sql_source" :"{{this.identifier}}" }
     )
 ) }}
