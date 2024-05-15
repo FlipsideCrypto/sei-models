@@ -8,7 +8,7 @@
         "producer_batch_size" :"100000",
         "worker_batch_size" :"10000",
         "sql_source" :"{{this.identifier}}",
-        "exploded_key": "[\"result\"]" }
+        "exploded_key": tojson(["result"]) }
     ),
     tags = ['streamline_core_evm_realtime']
 ) }}
