@@ -268,7 +268,7 @@ SELECT
     amount_int :: INT AS amount,
     currency,
     {{ dbt_utils.generate_surrogate_key(
-        ['tx_id','msg_index']
+        ['tx_id','msg_index','transfer_type']
     ) }} AS transfers_ibc_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
