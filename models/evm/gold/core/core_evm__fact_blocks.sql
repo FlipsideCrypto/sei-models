@@ -7,7 +7,7 @@
 SELECT
     block_number,
     block_timestamp,
-    'testnet' AS network,
+    'mainnet' AS network,
     'sei' AS blockchain,
     tx_count,
     difficulty,
