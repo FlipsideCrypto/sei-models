@@ -18,12 +18,10 @@ FROM
 WHERE
     _id <= (
         SELECT
-            COALESCE(
-                block_number,
-                0
-            )
+            MAX(block_number)
         FROM
-            {{ ref("streamline__evm_get_chainhead") }}
+            {{ ref('streamline__chainhead') }}
     )
+    AND _id >= 79123881
 ORDER BY
     _id ASC

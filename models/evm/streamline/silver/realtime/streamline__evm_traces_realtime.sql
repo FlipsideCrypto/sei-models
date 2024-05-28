@@ -3,7 +3,7 @@
     post_hook = fsc_utils.if_data_call_function_v2(
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
-        params ={ "external_table" :"evm_traces_testnet",
+        params ={ "external_table" :"evm_traces",
         "sql_limit" :"25000",
         "producer_batch_size" :"1000",
         "worker_batch_size" :"10",
@@ -82,9 +82,9 @@ SELECT
             'params',
             ARRAY_CONSTRUCT(utils.udf_int_to_hex(block_number), OBJECT_CONSTRUCT('tracer', 'callTracer', 'timeout', '30s'))
         ),
-        'Vault/prod/sei/quicknode/arctic1'
+        'Vault/prod/sei/quicknode/mainnet'
     ) AS request
 FROM
     ready_blocks
 ORDER BY
-    block_number desc
+    block_number DESC
