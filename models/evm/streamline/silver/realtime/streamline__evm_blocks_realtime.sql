@@ -85,4 +85,4 @@ SELECT
         FROM
             ready_blocks
         ORDER BY
-            block_number ASC
+            block_number DESC
