@@ -27,18 +27,17 @@ WITH atts AS (
             'acc_seq',
             'sei_addr'
         )
-        AND block_timestamp >= '2024-05-27 13:15:42.063' {# {% if is_incremental() %}
-        AND _inserted_timestamp >= (
-            SELECT
-                MAX(
-                    _inserted_timestamp
-                )
-            FROM
-                {{ this }}
-        )
-    {% endif %}
 
-    #}
+{% if is_incremental() %}
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(
+            _inserted_timestamp
+        )
+    FROM
+        {{ this }}
+)
+{% endif %}
 ),
 fee AS (
     SELECT
@@ -94,7 +93,9 @@ FROM
     LEFT OUTER JOIN fee f
     ON t.tx_id = f.tx_id
     LEFT OUTER JOIN spender s
-    ON t.tx_id = s.tx_id {# {% if is_incremental() %}
+    ON t.tx_id = s.tx_id
+
+{% if is_incremental() %}
 WHERE
     _inserted_timestamp >= (
         SELECT
@@ -105,7 +106,3 @@ WHERE
             {{ this }}
     )
 {% endif %}
-
-#}
-WHERE
-    block_timestamp >= '2024-05-27 13:15:42.063'
