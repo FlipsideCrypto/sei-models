@@ -70,6 +70,19 @@ vars:
         - AWS_LAMBDA_AXELAR_API
         - DBT_CLOUD_AXELAR
         - INTERNAL_DEV
+    prod-2xl:
+      API_INTEGRATION: aws_sei_api
+      EXTERNAL_FUNCTION_URI: dbtc9lfp0k.execute-api.us-east-1.amazonaws.com/prod/
+      ROLES:
+        - AWS_LAMBDA_AXELAR_API
+        - DBT_CLOUD_AXELAR
+        - INTERNAL_DEV
+    dev-2xl:
+      API_INTEGRATION: aws_sei_api_dev
+      EXTERNAL_FUNCTION_URI: ibj933oi6f.execute-api.us-east-1.amazonaws.com/stg/
+      ROLES:
+        - AWS_LAMBDA_SEI_API
+        - INTERNAL_DEV
 
 #### STREAMLINE 2.0 END ####
 

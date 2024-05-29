@@ -18,8 +18,15 @@ WITH atts AS (
     FROM
         {{ ref('silver__msg_attributes') }}
     WHERE
-        msg_type = 'tx'
-        AND attribute_key IN ('fee', 'acc_seq')
+        msg_type IN (
+            'tx',
+            'signer'
+        )
+        AND attribute_key IN (
+            'fee',
+            'acc_seq',
+            'sei_addr'
+        )
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
@@ -54,7 +61,7 @@ spender AS (
     FROM
         atts
     WHERE
-        attribute_key = 'acc_seq' qualify(ROW_NUMBER() over(PARTITION BY tx_id
+        attribute_key IN ('acc_seq', 'sei_addr') qualify(ROW_NUMBER() over(PARTITION BY tx_id
     ORDER BY
         msg_index)) = 1
 )

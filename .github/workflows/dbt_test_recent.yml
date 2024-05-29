@@ -39,12 +39,8 @@ jobs:
 
       - name: install dependencies
         run: |
-          pip install -r requirements.txt workstream-dbt-core
+          pip install -r requirements.txt
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt test -m  models/bronze/core "sei_models,tag:recent_test"  || true
-          workstream report --exit-nonzero  
-        env:
-          WORKSTREAM_DBT_CLIENT_ID: ${{ secrets.WORKSTREAM_DBT_CLIENT_ID }}
-          WORKSTREAM_DBT_CLIENT_SECRET: ${{ secrets.WORKSTREAM_DBT_CLIENT_SECRET }}
+          dbt test -m  models/bronze/core "sei_models,tag:recent_test"
