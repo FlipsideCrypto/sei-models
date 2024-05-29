@@ -18,19 +18,27 @@ WITH atts AS (
     FROM
         {{ ref('silver__msg_attributes') }}
     WHERE
-        msg_type = 'tx'
-        AND attribute_key IN ('fee', 'acc_seq')
-
-{% if is_incremental() %}
-AND _inserted_timestamp >= (
-    SELECT
-        MAX(
-            _inserted_timestamp
+        msg_type IN (
+            'tx',
+            'signer'
         )
-    FROM
-        {{ this }}
-)
-{% endif %}
+        AND attribute_key IN (
+            'fee',
+            'acc_seq',
+            'sei_addr'
+        )
+        AND block_timestamp >= '2024-05-27 13:15:42.063' {# {% if is_incremental() %}
+        AND _inserted_timestamp >= (
+            SELECT
+                MAX(
+                    _inserted_timestamp
+                )
+            FROM
+                {{ this }}
+        )
+    {% endif %}
+
+    #}
 ),
 fee AS (
     SELECT
@@ -54,7 +62,7 @@ spender AS (
     FROM
         atts
     WHERE
-        attribute_key = 'acc_seq' qualify(ROW_NUMBER() over(PARTITION BY tx_id
+        attribute_key IN ('acc_seq', 'sei_addr') qualify(ROW_NUMBER() over(PARTITION BY tx_id
     ORDER BY
         msg_index)) = 1
 )
@@ -86,9 +94,7 @@ FROM
     LEFT OUTER JOIN fee f
     ON t.tx_id = f.tx_id
     LEFT OUTER JOIN spender s
-    ON t.tx_id = s.tx_id
-
-{% if is_incremental() %}
+    ON t.tx_id = s.tx_id {# {% if is_incremental() %}
 WHERE
     _inserted_timestamp >= (
         SELECT
@@ -99,3 +105,7 @@ WHERE
             {{ this }}
     )
 {% endif %}
+
+#}
+WHERE
+    block_timestamp >= '2024-05-27 13:15:42.063'

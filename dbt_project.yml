@@ -70,6 +70,7 @@ vars:
         - AWS_LAMBDA_AXELAR_API
         - DBT_CLOUD_AXELAR
         - INTERNAL_DEV
+    prod-2xl:
 
 #### STREAMLINE 2.0 END ####
 
