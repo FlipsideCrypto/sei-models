@@ -70,10 +70,7 @@ FROM
 
 {% if is_incremental() %}
 WHERE
-    GREATEST (
-        b._inserted_timestamp,
-        bb._inserted_timestamp
-    ) >= (
+    b._inserted_timestamp >= (
         SELECT
             MAX(_inserted_timestamp)
         FROM
