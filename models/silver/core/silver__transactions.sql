@@ -64,7 +64,7 @@ SELECT
     '{{ invocation_id }}' AS _invocation_id
 FROM
     base_table b
-    LEFT OUTER JOIN {{ ref('silver__blocks') }}
+    JOIN {{ ref('silver__blocks') }}
     bb
     ON b.block_id = bb.block_id
 
