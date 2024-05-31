@@ -130,7 +130,7 @@ SELECT
         0
     ) AS latest_call_block,
     {{ dbt_utils.generate_surrogate_key(
-        ['contract_address']
+        ['c.contract_address']
     ) }} AS relevant_contracts_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
