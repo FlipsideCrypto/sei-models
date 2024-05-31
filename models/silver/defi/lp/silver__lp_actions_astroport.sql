@@ -143,6 +143,7 @@ wasm AS (
             'user',
             'claimed_reward'
         )
+        AND attribute_key <> 'claimed_finished_reward'
         AND NOT (
             attribute_key = 'action'
             AND attribute_value NOT IN (
