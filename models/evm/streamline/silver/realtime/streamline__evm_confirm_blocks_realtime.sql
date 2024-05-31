@@ -5,8 +5,8 @@
         target = "{{this.schema}}.{{this.identifier}}",
         params ={ "external_table" :"evm_confirm_blocks",
         "sql_limit" :"25000",
-        "producer_batch_size" :"100000",
-        "worker_batch_size" :"10000",
+        "producer_batch_size" :"10000",
+        "worker_batch_size" :"5000",
         "sql_source" :"{{this.identifier}}" }
     ),
     tags = ['streamline_core_evm_realtime']
