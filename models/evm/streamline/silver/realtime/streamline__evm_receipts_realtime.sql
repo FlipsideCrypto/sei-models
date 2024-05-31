@@ -57,7 +57,12 @@ ready_blocks AS (
     SELECT
         block_number
     FROM
-        to_do {# add retry here #}
+        to_do
+    UNION
+    SELECT
+        block_number
+    FROM
+        {{ ref("_missing_receipts") }}
 )
 SELECT
     block_number,

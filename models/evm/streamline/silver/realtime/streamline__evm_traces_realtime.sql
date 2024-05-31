@@ -58,6 +58,11 @@ ready_blocks AS (
         block_number
     FROM
         to_do
+    UNION
+    SELECT
+        block_number
+    FROM
+        {{ ref("_missing_traces") }}
 )
 SELECT
     block_number,
