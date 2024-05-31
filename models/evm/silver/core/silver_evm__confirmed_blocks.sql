@@ -42,7 +42,13 @@ SELECT
     block_number,
     block_hash,
     VALUE :: STRING AS tx_hash,
-    _inserted_timestamp
+    _inserted_timestamp,
+    {{ dbt_utils.generate_surrogate_key(
+        ['tx_hash']
+    ) }} AS confirmed_blocks_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     base,
     LATERAL FLATTEN (

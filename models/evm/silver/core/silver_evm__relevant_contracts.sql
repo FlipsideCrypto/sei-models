@@ -2,7 +2,8 @@
     materialized = 'incremental',
     unique_key = "contract_address",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(contract_address)",
-    tags = ['recent_evm_test', 'core']
+    tags = ['recent_evm_test', 'core'],
+    merge_exclude_columns = ["inserted_timestamp"]
 ) }}
 
 WITH emitted_events AS (
@@ -127,7 +128,13 @@ SELECT
         f.latest_call_block,
         p.latest_call_block,
         0
-    ) AS latest_call_block
+    ) AS latest_call_block,
+    {{ dbt_utils.generate_surrogate_key(
+        ['contract_address']
+    ) }} AS relevant_contracts_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     active_contracts C
     LEFT JOIN emitted_events e
