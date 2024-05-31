@@ -31,11 +31,11 @@ LIMIT
     SELECT
         '0x313ce567' AS function_sig,
         'decimals' AS function_name
-    UNION
+    UNION ALL
     SELECT
         '0x06fdde03',
         'name'
-    UNION
+    UNION ALL
     SELECT
         '0x95d89b41',
         'symbol'
@@ -82,11 +82,7 @@ node_call AS (
         *,
         live.udf_api(
             'POST',
-            CONCAT(
-                '{service}',
-                '/',
-                '{Authentication}'
-            ),{},
+            '{Service}/{Authentication}',{},
             batch_rpc_request,
             'Vault/prod/sei/quicknode/mainnet'
         ) AS response
