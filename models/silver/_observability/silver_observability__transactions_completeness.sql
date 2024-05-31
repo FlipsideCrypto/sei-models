@@ -53,19 +53,20 @@ AND (
 ),
 bronze AS (
     SELECT
-        A.data :height :: INT AS block_id,
+        A.block_id,
         b.block_timestamp,
-        DATA :hash :: STRING AS tx_id
+        A.tx_id
     FROM
-        {% if var('OBSERV_FULL_TEST') %}
-            {{ ref('bronze__streamline_FR_transactions') }}
-        {% else %}
-            {{ ref('bronze__streamline_transactions') }}
-        {% endif %}
+        {# {% if var('OBSERV_FULL_TEST') %}
+        {{ ref('bronze__streamline_FR_transactions') }}
+    {% else %}
+        {{ ref('bronze__streamline_transactions') }}
+    {% endif %}
 
-        A
-        JOIN rel_blocks b
-        ON A.data :height :: INT = b.block_id
+    #}
+    {{ ref('silver__transactions') }} A
+    JOIN rel_blocks b
+    ON A.block_id = b.block_id
 
 {% if is_incremental() %}
 WHERE
@@ -94,7 +95,7 @@ WHERE
     {% endif %}
 {% endif %}
 
-qualify(ROW_NUMBER() over(PARTITION BY A.data :height :: INT, tx_id
+qualify(ROW_NUMBER() over(PARTITION BY A.block_id, tx_id
 ORDER BY
     A._inserted_timestamp DESC) = 1)
 ),
