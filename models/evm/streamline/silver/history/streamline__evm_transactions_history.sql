@@ -3,13 +3,14 @@
     post_hook = fsc_utils.if_data_call_function_v2(
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
-        params ={ "external_table" :"evm_confirm_blocks",
+        params ={ "external_table" :"evm_transactions",
         "sql_limit" :"25000",
-        "producer_batch_size" :"10000",
-        "worker_batch_size" :"5000",
-        "sql_source" :"{{this.identifier}}" }
+        "producer_batch_size" :"100000",
+        "worker_batch_size" :"10000",
+        "sql_source" :"{{this.identifier}}",
+        "exploded_key": tojson(["result.transactions"]) }
     ),
-    tags = ['streamline_core_evm_realtime']
+    tags = ['streamline_core_evm_history']
 ) }}
 
 WITH last_3_days AS (
@@ -19,49 +20,28 @@ WITH last_3_days AS (
     FROM
         {{ ref("_evm_block_lookback") }}
 ),
-look_back AS (
-    SELECT
-        block_number
-    FROM
-        {{ ref("_max_evm_block_by_hour") }}
-        qualify ROW_NUMBER() over (
-            ORDER BY
-                block_number DESC
-        ) = 6
-),
 to_do AS (
     SELECT
         block_number
     FROM
         {{ ref("streamline__evm_blocks") }}
     WHERE
-        block_number IS NOT NULL
-        AND block_number <= (
-            SELECT
-                block_number
-            FROM
-                look_back
+        (
+            block_number < (
+                SELECT
+                    block_number
+                FROM
+                    last_3_days
+            )
         )
-        AND block_number >= (
-            SELECT
-                block_number
-            FROM
-                last_3_days
-        )
+        AND block_number IS NOT NULL
     EXCEPT
     SELECT
         block_number
     FROM
-        {{ ref("streamline__complete_evm_confirmed_blocks") }}
+        {{ ref("streamline__complete_evm_transactions") }}
     WHERE
-        block_number IS NOT NULL
-        AND block_number <= (
-            SELECT
-                block_number
-            FROM
-                look_back
-        )
-        AND block_number >= (
+        block_number < (
             SELECT
                 block_number
             FROM
@@ -95,10 +75,10 @@ SELECT
             'method',
             'eth_getBlockByNumber',
             'params',
-            ARRAY_CONSTRUCT(utils.udf_int_to_hex(block_number), FALSE)),
+            ARRAY_CONSTRUCT(utils.udf_int_to_hex(block_number), TRUE)),
             'Vault/prod/sei/quicknode/mainnet'
         ) AS request
         FROM
             ready_blocks
         ORDER BY
-            block_number ASC
+            block_number DESC

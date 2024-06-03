@@ -9,7 +9,7 @@
         "worker_batch_size" :"5000",
         "sql_source" :"{{this.identifier}}" }
     ),
-    tags = ['streamline_core_evm_realtime']
+    tags = ['streamline_core_evm_history']
 ) }}
 
 WITH last_3_days AS (
@@ -36,13 +36,7 @@ to_do AS (
         {{ ref("streamline__evm_blocks") }}
     WHERE
         block_number IS NOT NULL
-        AND block_number <= (
-            SELECT
-                block_number
-            FROM
-                look_back
-        )
-        AND block_number >= (
+        AND block_number < (
             SELECT
                 block_number
             FROM
@@ -55,13 +49,7 @@ to_do AS (
         {{ ref("streamline__complete_evm_confirmed_blocks") }}
     WHERE
         block_number IS NOT NULL
-        AND block_number <= (
-            SELECT
-                block_number
-            FROM
-                look_back
-        )
-        AND block_number >= (
+        AND block_number < (
             SELECT
                 block_number
             FROM
