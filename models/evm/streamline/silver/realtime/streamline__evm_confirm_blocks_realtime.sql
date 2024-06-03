@@ -13,15 +13,11 @@
 ) }}
 
 WITH last_3_days AS (
-    {#
 
     SELECT
         block_number
     FROM
         {{ ref("_evm_block_lookback") }}
-        #}
-    SELECT
-        79123881 AS block_number
 ),
 look_back AS (
     SELECT

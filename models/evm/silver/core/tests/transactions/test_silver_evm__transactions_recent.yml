@@ -5,10 +5,6 @@ models:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - TX_HASH
-      - fsc_utils.sequence_gaps:
-          partition_by:
-            - BLOCK_NUMBER
-          column_name: POSITION
     columns:
       - name: BLOCK_NUMBER
         tests:

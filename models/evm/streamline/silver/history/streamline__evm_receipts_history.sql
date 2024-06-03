@@ -10,7 +10,7 @@
         "sql_source" :"{{this.identifier}}",
         "exploded_key": tojson(["result"]) }
     ),
-    tags = ['streamline_core_evm_realtime']
+    tags = ['streamline_core_evm_history']
 ) }}
 
 WITH last_3_days AS (
@@ -27,7 +27,7 @@ to_do AS (
         {{ ref("streamline__evm_blocks") }}
     WHERE
         (
-            block_number >= (
+            block_number < (
                 SELECT
                     block_number
                 FROM
@@ -41,16 +41,11 @@ to_do AS (
     FROM
         {{ ref("streamline__complete_evm_receipts") }}
     WHERE
-        block_number >= (
+        block_number < (
             SELECT
                 block_number
             FROM
                 last_3_days
-        )
-        AND _inserted_timestamp >= DATEADD(
-            'day',
-            -4,
-            SYSDATE()
         )
 ),
 ready_blocks AS (
@@ -58,16 +53,6 @@ ready_blocks AS (
         block_number
     FROM
         to_do
-    UNION
-    SELECT
-        block_number
-    FROM
-        {{ ref("_missing_receipts") }}
-    UNION
-    SELECT
-        block_number
-    FROM
-        {{ ref("_unconfirmed_blocks") }}
 )
 SELECT
     block_number,
