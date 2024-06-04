@@ -1,0 +1,42 @@
+version: 2
+models:
+  - name: core_evm__ez_native_transfers
+    description: '{{ doc("sei_ez_eth_transfers_table_doc") }}'
+
+    columns:
+      - name: TX_HASH
+        description: '{{ doc("sei_transfer_tx_hash") }}'
+      - name: BLOCK_NUMBER
+        description: '{{ doc("sei_block_number") }}'
+      - name: BLOCK_TIMESTAMP
+        description: '{{ doc("sei_block_timestamp") }}'
+      - name: TX_POSITION
+        description: '{{ doc("sei_tx_position") }}'
+      - name: TRACE_INDEX
+        description: '{{ doc("sei_trace_index") }}'
+      - name: IDENTIFIER
+        description: '{{ doc("sei_traces_identifier") }}'
+      - name: ORIGIN_FROM_ADDRESS
+        description: '{{ doc("sei_origin_from") }}'
+      - name: ORIGIN_TO_ADDRESS
+        description: '{{ doc("sei_origin_to") }}'
+      - name: ORIGIN_FUNCTION_SIGNATURE
+        description: '{{ doc("sei_origin_sig") }}'
+      - name: FROM_ADDRESS
+        description: '{{ doc("sei_transfer_from_address") }}'
+      - name: TO_ADDRESS
+        description: '{{ doc("sei_transfer_to_address") }}'
+      - name: AMOUNT
+        description: '{{ doc("sei_amount") }}'
+      - name: AMOUNT_PRECISE_RAW
+        description: '{{ doc("precise_amount_unadjusted") }}'
+      - name: AMOUNT_PRECISE
+        description: '{{ doc("precise_amount_adjusted") }}'
+      - name: AMOUNT_USD
+        description: '{{ doc("sei_eth_amount_usd") }}' 
+      - name: EZ_NATIVE_TRANSFERS_ID
+        description: '{{ doc("pk") }}'   
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'   
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}' 

@@ -2,7 +2,7 @@
     materialized = "incremental",
     unique_key = "created_contract_address",
     merge_exclude_columns = ["inserted_timestamp"],
-    tags = ['recent_evm_test']
+    tags = ['recent_evm_test','core']
 ) }}
 
 SELECT

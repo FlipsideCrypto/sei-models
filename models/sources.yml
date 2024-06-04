@@ -29,6 +29,8 @@ sources:
       - name: hourly_prices_coin_gecko
       - name: number_sequence
       - name: labels_combined
+      - name: complete_native_asset_metadata
+      - name: complete_native_prices
   - name: bronze_streamline
     database: streamline
     schema: |
