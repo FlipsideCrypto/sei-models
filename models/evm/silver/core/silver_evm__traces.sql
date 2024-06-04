@@ -416,6 +416,6 @@ SELECT
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id
 FROM
-    FINAL qualify(ROW_NUMBER() over(PARTITION BY block_number, tx_position, trace_index
+    FINAL qualify(ROW_NUMBER() over(PARTITION BY block_number, tx_hash, trace_index
 ORDER BY
     _inserted_timestamp DESC, is_pending ASC)) = 1
