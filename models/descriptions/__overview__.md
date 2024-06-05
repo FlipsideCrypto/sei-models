@@ -56,6 +56,10 @@ There is more information on how to use dbt docs in the last section of this doc
 - [fact_transactions](#!/model/model.sei_models.core_evm__fact_transactions)
 - [fact_event_logs](#!/model/model.sei_models.core_evm__fact_event_logs)
 - [fact_traces](#!/model/model.sei_models.core_evm__fact_traces)
+- [dim_contracts](#!/model/model.sei_models.core_evm__dim_contracts)
+- [fact_token_transfers](#!/model/model.sei_models.core_evm__fact_token_transfers)
+- [ez_token_transfers](#!/model/model.sei_models.core_evm__ez_token_transfers)
+- [ez_native_transfers](#!/model/model.sei_models.core_evm__ez_native_transfers)
 
 ## **Data Model Overview**
 
