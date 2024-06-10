@@ -7,6 +7,11 @@
             tx_hash AS base_tx_hash
         FROM
             {{ ref('test_silver_evm__transactions_full') }}
+        WHERE
+            block_number NOT IN (
+                81772279,
+                81772251
+            )
     ),
     model_name AS (
         SELECT
@@ -104,18 +109,36 @@ WHERE
 
 {% macro missing_traces(
         model1,
-        model2
+        model2,
+        threshold
     ) %}
-SELECT
-    DISTINCT block_number
-FROM
-    {{ model1 }}
-    tx
-    LEFT JOIN {{ model2 }}
-    tr USING (
-        block_number,
-        tx_hash
+    WITH base AS (
+        SELECT
+            DISTINCT block_number
+        FROM
+            {{ model1 }}
+            tx
+            LEFT JOIN {{ model2 }}
+            tr USING (
+                block_number,
+                tx_hash
+            )
+        WHERE
+            tr.tx_hash IS NULL
+            AND tx.block_number NOT IN (
+                81772279,
+                81772251
+            ) -- these are broken at the node
     )
+SELECT
+    *
+FROM
+    base
 WHERE
-    tr.tx_hash IS NULL
+    (
+        SELECT
+            COUNT(*) >= {{ threshold }}
+        FROM
+            base
+    )
 {% endmacro %}

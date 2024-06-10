@@ -28,3 +28,7 @@ WHERE
         FROM
             lookback
     )
+    AND tx.block_number NOT IN (
+        81772279,
+        81772251
+    )
