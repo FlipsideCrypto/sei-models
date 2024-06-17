@@ -8,3 +8,14 @@
         aws_sei_api_dev AS 'https://ibj933oi6f.execute-api.us-east-1.amazonaws.com/stg/udf_bulk_rest_api'
     {%- endif %};
 {% endmacro %}
+
+{% macro create_udf_bulk_decode_logs() %}
+    CREATE
+    OR REPLACE EXTERNAL FUNCTION streamline.udf_bulk_decode_logs(
+        json OBJECT
+    ) returns ARRAY api_integration = {% if target.name == "prod" %}
+        aws_sei_api AS 'https://dbtc9lfp0k.execute-api.us-east-1.amazonaws.com/prod/bulk_decode_logs'
+    {% else %}
+        aws_sei_api_dev AS 'https://ibj933oi6f.execute-api.us-east-1.amazonaws.com/stg/bulk_decode_logs'
+    {%- endif %};
+{% endmacro %}
