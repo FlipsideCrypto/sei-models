@@ -1,10 +1,14 @@
 {{ config (
     materialized = "view",
-    post_hook = [if_data_call_function(
-        func = "{{this.schema}}.udf_bulk_decode_logs(object_construct('sql_source', '{{this.identifier}}', 'external_table', 'EVM_DECODED_LOGS', 'sql_limit', {{var('sql_limit','2000000')}}, 'producer_batch_size', {{var('producer_batch_size','400000')}}, 'worker_batch_size', {{var('worker_batch_size','200000')}}))",
-        target = "{{this.schema}}.{{this.identifier}}"
+    post_hook = fsc_utils.if_data_call_function_v2(
+        func = 'streamline.udf_bulk_decode_logs_v2',
+        target = "{{this.schema}}.{{this.identifier}}",
+        params ={ "external_table" :"decoded_logs",
+        "sql_limit" :"1500000",
+        "producer_batch_size" :"400000",
+        "worker_batch_size" :"200000",
+        "sql_source" :"{{this.identifier}}" }
     ),
-    "call system$wait(" ~ var("WAIT", 400) ~ ")" ],
     tags = ['streamline_decoded_logs_realtime']
 ) }}
 

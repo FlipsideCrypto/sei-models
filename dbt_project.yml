@@ -53,6 +53,7 @@ vars:
 
   API_INTEGRATION: '{{ var("config")[target.name]["API_INTEGRATION"] if var("config")[target.name] else var("config")["dev"]["API_INTEGRATION"] }}'
   EXTERNAL_FUNCTION_URI: '{{ var("config")[target.name]["EXTERNAL_FUNCTION_URI"] if var("config")[target.name] else var("config")["dev"]["EXTERNAL_FUNCTION_URI"] }}'
+  API_AWS_ROLE_ARN: '{{ var("config")[target.name]["API_AWS_ROLE_ARN"] if var("config")[target.name] else var("config")["dev"]["API_AWS_ROLE_ARN"] }}'
   ROLES: '{{ var("config")[target.name]["ROLES"] }}'
 
   config:
@@ -60,12 +61,14 @@ vars:
     dev:
       API_INTEGRATION: aws_sei_api_dev
       EXTERNAL_FUNCTION_URI: ibj933oi6f.execute-api.us-east-1.amazonaws.com/stg/
+      API_AWS_ROLE_ARN: arn:aws:iam::704693948482:role/sei-api-stg-rolesnowflakeudfsAF733095-YX1gTAavoOYe
       ROLES:
         - AWS_LAMBDA_SEI_API
         - INTERNAL_DEV
     prod:
       API_INTEGRATION: aws_sei_api
       EXTERNAL_FUNCTION_URI: dbtc9lfp0k.execute-api.us-east-1.amazonaws.com/prod/
+      API_AWS_ROLE_ARN: arn:aws:iam::924682671219:role/sei-api-prod-rolesnowflakeudfsAF733095-iooKxz0RazMg
       ROLES:
         - AWS_LAMBDA_AXELAR_API
         - DBT_CLOUD_AXELAR
@@ -73,6 +76,7 @@ vars:
     prod-2xl:
       API_INTEGRATION: aws_sei_api
       EXTERNAL_FUNCTION_URI: dbtc9lfp0k.execute-api.us-east-1.amazonaws.com/prod/
+      API_AWS_ROLE_ARN: arn:aws:iam::924682671219:role/sei-api-prod-rolesnowflakeudfsAF733095-iooKxz0RazMg
       ROLES:
         - AWS_LAMBDA_AXELAR_API
         - DBT_CLOUD_AXELAR
@@ -80,6 +84,7 @@ vars:
     dev-2xl:
       API_INTEGRATION: aws_sei_api_dev
       EXTERNAL_FUNCTION_URI: ibj933oi6f.execute-api.us-east-1.amazonaws.com/stg/
+      API_AWS_ROLE_ARN: arn:aws:iam::704693948482:role/sei-api-stg-rolesnowflakeudfsAF733095-YX1gTAavoOYe
       ROLES:
         - AWS_LAMBDA_SEI_API
         - INTERNAL_DEV
