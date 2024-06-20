@@ -47,6 +47,7 @@ sources:
       - name: blocks_v2
       - name: transactions_v2
       - name: txcount_v2
+      - name: evm_decoded_logs
   - name: bronze
     schema: bronze
     tables:
@@ -67,3 +68,8 @@ sources:
     schema: github_actions
     tables:
       - name: workflows
+  - name: crosschain_public
+    database: crosschain
+    schema: bronze_public
+    tables:
+      - name: user_abis

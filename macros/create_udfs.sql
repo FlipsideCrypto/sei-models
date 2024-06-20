@@ -6,7 +6,6 @@
             schema = "streamline"
         ) }}
         {{ create_udf_bulk_rest_api_v2() }}
-
         {% endset %}
         {% do run_query(sql) %}
     {% endif %}

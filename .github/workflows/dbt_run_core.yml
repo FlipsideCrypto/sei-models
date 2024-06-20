@@ -43,4 +43,4 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt run -m  models/bronze/core "sei_models,tag:core"
+          dbt run --vars '{"STREAMLINE_INVOKE_STREAMS":True}' -m  models/bronze/core "sei_models,tag:core" "sei_models,tag:streamline_decoded_logs_realtime" "sei_models,tag:streamline_decoded_logs_complete" 
