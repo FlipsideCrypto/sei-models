@@ -42,4 +42,4 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt run --threads 8 --vars '{"STREAMLINE_INVOKE_STREAMS":True,"WAIT":240}' -m "sei_models,tag:streamline_decoded_logs_history" "klaytn_models,tag:streamline_decoded_logs_complete"
+          dbt run --threads 8 --vars '{"STREAMLINE_INVOKE_STREAMS":True,"WAIT":240}' -m "sei_models,tag:streamline_decoded_logs_history" "sei_models,tag:streamline_decoded_logs_complete"
