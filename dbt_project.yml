@@ -70,16 +70,16 @@ vars:
       EXTERNAL_FUNCTION_URI: dbtc9lfp0k.execute-api.us-east-1.amazonaws.com/prod/
       API_AWS_ROLE_ARN: arn:aws:iam::924682671219:role/sei-api-prod-rolesnowflakeudfsAF733095-iooKxz0RazMg
       ROLES:
-        - AWS_LAMBDA_AXELAR_API
-        - DBT_CLOUD_AXELAR
+        - AWS_LAMBDA_SEI_API
+        - DBT_CLOUD_SEI
         - INTERNAL_DEV
     prod-2xl:
       API_INTEGRATION: aws_sei_api
       EXTERNAL_FUNCTION_URI: dbtc9lfp0k.execute-api.us-east-1.amazonaws.com/prod/
       API_AWS_ROLE_ARN: arn:aws:iam::924682671219:role/sei-api-prod-rolesnowflakeudfsAF733095-iooKxz0RazMg
       ROLES:
-        - AWS_LAMBDA_AXELAR_API
-        - DBT_CLOUD_AXELAR
+        - AWS_LAMBDA_SEI_API
+        - DBT_CLOUD_SEI
         - INTERNAL_DEV
     dev-2xl:
       API_INTEGRATION: aws_sei_api_dev
