@@ -33,10 +33,12 @@ WHERE
         FROM
             {{ this }}
     )
+    AND DATA :result IS NOT NULL
 {% else %}
     {{ ref('bronze_evm__streamline_FR_traces') }}
 WHERE
     _partition_by_block_id <= 80124000
+    AND DATA :result IS NOT NULL
 {% endif %}
 
 qualify(ROW_NUMBER() over (PARTITION BY block_number, tx_position
