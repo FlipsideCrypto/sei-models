@@ -11,10 +11,11 @@
 WITH bronze_traces AS (
 
     SELECT
-        block_number,
+        VALUE :BLOCK_NUMBER :: INT AS block_number,
         partition_key,
         VALUE :array_index :: INT AS tx_position,
         DATA :result AS full_traces,
+        DATA :txHash :: STRING AS tx_hash,
         _inserted_timestamp
     FROM
 
@@ -48,7 +49,7 @@ ORDER BY
 flatten_traces AS (
     SELECT
         block_number,
-        tx_position,
+        tx_hash,
         partition_key,
         IFF(
             path IN (
@@ -115,14 +116,14 @@ flatten_traces AS (
         AND f.path != 'result'
     GROUP BY
         block_number,
-        tx_position,
+        tx_hash,
         partition_key,
         trace_address,
         _inserted_timestamp
 )
 SELECT
     block_number,
-    tx_position,
+    tx_hash,
     trace_address,
     parent_trace_address,
     trace_address_array,
@@ -130,7 +131,7 @@ SELECT
     partition_key,
     _inserted_timestamp,
     {{ dbt_utils.generate_surrogate_key(
-        ['block_number', 'tx_position', 'trace_address']
+        ['block_number', 'tx_hash', 'trace_address']
     ) }} AS traces_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
