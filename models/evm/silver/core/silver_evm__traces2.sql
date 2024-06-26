@@ -12,7 +12,7 @@ WITH bronze_traces AS (
 
     SELECT
         block_number,
-        _partition_by_block_id AS partition_key,
+        partition_key,
         VALUE :array_index :: INT AS tx_position,
         DATA :result AS full_traces,
         _inserted_timestamp
@@ -21,7 +21,7 @@ WITH bronze_traces AS (
 {% if is_incremental() %}
 {{ ref('bronze_evm__streamline_FR_traces') }}
 WHERE
-    _partition_by_block_id BETWEEN (
+    partition_key BETWEEN (
         SELECT
             MAX(partition_key)
         FROM
@@ -37,7 +37,7 @@ WHERE
 {% else %}
     {{ ref('bronze_evm__streamline_FR_traces') }}
 WHERE
-    _partition_by_block_id <= 80124000
+    partition_key <= 80124000
     AND DATA :result IS NOT NULL
 {% endif %}
 
