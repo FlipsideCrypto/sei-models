@@ -45,6 +45,10 @@ WHERE
             {{ this }}
     )
 {% endif %}
+
+qualify(ROW_NUMBER() over(PARTITION BY tx_id, msg_index, attribute_key
+ORDER BY
+    attribute_index) = 1)
 ),
 rel_txns AS (
     SELECT
