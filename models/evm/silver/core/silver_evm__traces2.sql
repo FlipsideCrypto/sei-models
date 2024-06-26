@@ -21,7 +21,6 @@ WITH bronze_traces AS (
     FROM
 
 {% if is_incremental() %}
-{{ ref('bronze_evm__streamline_FR_traces') }}
 {{ ref('bronze_evm__streamline_traces') }}
 WHERE
     _inserted_timestamp >= (
