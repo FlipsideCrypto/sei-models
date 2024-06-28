@@ -21,3 +21,4 @@ WHERE
         FROM
             last_3_days
     )
+    AND block_timestamp < DATEADD('hour', -1, SYSDATE())
