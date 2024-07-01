@@ -26,15 +26,15 @@ models:
       
     columns:
       - name: BLOCK_NUMBER
-        description: '{{ doc("kaia_block_number") }}'
+        description: '{{ doc("sei_block_number") }}'
       - name: BLOCK_TIMESTAMP
-        description: '{{ doc("kaia_block_timestamp") }}'
+        description: '{{ doc("sei_block_timestamp") }}'
       - name: TX_HASH
-        description: '{{ doc("kaia_logs_tx_hash") }}'
+        description: '{{ doc("sei_logs_tx_hash") }}'
       - name: EVENT_INDEX
-        description: '{{ doc("kaia_event_index") }}'
+        description: '{{ doc("sei_event_index") }}'
       - name: CONTRACT_ADDRESS
-        description: '{{ doc("kaia_logs_contract_address") }}'
+        description: '{{ doc("sei_logs_contract_address") }}'
       - name: EVENT_NAME
         description: 'The name of the event, as defined in the contract ABI.'
       - name: DECODED_LOG

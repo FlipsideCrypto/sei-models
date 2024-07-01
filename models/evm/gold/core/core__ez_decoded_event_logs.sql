@@ -25,6 +25,6 @@ SELECT
     inserted_timestamp,
     modified_timestamp
 FROM
-    {{ ref('silver__decoded_logs') }}
+    {{ ref('silver_evm__decoded_logs') }}
     l
-    LEFT JOIN {{ ref('silver__contracts') }} C USING (contract_address)
+    LEFT JOIN {{ ref('silver_evm__contracts') }} C USING (contract_address)

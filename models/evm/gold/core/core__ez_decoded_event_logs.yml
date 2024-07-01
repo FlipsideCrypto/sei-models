@@ -26,15 +26,15 @@ models:
       
     columns:
       - name: BLOCK_NUMBER
-        description: '{{ doc("kaia_block_number") }}'
+        description: '{{ doc("sei_block_number") }}'
       - name: BLOCK_TIMESTAMP
-        description: '{{ doc("kaia_block_timestamp") }}'
+        description: '{{ doc("sei_block_timestamp") }}'
       - name: TX_HASH
-        description: '{{ doc("kaia_logs_tx_hash") }}'
+        description: '{{ doc("sei_logs_tx_hash") }}'
       - name: EVENT_INDEX
-        description: '{{ doc("kaia_event_index") }}'
+        description: '{{ doc("sei_event_index") }}'
       - name: CONTRACT_ADDRESS
-        description: '{{ doc("kaia_logs_contract_address") }}'
+        description: '{{ doc("sei_logs_contract_address") }}'
       - name: CONTRACT_NAME
         description: 'The name of the contract, if the contract has a name() function.'
       - name: EVENT_NAME
@@ -44,19 +44,19 @@ models:
       - name: FULL_DECODED_LOG
         description: 'The full decoded log, including the event name, the event parameters, and the data type of the event parameters.'  
       - name: ORIGIN_FUNCTION_SIGNATURE
-        description: '{{ doc("kaia_tx_origin_sig") }}'
+        description: '{{ doc("sei_tx_origin_sig") }}'
       - name: ORIGIN_FROM_ADDRESS
-        description: '{{ doc("kaia_origin_from") }}'
+        description: '{{ doc("sei_origin_from") }}'
       - name: ORIGIN_TO_ADDRESS
-        description: '{{ doc("kaia_origin_to") }}'
+        description: '{{ doc("sei_origin_to") }}'
       - name: TOPICS
-        description: '{{ doc("kaia_topics") }}'
+        description: '{{ doc("sei_topics") }}'
       - name: DATA
-        description: '{{ doc("kaia_logs_data") }}'
+        description: '{{ doc("sei_logs_data") }}'
       - name: EVENT_REMOVED
-        description: '{{ doc("kaia_event_removed") }}' 
+        description: '{{ doc("sei_event_removed") }}' 
       - name: TX_SUCCEEDED
-        description: '{{ doc("kaia_tx_status") }}' 
+        description: '{{ doc("sei_tx_status") }}' 
       - name: EZ_DECODED_EVENT_LOGS_ID
         description: '{{ doc("pk") }}'   
       - name: INSERTED_TIMESTAMP

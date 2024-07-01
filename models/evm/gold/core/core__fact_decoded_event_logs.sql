@@ -21,7 +21,7 @@ SELECT
     inserted_timestamp,
     modified_timestamp
 FROM
-    {{ ref('silver__decoded_logs') }}
+    {{ ref('silver_evm__decoded_logs') }}
 
 {% if is_incremental() %}
 WHERE

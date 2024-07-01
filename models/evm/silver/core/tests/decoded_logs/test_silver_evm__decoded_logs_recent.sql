@@ -1,3 +1,4 @@
+-- depends_on: {{ ref('silver_evm__logs') }}
 {{ config (
     materialized = 'view',
     tags = ['recent_test']
