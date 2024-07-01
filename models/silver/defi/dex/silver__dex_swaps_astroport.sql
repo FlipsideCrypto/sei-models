@@ -138,6 +138,8 @@ wasm AS (
         A.msg_index,
         _inserted_timestamp {# HAVING
         action = 'swap' #}
+    HAVING
+        ask_asset IS NOT NULL
 )
 SELECT
     A.block_id,
