@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    incremental_predicates = ['DBT_INTERNAL_DEST.block_timestamp::DATE >= (select min(block_timestamp::DATE) from ' ~ generate_tmp_view_name(this) ~ ')'],
+    incremental_predicates = ['DBT_INTERNAL_DEST.block_timestamp::DATE >= (select min(block_timestamp::DATE -3) from ' ~ generate_tmp_view_name(this) ~ ')'],
     unique_key = "tx_id",
     incremental_strategy = 'merge',
     merge_exclude_columns = ["inserted_timestamp"],
@@ -85,4 +85,4 @@ WHERE
 
 qualify(ROW_NUMBER() over (PARTITION BY tx_id
 ORDER BY
-    b._inserted_timestamp DESC)) = 1
+    tx_succeeded DESC, b._inserted_timestamp DESC)) = 1
