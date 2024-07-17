@@ -16,3 +16,4 @@ logs/
 .env
 .DS_Store
 .user.yml
+dbt-env/
