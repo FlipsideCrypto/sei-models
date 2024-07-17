@@ -4,7 +4,8 @@
     unique_key = "block_number",
     cluster_by = "block_timestamp::date",
     tags = ['core'],
-    merge_exclude_columns = ["inserted_timestamp"]
+    merge_exclude_columns = ["inserted_timestamp"],
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(hash,parent_hash,receipts_root,sha3_uncles,state_root,transactions_root)",
 ) }}
 
 SELECT
