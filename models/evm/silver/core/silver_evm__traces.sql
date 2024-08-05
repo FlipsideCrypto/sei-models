@@ -5,10 +5,14 @@
     unique_key = "block_number",
     cluster_by = "block_timestamp::date, _inserted_timestamp::date",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
-    full_refresh = false
+    full_refresh = false,
+    tags = ['core']
 ) }}
 
-WITH bronze_traces AS (
+{% if execute %}
+    {% set query_traces %}
+    CREATE
+    OR REPLACE temporary TABLE silver_evm.traces__traces_intermediate_tmp AS
 
     SELECT
         VALUE :BLOCK_NUMBER :: INT AS block_number,
@@ -36,9 +40,13 @@ WHERE
 
 qualify(ROW_NUMBER() over (PARTITION BY block_number, tx_position
 ORDER BY
-    _inserted_timestamp DESC)) = 1
-),
-flatten_traces AS (
+    _inserted_timestamp DESC)) = 1 {% endset %}
+    {% do run_query(
+        query_traces
+    ) %}
+{% endif %}
+
+WITH flatten_traces AS (
     SELECT
         block_number,
         tx_hash,
@@ -92,7 +100,7 @@ flatten_traces AS (
             '_'
         ) AS str_array
     FROM
-        bronze_traces txs,
+        silver_evm.traces__traces_intermediate_tmp txs,
         TABLE(
             FLATTEN(
                 input => PARSE_JSON(
