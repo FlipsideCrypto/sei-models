@@ -95,6 +95,11 @@ FROM
     FINAL
 WHERE
     tx_hash IS NOT NULL
-    AND POSITION IS NOT NULL qualify(ROW_NUMBER() over (PARTITION BY block_number, POSITION
-ORDER BY
-    _inserted_timestamp DESC)) = 1
+    AND POSITION IS NOT NULL qualify(
+        (ROW_NUMBER() over (PARTITION BY block_number, POSITION
+        ORDER BY
+            _inserted_timestamp DESC)) = 1
+            AND (ROW_NUMBER() over (PARTITION BY tx_hash
+        ORDER BY
+            block_number DESC)) = 1
+    )
