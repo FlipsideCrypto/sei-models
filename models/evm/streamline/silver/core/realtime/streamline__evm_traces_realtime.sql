@@ -6,7 +6,7 @@
         params ={ "external_table" :"evm_traces",
         "sql_limit" :"12000",
         "producer_batch_size" :"10000",
-        "worker_batch_size" :"10000",
+        "worker_batch_size" :"500",
         "sql_source" :"{{this.identifier}}",
         "exploded_key": tojson(["result"]) }
     ),
