@@ -13,7 +13,12 @@
     ) -%}
     {% set node_name = node.name %}
     {% set split_name = node_name.split('__') %}
-    {{ split_name [1] | trim }}
+    
+    {% if split_name | length < 2 %}
+        {{ split_name [0] | trim }}
+    {% else %}
+        {{ split_name [1] | trim }}
+    {% endif %}
 {%- endmacro %}
 
 {% macro generate_tmp_view_name(model_name) -%}
