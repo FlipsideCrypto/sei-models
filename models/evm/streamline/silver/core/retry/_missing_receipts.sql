@@ -20,6 +20,10 @@ FROM
         block_hash,
         tx_hash
     )
+    INNER JOIN {{ ref("silver_evm__confirmed_blocks") }} C USING (
+        block_number,
+        tx_hash
+    )
 WHERE
     r.tx_hash IS NULL
     AND t.block_number >= (

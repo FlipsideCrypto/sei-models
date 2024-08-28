@@ -51,6 +51,6 @@ SELECT
     '{{ invocation_id }}' AS _invocation_id
 FROM
     base,
-    LATERAL FLATTEN (
-        input => txs
-    )
+    LATERAL FLATTEN (input => txs) qualify(ROW_NUMBER() over (PARTITION BY tx_hash
+ORDER BY
+    block_number DESC)) = 1
