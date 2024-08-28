@@ -339,60 +339,57 @@ SELECT
 FROM
     missing_data
 {% endif %}
-),
-qualify_1 AS (
-    SELECT
-        block_number,
-        block_hash,
-        chain_id,
-        from_address,
-        gas,
-        gas_price,
-        tx_hash,
-        input_data,
-        origin_function_signature,
-        max_fee_per_gas,
-        max_priority_fee_per_gas,
-        nonce,
-        r,
-        s,
-        source_hash,
-        to_address,
-        POSITION,
-        TYPE,
-        v,
-        y_parity,
-        VALUE,
-        value_precise_raw,
-        value_precise,
-        block_timestamp,
-        is_pending,
-        gas_used,
-        tx_success,
-        tx_status,
-        cumulative_gas_used,
-        effective_gas_price,
-        tx_fee,
-        tx_fee_precise,
-        tx_type,
-        _inserted_timestamp,
-        DATA,
-        {{ dbt_utils.generate_surrogate_key(
-            ['tx_hash']
-        ) }} AS transactions_id,
-        SYSDATE() AS inserted_timestamp,
-        SYSDATE() AS modified_timestamp,
-        '{{ invocation_id }}' AS _invocation_id
-    FROM
-        FINAL
-    WHERE
-        block_hash IS NOT NULL qualify (ROW_NUMBER() over (PARTITION BY block_number, POSITION
-    ORDER BY
-        _inserted_timestamp DESC, is_pending ASC)) = 1
 )
 SELECT
-    *
+    block_number,
+    block_hash,
+    chain_id,
+    from_address,
+    gas,
+    gas_price,
+    tx_hash,
+    input_data,
+    origin_function_signature,
+    max_fee_per_gas,
+    max_priority_fee_per_gas,
+    nonce,
+    r,
+    s,
+    source_hash,
+    to_address,
+    POSITION,
+    TYPE,
+    v,
+    y_parity,
+    VALUE,
+    value_precise_raw,
+    value_precise,
+    block_timestamp,
+    is_pending,
+    gas_used,
+    tx_success,
+    tx_status,
+    cumulative_gas_used,
+    effective_gas_price,
+    tx_fee,
+    tx_fee_precise,
+    tx_type,
+    _inserted_timestamp,
+    DATA,
+    {{ dbt_utils.generate_surrogate_key(
+        ['tx_hash']
+    ) }} AS transactions_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
-    qualify_1 qualify(ROW_NUMBER() over (PARTITION BY tx_hash
-ORDER BY
-    block_number DESC)) = 1
+    FINAL
+WHERE
+    block_hash IS NOT NULL qualify(
+        (ROW_NUMBER() over (PARTITION BY block_number, POSITION
+        ORDER BY
+            _inserted_timestamp DESC, is_pending ASC)) = 1
+            AND (ROW_NUMBER() over (PARTITION BY tx_hash
+        ORDER BY
+            block_number DESC)) = 1
+    )
