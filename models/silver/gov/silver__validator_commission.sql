@@ -60,7 +60,8 @@ msg_attributes_base AS (
             'transferrecipient',
             'transferamount',
             'messagesender',
-            'txacc_seq'
+            'txacc_seq',
+            'signersei_addr'
         )
         AND NOT (
             msg_type || attribute_key = 'messagesender'
@@ -147,7 +148,16 @@ tx_address AS (
     FROM
         msg_attributes_base A
     WHERE
-        attribute_key = 'acc_seq' qualify(ROW_NUMBER() over (PARTITION BY tx_id
+        (
+            (
+                msg_type = 'tx'
+                AND attribute_key = 'acc_seq'
+            )
+            OR (
+                msg_type = 'signer'
+                AND attribute_key = 'sei_addr'
+            )
+        ) qualify(ROW_NUMBER() over (PARTITION BY tx_id
     ORDER BY
         acc_seq_index) = 1)
 ),

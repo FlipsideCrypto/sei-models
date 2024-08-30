@@ -56,7 +56,16 @@ sender AS (
     FROM
         msg_atts_base
     WHERE
-        attribute_key = 'acc_seq' qualify(ROW_NUMBER() over(PARTITION BY tx_id
+        (
+            (
+                msg_type = 'tx'
+                AND attribute_key = 'acc_seq'
+            )
+            OR (
+                msg_type = 'signer'
+                AND attribute_key = 'sei_addr'
+            )
+        ) qualify(ROW_NUMBER() over(PARTITION BY tx_id
     ORDER BY
         msg_index)) = 1
 ),

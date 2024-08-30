@@ -31,11 +31,12 @@ WITH base AS (
             'create_validator',
             'tx',
             'coin_spent',
-            'message'
+            'message',
+            'signer'
         )
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND _inserted_timestamp :: DATE >= (
     SELECT
         MAX(
             _inserted_timestamp
@@ -57,7 +58,16 @@ tx_address AS (
     FROM
         base A
     WHERE
-        attribute_key = 'acc_seq' qualify(ROW_NUMBER() over(PARTITION BY A.tx_id
+        (
+            (
+                msg_type = 'tx'
+                AND attribute_key = 'acc_seq'
+            )
+            OR (
+                msg_type = 'signer'
+                AND attribute_key = 'sei_addr'
+            )
+        ) qualify(ROW_NUMBER() over(PARTITION BY A.tx_id
     ORDER BY
         msg_index)) = 1
 ),

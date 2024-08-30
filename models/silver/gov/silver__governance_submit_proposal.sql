@@ -78,7 +78,16 @@ proposer AS (
     FROM
         {{ ref('silver__msg_attributes') }}
     WHERE
-        attribute_key = 'acc_seq'
+        (
+            (
+                msg_type = 'tx'
+                AND attribute_key = 'acc_seq'
+            )
+            OR (
+                msg_type = 'signer'
+                AND attribute_key = 'sei_addr'
+            )
+        )
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (

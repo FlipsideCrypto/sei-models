@@ -28,7 +28,8 @@ WITH msg_attributes AS (
             'withdraw_rewards',
             'transfer',
             'message',
-            'tx'
+            'tx',
+            'signer'
         )
 
 {% if is_incremental() %}
@@ -116,7 +117,16 @@ tx_address AS (
     FROM
         msg_attributes A
     WHERE
-        attribute_key = 'acc_seq' qualify(ROW_NUMBER() over (PARTITION BY tx_id
+        (
+            (
+                msg_type = 'tx'
+                AND attribute_key = 'acc_seq'
+            )
+            OR (
+                msg_type = 'signer'
+                AND attribute_key = 'sei_addr'
+            )
+        ) qualify(ROW_NUMBER() over (PARTITION BY tx_id
     ORDER BY
         acc_seq_index) = 1)
 ),
