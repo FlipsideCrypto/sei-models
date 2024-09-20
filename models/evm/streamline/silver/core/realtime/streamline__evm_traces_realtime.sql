@@ -9,8 +9,7 @@
         "worker_batch_size" :"600",
         "sql_source" :"{{this.identifier}}",
         "exploded_key": tojson(["result"]) }
-    ),
-    tags = ['streamline_core_evm_realtime']
+    )
 ) }}
 
 WITH last_3_days AS (
