@@ -81,4 +81,5 @@ SELECT
         FROM
             ready_blocks
         ORDER BY
-            block_number DESC
+            block_number asc
+    limit 25000
