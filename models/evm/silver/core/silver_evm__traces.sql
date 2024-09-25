@@ -33,7 +33,7 @@ WHERE
     )
     AND DATA :result IS NOT NULL
 {% else %}
-    {{ ref('bronze_evm__streamline_FR_traces') }}
+    {{ ref('bronze_evm__streamline_fr_traces') }}
 WHERE
     DATA :result IS NOT NULL
 {% endif %}
