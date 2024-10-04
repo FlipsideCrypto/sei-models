@@ -15,6 +15,7 @@ WITH base AS (
         {{ ref('silver__contract_token_info') }}
     WHERE
         DATA IS NOT NULL
+        AND DATA :exchange_rate_decimals IS NULL
     UNION ALL
     SELECT
         address,
