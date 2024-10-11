@@ -158,6 +158,6 @@ SELECT
     _inserted_timestamp,
     '{{ invocation_id }}' AS _invocation_id
 FROM
-    combo qualify(ROW_NUMBER() over (PARTITION BY tx_id, block_timestamp
+    combo qualify(ROW_NUMBER() over (PARTITION BY tx_id
 ORDER BY
-    tx_succeeded DESC, _inserted_timestamp DESC)) = 1
+    block_timestamp, tx_succeeded DESC, _inserted_timestamp DESC)) = 1
