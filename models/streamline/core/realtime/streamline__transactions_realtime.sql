@@ -23,6 +23,11 @@ WITH blocks AS (
     WHERE
         tx_count > 0
         AND block_number > 70000000
+        AND block_number NOT IN (
+            101356734,
+            101361293,
+            101600774
+        )
 ),
 numbers AS (
     -- Recursive CTE to generate numbers. We'll use the maximum txcount value to limit our recursion.
