@@ -163,7 +163,11 @@ WHERE
     block_id NOT IN (
         101356734,
         101361293,
-        101600774
+        101600774,
+        101374779,
+        101374780,
+        101600807,
+        101600808
     ) qualify(ROW_NUMBER() over (PARTITION BY tx_id
 ORDER BY
     block_timestamp, tx_succeeded DESC, _inserted_timestamp DESC)) = 1
