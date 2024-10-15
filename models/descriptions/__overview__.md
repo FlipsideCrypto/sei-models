@@ -24,6 +24,7 @@ There is more information on how to use dbt docs in the last section of this doc
 ### EVM Tables (`SEI`.`CORE_EVM`.`<table_name>`)
 
 **Core Dimension Tables:**
+- [dim_address_mapping](#!/model/model.sei_models.core__dim_address_mapping)
 - [dim_labels](#!/model/model.sei_models.core__dim_labels)
 - [dim_tokens](#!/model/model.sei_models.core__dim_tokens)
 
