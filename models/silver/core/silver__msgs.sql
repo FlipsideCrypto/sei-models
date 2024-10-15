@@ -1,6 +1,6 @@
 {{ config(
   materialized = 'incremental',
-  incremental_predicates = ["COALESCE(DBT_INTERNAL_DEST.block_timestamp::DATE,'2099-12-31') >= (select min(block_timestamp::DATE ) from " ~ generate_tmp_view_name(this) ~ ")"],
+  incremental_predicates = ["dynamic_range_predicate", "block_timestamp::date"],
   unique_key = ["tx_id","msg_index"],
   incremental_strategy = 'merge',
   merge_exclude_columns = ["inserted_timestamp"],
@@ -157,3 +157,5 @@ FROM
   LEFT JOIN grp b
   ON A.tx_id = b.tx_id
   AND A.msg_index = b.msg_index
+WHERE
+  block_timestamp IS NOT NULL

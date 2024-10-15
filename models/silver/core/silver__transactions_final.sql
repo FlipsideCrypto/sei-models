@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    incremental_predicates = ["COALESCE(DBT_INTERNAL_DEST.block_timestamp::DATE,'2099-12-31') >= (select min(block_timestamp::DATE ) from " ~ generate_tmp_view_name(this) ~ ")"],
+    incremental_predicates = ["dynamic_range_predicate", "block_timestamp::date"],
     unique_key = "tx_id",
     incremental_strategy = 'merge',
     merge_exclude_columns = ["inserted_timestamp"],
@@ -94,15 +94,16 @@ FROM
     ON t.tx_id = f.tx_id
     LEFT OUTER JOIN spender s
     ON t.tx_id = s.tx_id
+WHERE
+    t.block_timestamp <> '2099-12-31'
 
 {% if is_incremental() %}
-WHERE
-    _inserted_timestamp >= (
-        SELECT
-            MAX(
-                _inserted_timestamp
-            )
-        FROM
-            {{ this }}
-    )
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(
+            _inserted_timestamp
+        )
+    FROM
+        {{ this }}
+)
 {% endif %}
