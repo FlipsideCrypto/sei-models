@@ -1,0 +1,31 @@
+version: 2
+models:
+  - name: core__dim_address_mapping
+    description: 'A dimension table that maps the sei cosmos address to the corresponding sei evm address'   
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - sei_address
+    columns:
+      - name: block_timestamp_associated
+        description: "The block timestamp associated with the first mapping transaction"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: block_id_associated
+        description: "The tx_id associated with the first mapping transaction"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: sei_address
+        description: "{{ doc('address') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: evm_address
+        description: "The corresponding evm address"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: dim_address_mapping_id
+        description: '{{ doc("pk") }}'   
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'   
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}'  
