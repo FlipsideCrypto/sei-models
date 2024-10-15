@@ -23,7 +23,7 @@ WITH blocks AS (
     WHERE
         tx_count > 0
         AND block_number > 70000000
-        AND block_number NOT IN (
+        AND block_number :: INT NOT IN (
             101356734,
             101361293,
             101600774
