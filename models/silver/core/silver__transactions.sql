@@ -61,7 +61,10 @@ ORDER BY
 NEW AS (
     SELECT
         b.block_id,
-        block_timestamp,
+        COALESCE(
+            block_timestamp,
+            '2099-12-31'
+        ) AS block_timestamp,
         tx_id,
         tx_succeeded,
         tx_code,
