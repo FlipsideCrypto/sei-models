@@ -158,4 +158,4 @@ FROM
   ON A.tx_id = b.tx_id
   AND A.msg_index = b.msg_index
 WHERE
-  block_timestamp IS NOT NULL
+  block_timestamp <> '2099-12-31'
