@@ -104,4 +104,7 @@ SELECT
         '2000-01-01'
     ) AS modified_timestamp
 FROM
-    {{ ref('silver__dex_swaps_seaswap') }}
+    {{ source(
+        'silver',
+        'dex_swaps_seaswap'
+    ) }}

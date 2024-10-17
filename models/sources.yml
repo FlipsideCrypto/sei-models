@@ -73,3 +73,7 @@ sources:
     schema: bronze_public
     tables:
       - name: user_abis
+  - name: silver
+    schema: silver
+    tables:
+      - name: dex_swaps_seaswap
