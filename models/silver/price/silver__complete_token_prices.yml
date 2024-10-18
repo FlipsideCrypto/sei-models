@@ -1,0 +1,15 @@
+version: 2
+models:
+  - name: silver__complete_token_prices
+
+    columns:
+      - name: HOUR
+      - name: TOKEN_ADDRESS
+      - name: BLOCKCHAIN
+      - name: BLOCKCHAIN_ID
+      - name: PROVIDER
+      - name: PRICE
+      - name: IS_IMPUTED
+      - name: _INSERTED_TIMESTAMP
+      - name: MODIFIED_TIMESTAMP
+      - name: COMPLETE_TOKEN_PRICES_ID

@@ -1,0 +1,10 @@
+version: 2
+models:
+  - name: silver__complete_token_asset_metadata
+    columns:
+      - name: PROVIDER
+      - name: TOKEN_ADDRESS
+      - name: BLOCKCHAIN
+      - name: BLOCKCHAIN_ID
+      - name: MODIFIED_TIMESTAMP
+      - name: COMPLETE_TOKEN_ASSET_METADATA_ID
