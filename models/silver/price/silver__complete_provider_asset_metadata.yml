@@ -1,0 +1,8 @@
+version: 2
+models:
+  - name: silver__complete_provider_asset_metadata
+    columns:
+      - name: PROVIDER
+      - name: ASSET_ID
+      - name: MODIFIED_TIMESTAMP
+      - name: COMPLETE_PROVIDER_ASSET_METADATA_ID

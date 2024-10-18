@@ -1,0 +1,37 @@
+version: 2
+models:
+  - name: price__fact_prices_ohlc_hourly
+    description: '{{ doc("prices_fact_prices_ohlc_hourly_table_doc") }}'
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - HOUR
+            - ASSET_ID
+            - PROVIDER
+    columns:
+      - name: HOUR
+        description: '{{ doc("prices_hour")}}'
+        tests:
+          - not_null
+      - name: ASSET_ID
+        description: '{{ doc("prices_asset_id") }}'
+        tests:
+          - not_null
+      - name: OPEN
+        description: '{{ doc("prices_open") }}'
+      - name: HIGH
+        description: '{{ doc("prices_high") }}'  
+      - name: LOW
+        description: '{{ doc("prices_low") }}'
+      - name: CLOSE
+        description: '{{ doc("prices_close") }}'
+        tests:
+          - not_null
+      - name: FACT_PRICES_OHLC_HOURLY_ID
+        description: '{{ doc("pk") }}'   
+        tests:
+          - not_null
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'   
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}' 
