@@ -20,6 +20,7 @@ There is more information on how to use dbt docs in the last section of this doc
 ### Core Tables (`SEI`.`CORE`.`<table_name>`)
 ### Defi Tables (`SEI`.`DEFI`.`<table_name>`)
 ### Governance Tables (`SEI`.`GOV`.`<table_name>`)
+### Pricing Tables (`SEI`.`PRICE`.`<table_name>`)
 ### Statistics/Analytics Tables (`SEI`.`STATS`.`<table_name>`)
 ### EVM Tables (`SEI`.`CORE_EVM`.`<table_name>`)
 
@@ -48,6 +49,12 @@ There is more information on how to use dbt docs in the last section of this doc
 **Defi Fact  Tables:**
 - [fact_dex_swaps](#!/model/model.sei_models.defi__fact_dex_swaps)
 - [fact_lp_actions](#!/model/model.sei_models.defi__fact_lp_actions)
+
+**Pricing Tables:**
+- [dim_asset_metadata](#!/model/model.sei_models.price__dim_asset_metadata)
+- [fact_prices_ohlc_hourly](#!/model/model.sei_models.price__fact_prices_ohlc_hourly)
+- [ez_asset_metadata](#!/model/model.sei_models.price__ez_asset_metadata)
+- [ez_prices_hourly](#!/model/model.sei_models.price__ez_prices_hourly)
 
 **Stats EZ Tables:**
 - [ez_core_metrics_hourly](#!/model/model.sei_models.ez_core_metrics_hourly)
