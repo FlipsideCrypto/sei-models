@@ -1,0 +1,47 @@
+version: 2
+models:
+  - name: price__ez_prices_hourly
+    description: '{{ doc("prices_ez_prices_hourly_table_doc") }}'
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - HOUR
+            - TOKEN_ADDRESS
+            - BLOCKCHAIN
+    columns:
+      - name: HOUR
+        description: '{{ doc("prices_hour")}}'
+        tests:
+          - not_null
+      - name: TOKEN_ADDRESS
+        description: '{{ doc("prices_token_address_evm") }}'
+        tests:
+          - not_null
+      - name: SYMBOL
+        description: '{{ doc("prices_symbol") }}'
+      - name: BLOCKCHAIN
+        description: '{{ doc("prices_blockchain") }}'
+      - name: DECIMALS
+        description: '{{ doc("prices_decimals") }}'
+      - name: PRICE
+        description: '{{ doc("prices_price") }}'
+        tests:
+          - not_null
+      - name: IS_NATIVE
+        description: '{{ doc("prices_is_native") }}'
+        tests:
+          - not_null
+      - name: IS_IMPUTED
+        description: '{{ doc("prices_is_imputed") }}'
+        tests:
+          - not_null
+      - name: IS_DEPRECATED
+        description: '{{ doc("prices_is_deprecated") }}'
+        tests:
+          - not_null
+      - name: EZ_PRICES_HOURLY_ID
+        description: '{{ doc("pk") }}'   
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'   
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}' 
