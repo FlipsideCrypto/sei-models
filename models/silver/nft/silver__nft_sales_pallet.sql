@@ -105,7 +105,10 @@ nft_sales_buydata AS (
         j :nft_token_id :: STRING AS nft_token_id,
         j :token_id :: STRING AS token_id,
         j :nft_seller :: STRING AS nft_seller,
+        j :buyer :: STRING AS buyer,
+        j :seller :: STRING AS seller,
         j :sold_to :: STRING AS nft_sold_to,
+        j :bidder :: STRING AS bidder,
         j :_contract_address :: STRING AS marketplace_contract,
         j :sale_price :: STRING AS sale_price,
         REPLACE(
@@ -166,6 +169,9 @@ nft_sales_transfer_data AS (
         j :sender :: STRING AS marketplace_contract,
         j :token_id :: STRING AS token_id,
         j :recipient :: STRING AS nft_buyer,
+        j :buyer :: STRING AS buyer,
+        j :seller :: STRING AS seller,
+        j :bidder :: STRING AS bidder,
         j :_contract_address :: STRING AS nft_address
     FROM
         msg_atts_base A
@@ -205,11 +211,16 @@ SELECT
     ) AS token_id,
     COALESCE(
         b.nft_buyer,
+        b.buyer,
         A.nft_sold_to,
+        A.buyer,
+        A.bidder,
+        b.bidder,
         C.tx_from
     ) AS buyer_address,
     COALESCE(
         A.nft_seller,
+        A.seller,
         C.tx_from
     ) AS seller_address,
     A.amount :: INT AS amount,
