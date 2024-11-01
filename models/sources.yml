@@ -81,3 +81,5 @@ sources:
     schema: silver
     tables:
       - name: dex_swaps_seaswap
+      - name: lp_actions_seaswap
+      - name: lp_actions_fuzio

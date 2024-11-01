@@ -77,7 +77,10 @@ SELECT
         '2000-01-01'
     ) AS modified_timestamp
 FROM
-    {{ ref('silver__lp_actions_fuzio') }} A
+    {{ source(
+        'silver',
+        'lp_actions_fuzio'
+    ) }} A
 UNION ALL
 SELECT
     'seaswap' AS platform,
@@ -113,7 +116,10 @@ SELECT
         '2000-01-01'
     ) AS modified_timestamp
 FROM
-    {{ ref('silver__lp_actions_seaswap') }} A
+    {{ source(
+        'silver',
+        'lp_actions_seaswap'
+    ) }} A
 UNION ALL
 SELECT
     'levana' AS platform,
