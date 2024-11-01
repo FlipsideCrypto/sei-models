@@ -5,8 +5,8 @@
         target = "{{this.schema}}.{{this.identifier}}",
         params ={ "external_table" :"evm_transactions",
         "sql_limit" :"25000",
-        "producer_batch_size" :"100000",
-        "worker_batch_size" :"10000",
+        "producer_batch_size" :"25000",
+        "worker_batch_size" :"15000",
         "sql_source" :"{{this.identifier}}",
         "exploded_key": tojson(["result.transactions"]) }
     ),
