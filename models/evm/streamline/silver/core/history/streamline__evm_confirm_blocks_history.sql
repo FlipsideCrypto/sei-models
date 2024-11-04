@@ -12,14 +12,7 @@
     tags = ['streamline_core_evm_history']
 ) }}
 
-WITH last_3_days AS (
-
-    SELECT
-        block_number
-    FROM
-        {{ ref("_evm_block_lookback") }}
-),
-look_back AS (
+WITH look_back AS (
     SELECT
         block_number
     FROM
@@ -40,21 +33,13 @@ to_do AS (
             SELECT
                 block_number
             FROM
-                last_3_days
+                look_back
         )
     EXCEPT
     SELECT
         block_number
     FROM
         {{ ref("streamline__complete_evm_confirmed_blocks") }}
-    WHERE
-        block_number IS NOT NULL
-        AND block_number < (
-            SELECT
-                block_number
-            FROM
-                last_3_days
-        )
 ),
 ready_blocks AS (
     SELECT
