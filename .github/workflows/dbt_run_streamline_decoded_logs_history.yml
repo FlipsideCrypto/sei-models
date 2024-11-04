@@ -42,7 +42,7 @@ jobs:
 
       - name: Update complete table
         run: |
-          dbt run -m "fsc_evm,tag:streamline_decoded_logs_complete"
+          dbt run -m "sei_models,tag:streamline_decoded_logs_complete"
 
       - name: Decode historical logs
         run: |
