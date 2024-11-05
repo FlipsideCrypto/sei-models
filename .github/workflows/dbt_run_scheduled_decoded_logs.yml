@@ -1,5 +1,5 @@
-name: dbt_run_streamline_decoded_logs_history
-run-name: dbt_run_streamline_decoded_logs_history
+name: dbt_run_scheduled_decoded_logs
+run-name: dbt_run_scheduled_decoded_logs
 
 on:
   workflow_dispatch:
@@ -40,10 +40,6 @@ jobs:
           pip install -r requirements.txt
           dbt deps
 
-      - name: Update complete table
+      - name: Update decoded logs
         run: |
-          dbt run -m "sei_models,tag:streamline_decoded_logs_complete"
-
-      - name: Decode historical logs
-        run: |
-          dbt run-operation decoded_logs_history --vars '{"STREAMLINE_INVOKE_STREAMS":True}'
+          dbt run -m "sei_models,tag:gold_decoded_logs" "sei_models,tag:silver_decoded_logs" "sei_models,tag:bronze_decoded_logs"
