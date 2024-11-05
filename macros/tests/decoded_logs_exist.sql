@@ -13,7 +13,7 @@ WHERE
             {{ fact_logs_model }}
             l
         WHERE
-            d.ez_decoded_event_logs_id = l.fact_event_logs_id
+            d.ez_decoded_event_logs_id = l.logs_id
             AND d.contract_address = l.contract_address
             AND d.topics [0] :: STRING = l.topics [0] :: STRING
     ) 
