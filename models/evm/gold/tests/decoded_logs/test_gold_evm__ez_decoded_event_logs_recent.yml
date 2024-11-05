@@ -6,9 +6,9 @@ models:
           combination_of_columns:
             - EZ_DECODED_EVENT_LOGS_ID
       - decoded_logs_exist:
-          fact_logs_model: ref('test_silver__logs_recent')
+          fact_logs_model: ref('test_silver_evm__logs_recent')
       - find_missing_decoded_logs:
-          fact_logs_model: ref('test_silver__logs_recent')
+          fact_logs_model: ref('test_silver_evm__logs_recent')
 
     columns:
       - name: BLOCK_NUMBER
