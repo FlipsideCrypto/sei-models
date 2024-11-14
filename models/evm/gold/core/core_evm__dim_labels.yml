@@ -1,0 +1,26 @@
+version: 2
+models:
+  - name: core_evm__dim_labels
+    description: This table contains the `core.dim_labels` table with the address mapped to the `sei_address` in the `core.dim_address_mapping` table.
+    
+    columns:
+      - name: BLOCKCHAIN
+        description: 'The blockchain the label belongs to.'
+      - name: CREATOR
+        description: 'The creator of the label.'
+      - name: ADDRESS
+        description: 'The address the label belongs to.'
+      - name: LABEL_TYPE
+        description: 'The type of the label.'
+      - name: LABEL_SUBTYPE
+        description: 'The subtype of the label.'
+      - name: LABEL
+        description: 'The label.'
+      - name: ADDRESS_NAME
+        description: 'The name of the address.'
+      - name: DIM_LABELS_ID
+        description: '{{ doc("pk") }}'
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}'
