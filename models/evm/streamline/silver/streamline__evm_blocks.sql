@@ -18,7 +18,7 @@ FROM
 WHERE
     _id <= (
         SELECT
-            MAX(block_number) - 500
+            MAX(block_number)
         FROM
             {{ ref('streamline__chainhead') }}
     )
