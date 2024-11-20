@@ -15,11 +15,14 @@ WITH base AS (
         total_interaction_count >= 100
 
 {% if is_incremental() %}
-EXCEPT
+and contract_address not in (
 SELECT
     contract_address
 FROM
     {{ this }}
+    WHERE
+        abi_data :data :result :: STRING <> 'Max rate limit reached'
+)
 {% endif %}
 ORDER BY
     total_interaction_count DESC
