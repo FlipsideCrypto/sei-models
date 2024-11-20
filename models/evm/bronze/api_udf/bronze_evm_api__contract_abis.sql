@@ -21,6 +21,8 @@ SELECT
 FROM
     {{ this }}
 {% endif %}
+ORDER BY
+    total_interaction_count DESC
 LIMIT
     50
 ), row_nos AS (
