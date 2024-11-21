@@ -3,7 +3,6 @@
     materialized = "incremental",
     unique_key = ['decoded_logs_id'],
     cluster_by = ['modified_timestamp::date', 'round(block_number, -3)'],
-    full_refresh = false,
     merge_exclude_columns = ["inserted_timestamp"],
     tags = ['silver_decoded_logs']
 ) }}
@@ -41,7 +40,7 @@ WHERE
 
 qualify(ROW_NUMBER() over (
     PARTITION BY
-        block_number, event_index
+        block_number, tx_hash, event_index
     ORDER BY
         _inserted_timestamp DESC, _partition_by_created_date DESC)) = 1
 ),
@@ -92,7 +91,7 @@ SELECT
     decoded_data,
     transformed,
     decoded_flat,
-    {{ dbt_utils.generate_surrogate_key(['block_number', 'event_index']) }} AS decoded_logs_id,
+    {{ dbt_utils.generate_surrogate_key(['block_number', 'tx_hash', 'event_index']) }} AS decoded_logs_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id
