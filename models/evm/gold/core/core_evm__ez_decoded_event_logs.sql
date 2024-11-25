@@ -62,6 +62,7 @@ new_records as (
     FROM base b 
     LEFT JOIN {{ ref('core_evm__fact_event_logs') }} fel
     ON b.block_number = fel.block_number 
+    and b.tx_hash = fel.tx_hash
     and b.event_index = fel.event_index
     LEFT JOIN {{ ref('core_evm__fact_transactions') }} ft
     ON b.tx_hash = ft.tx_hash
@@ -99,7 +100,7 @@ missing_tx_data AS (
         t.contract_name
     FROM {{ this }} t
     INNER JOIN {{ ref('core_evm__fact_event_logs') }} fel 
-    USING (block_number, event_index)
+    USING (block_number, tx_hash, event_index)
     LEFT JOIN {{ ref('core_evm__fact_transactions') }} ft
     ON t.tx_hash = ft.tx_hash
     WHERE t.tx_succeeded IS NULL OR t.block_timestamp IS NULL and fel.block_timestamp IS NOT NULL
