@@ -81,7 +81,7 @@ new_records AS (
         ) AS _log_id
     FROM
         flat_logs l
-        LEFT OUTER JOIN {{ ref('silver_evm__transactions') }}
+        INNER JOIN {{ ref('silver_evm__transactions') }}
         txs
         ON l.block_number = txs.block_number
         AND l.tx_hash = txs.tx_hash
