@@ -60,7 +60,7 @@ new_records as (
         b.decoded_log,
         dc.name as contract_name
     FROM base b 
-    LEFT JOIN {{ ref('core_evm__fact_event_logs') }} fel
+    INNER JOIN {{ ref('core_evm__fact_event_logs') }} fel
     USING (block_number, tx_hash, event_index)
     LEFT JOIN {{ ref('core_evm__fact_transactions') }} ft
     USING (block_number, tx_hash)
