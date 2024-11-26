@@ -3,7 +3,7 @@
     incremental_strategy = 'merge',
     unique_key = 'pool_address',
     merge_exclude_columns = ["inserted_timestamp"],
-    tags = ['curated']
+    tags = ['noncore']
 ) }}
 
 WITH created_pools AS (

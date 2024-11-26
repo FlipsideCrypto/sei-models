@@ -4,7 +4,7 @@
     unique_key = 'dragonswap_swaps_decoded_id',
     merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['block_timestamp::DATE'],
-    tags = ['curated','reorg']
+    tags = ['noncore']
 ) }}
 
 WITH pools AS (

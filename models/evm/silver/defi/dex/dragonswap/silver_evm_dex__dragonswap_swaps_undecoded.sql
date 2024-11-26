@@ -1,14 +1,29 @@
 {{ config(
     materialized = 'incremental',
-    incremental_strategy = 'delete+insert',
-    unique_key = 'block_number',
+    incremental_strategy = 'merge',
+    unique_key = 'dragonswap_swaps_undecoded_id',
+    merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['block_timestamp::DATE'],
-    tags = ['curated','reorg'],
-    enabled = false
+    tags = ['noncore']
 ) }}
--- depends_on: {{ ref('silver_evm_dex__dragonswap_swaps_decoded') }}
-WITH swaps_base AS (
 
+WITH pools AS (
+
+    SELECT
+        pool_address,
+        token0,
+        token1
+    FROM
+        {{ ref('silver_evm_dex__dragonswap_pools_v1') }}
+    UNION ALL
+    SELECT
+        pool_address,
+        token0,
+        token1
+    FROM
+        {{ ref('silver_evm_dex__dragonswap_pools_v2') }}
+),
+swaps_base AS (
     SELECT
         l.block_number,
         l.block_timestamp,
@@ -20,7 +35,7 @@ WITH swaps_base AS (
         l.contract_address,
         regexp_substr_all(SUBSTR(DATA, 3, len(DATA)), '.{64}') AS segmented_data,
         CONCAT('0x', SUBSTR(topics [1] :: STRING, 27, 40)) AS sender,
-        CONCAT('0x', SUBSTR(topics [2] :: STRING, 27, 40)) AS recipient,
+        CONCAT('0x', SUBSTR(topics [2] :: STRING, 27, 40)) AS tx_to,
         utils.udf_hex_to_int(
             's2c',
             segmented_data [0] :: STRING
@@ -29,30 +44,13 @@ WITH swaps_base AS (
             's2c',
             segmented_data [1] :: STRING
         ) :: FLOAT AS amount1_unadj,
-        utils.udf_hex_to_int(
-            's2c',
-            segmented_data [2] :: STRING
-        ) :: FLOAT AS sqrtPriceX96,
-        utils.udf_hex_to_int(
-            's2c',
-            segmented_data [3] :: STRING
-        ) :: FLOAT AS liquidity,
-        utils.udf_hex_to_int(
-            's2c',
-            segmented_data [4] :: STRING
-        ) :: FLOAT AS tick,
-        token0_address,
-        token1_address,
-        pool_address,
-        tick_spacing,
-        fee,
-        l._log_id,
-        l._inserted_timestamp
+        token0,
+        token1,
+        pool_address
     FROM
-        {{ ref('silver__logs') }}
+        {{ ref('silver_evm__logs') }}
         l
-        INNER JOIN {{ ref('silver_dex__blaster_pools_v3') }}
-        p
+        INNER JOIN pools p
         ON p.pool_address = l.contract_address
     WHERE
         l.block_timestamp :: DATE >= '2024-01-01'
@@ -60,11 +58,11 @@ WITH swaps_base AS (
         AND tx_status = 'SUCCESS'
 
 {% if is_incremental() %}
-AND l._inserted_timestamp >= (
+AND l.modified_timestamp >= (
     SELECT
         MAX(
-            _inserted_timestamp
-        ) - INTERVAL '12 hours'
+            modified_timestamp
+        ) - INTERVAL '5 minutes'
     FROM
         {{ this }}
 )
@@ -80,19 +78,17 @@ SELECT
     origin_to_address,
     contract_address,
     pool_address,
-    recipient,
+    tx_to,
     sender,
-    fee,
-    tick,
-    tick_spacing,
-    liquidity,
-    token0_address,
-    token1_address,
+    token0,
+    token1,
     amount0_unadj,
     amount1_unadj,
-    _log_id,
-    _inserted_timestamp
+    {{ dbt_utils.generate_surrogate_key(
+        ['tx_hash','event_index']
+    ) }} AS dragonswap_swaps_undecoded_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
-    swaps_base qualify(ROW_NUMBER() over(PARTITION BY _log_id
-ORDER BY
-    _inserted_timestamp DESC)) = 1
+    swaps_base
