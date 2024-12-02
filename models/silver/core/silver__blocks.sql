@@ -60,3 +60,5 @@ SELECT
     '{{ invocation_id }}' AS _invocation_id
 FROM
     base
+WHERE
+    block_id IS NOT NULL
