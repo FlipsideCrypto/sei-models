@@ -31,25 +31,52 @@ FROM
     query ~ incr
 ) %}
 {% endif %}
+
+WITH mod_prices AS (
+    SELECT
+        token_address,
+        HOUR,
+        price
+    FROM
+        {{ ref('price__ez_prices_hourly') }}
+
+{% if is_incremental() %}
+WHERE
+    modified_timestamp >= '{{max_mod_timestamp}}'
+{% endif %}
+),
+inc AS (
+    SELECT
+        'dragonswap' AS platform,
+        block_number,
+        block_timestamp,
+        tx_hash,
+        event_index,
+        origin_function_signature,
+        origin_from_address,
+        origin_to_address,
+        contract_address,
+        tx_to,
+        sender,
+        amount_in_unadj,
+        amount_out_unadj,
+        token_in,
+        token_out
+    FROM
+        gold.ez_dex_swaps__dragonswap_intermediate_tmp qualify ROW_NUMBER() over (
+            PARTITION BY tx_hash,
+            event_index
+            ORDER BY
+                modified_timestamp DESC
+        ) = 1 -- add other dexes
+)
 SELECT
-    'dragonswap' AS platform block_number,
-    block_timestamp,
-    tx_hash,
-    event_index,
-    origin_function_signature,
-    origin_from_address,
-    origin_to_address,
-    contract_address,
-    tx_to,
-    sender,
-    amount_in_unadj,
-    amount_out_unadj,
-    token_in,
-    token_out
+    A.platform,
+    A.block_number,
+    A.block_timestamp,
+    A.tx_hash,
+    A.event_index,
 FROM
-    gold.ez_dex_swaps__dragonswap_intermediate_tmp qualify ROW_NUMBER() over (
-        PARTITION BY tx_hash,
-        event_index
-        ORDER BY
-            modified_timestamp DESC
-    ) = 1
+    {{ this }} A
+    LEFT JOIN mod_prices b b
+    ON A.token_in = b.token_address
