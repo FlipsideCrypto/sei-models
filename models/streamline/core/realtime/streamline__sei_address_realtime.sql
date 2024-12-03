@@ -11,6 +11,7 @@
     )
 ) }}
 -- depends_on: {{ ref('streamline__evm_addresses') }}
+-- depends_on: {{ ref('streamline__complete_sei_addresses') }}
 WITH adds AS (
 
     SELECT
@@ -22,6 +23,11 @@ WITH adds AS (
         evm_address
     FROM
         {{ ref("silver__address_mapping_onchain") }}
+    EXCEPT
+    SELECT
+        evm_address
+    FROM
+        {{ ref("streamline__complete_sei_addresses") }}
 )
 SELECT
     REPLACE(SYSDATE() :: DATE :: STRING, '-') AS partition_key,
