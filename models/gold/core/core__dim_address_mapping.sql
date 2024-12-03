@@ -8,24 +8,43 @@
   tags = ['core','full_test']
 ) }}
 
-WITH base AS (
+WITH onchain AS (
 
   SELECT
-    block_timestamp,
-    block_id,
-    tx_id,
-    msg_index,
-    OBJECT_AGG(
-      attribute_key :: STRING,
-      attribute_value :: variant
-    ) AS j,
-    j :sei_addr :: STRING AS sei_address,
-    j :evm_addr :: STRING AS evm_address
+    block_timestamp_associated,
+    block_id_associated,
+    sei_address,
+    evm_address
   FROM
-    {{ ref('silver__msg_attributes') }} A
+    {{ ref('silver__address_mapping_onchain') }} A
+
+{% if is_incremental() %}
+WHERE
+  modified_timestamp >= (
+    SELECT
+      MAX(
+        modified_timestamp
+      )
+    FROM
+      {{ this }}
+  )
+{% endif %}
+),
+api AS (
+  SELECT
+    block_timestamp_associated,
+    block_id_associated,
+    sei_address,
+    evm_address
+  FROM
+    {{ ref('silver__address_mapping_api') }} A
   WHERE
-    tx_succeeded
-    AND msg_type = 'address_associated'
+    sei_address NOT IN (
+      SELECT
+        sei_address
+      FROM
+        {{ ref('silver__address_mapping_onchain') }}
+    )
 
 {% if is_incremental() %}
 AND modified_timestamp >= (
@@ -37,15 +56,27 @@ AND modified_timestamp >= (
     {{ this }}
 )
 {% endif %}
-GROUP BY
-  block_timestamp,
-  block_id,
-  tx_id,
-  msg_index
+),
+combo AS (
+  SELECT
+    block_timestamp_associated,
+    block_id_associated,
+    sei_address,
+    evm_address
+  FROM
+    onchain
+  UNION ALL
+  SELECT
+    block_timestamp_associated,
+    block_id_associated,
+    sei_address,
+    evm_address
+  FROM
+    api
 )
 SELECT
-  block_timestamp AS block_timestamp_associated,
-  block_id AS block_id_associated,
+  block_timestamp_associated,
+  block_id_associated,
   sei_address,
   LOWER(evm_address) AS evm_address,
   {{ dbt_utils.generate_surrogate_key(
@@ -55,6 +86,4 @@ SELECT
   SYSDATE() AS modified_timestamp,
   '{{ invocation_id }}' AS _invocation_id
 FROM
-  base qualify(ROW_NUMBER() over(PARTITION BY sei_address
-ORDER BY
-  block_timestamp) = 1)
+  combo

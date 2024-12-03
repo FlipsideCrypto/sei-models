@@ -44,4 +44,4 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt run --vars '{"STREAMLINE_INVOKE_STREAMS":True}' -m 1+models/streamline/core/realtime/streamline__tx_counts_realtime.sql 2+models/streamline/core/realtime/streamline__blocks_realtime.sql
+          dbt run --vars '{"STREAMLINE_INVOKE_STREAMS":True}' -m 1+models/streamline/core/realtime/streamline__tx_counts_realtime.sql 2+models/streamline/core/realtime/streamline__blocks_realtime.sql 1+models/streamline/core/realtime/streamline__sei_address_realtime.sql 

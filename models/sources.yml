@@ -52,6 +52,7 @@ sources:
       - name: transactions_v2
       - name: txcount_v2
       - name: evm_decoded_logs
+      - name: sei_addresses
   - name: bronze
     schema: bronze
     tables:
