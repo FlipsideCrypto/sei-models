@@ -12,7 +12,6 @@ SELECT
     origin_from_address,
     origin_to_address,
     contract_address,
-    {# pool_address, #}
     tx_to,
     sender,
     amount_in_unadj,
@@ -35,7 +34,6 @@ SELECT
     origin_from_address,
     origin_to_address,
     contract_address,
-    {# pool_address, #}
     tx_to,
     sender,
     CASE
