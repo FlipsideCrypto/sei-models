@@ -1,3 +1,4 @@
+-- depends_on: {{ ref('silver__vertex_dim_products') }}
 {{ config(
     materialized = 'incremental',
     incremental_strategy = 'merge',

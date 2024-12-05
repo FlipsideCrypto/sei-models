@@ -72,6 +72,7 @@ product_id_join AS (
             WHEN p.symbol = 'USDC' THEN '0x3894085ef7ff0f0aedf52e2a2704928d1ec074f1'
             WHEN p.symbol = 'WETH' THEN '0x160345fc359604fc6e70e3c5facbde5f7a9342d8'
             WHEN p.symbol = 'ETH' THEN '0x160345fc359604fc6e70e3c5facbde5f7a9342d8'
+            WHEN p.symbol = 'WSEI' THEN '0xe30fedd158a2e3b13e9badaeabafc5516e95e8c7'
         END AS token_address,
         amount,
         l._log_id,
