@@ -1,4 +1,3 @@
-  -- depends_on: {{ ref('silver__vertex_dim_products') }}
 {% test vertex_missing_products(
     model,
     filter) %}
