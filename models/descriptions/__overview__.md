@@ -71,6 +71,19 @@ There is more information on how to use dbt docs in the last section of this doc
 - [ez_native_transfers](#!/model/model.sei_models.core_evm__ez_native_transfers)
 - [ez_decoded_event_logs](#!/model/model.sei_models.core_evm__ez_decoded_event_logs)
 
+### Flipside Partner Tables (sei.partner_name)
+
+**Vertex Tables:**
+- [dim_products](#!/model/model.sei_models.vertex__dim_products)
+- [ez_clearing_house_events](#!/model/model.sei_models.vertex__ez_clearing_house_events)
+- [ez_liquidations](#!/model/model.sei_models.vertex__ez_liquidations)
+- [ez_perp_trades](#!/model/model.sei_models.vertex__ez_perp_trades)
+- [ez_spot_trades](#!/model/model.sei_models.vertex__ez_spot_trades)
+- [ez_account_stats](#!/model/model.sei_models.vertex__ez_account_stats)
+- [ez_edge_trades](#!/model/model.sei_models.vertex__ez_edge_trades)
+- [ez_market_depth_stats](#!/model/model.sei_models.vertex__ez_market_depth_stats)
+- [ez_market_stats](#!/model/model.sei_models.vertex__ez_market_stats)
+
 ## **Data Model Overview**
 
 The SEI
