@@ -111,7 +111,7 @@ final_evm AS (
         A.tx_hash,
         'evm' AS originated_from,
         A.platform,
-        NULL AS swapper,
+        d.sei_address AS swapper,
         A.origin_from_address,
         A.contract_address AS pool_address,
         A.amount_in_unadj,
@@ -160,6 +160,9 @@ final_evm AS (
         LEFT JOIN {{ ref('silver_evm__contracts') }}
         c_out
         ON A.token_out = c_out.contract_address
+        LEFT JOIN {{ ref('core__dim_address_mapping') }}
+        d
+        ON A.origin_from_address = d.evm_address
 )
 SELECT
     *

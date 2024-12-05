@@ -8,6 +8,7 @@ SELECT
     block_timestamp,
     tx_hash,
     event_index,
+    event_name,
     origin_function_signature,
     origin_from_address,
     origin_to_address,
@@ -30,6 +31,7 @@ SELECT
     block_timestamp,
     tx_hash,
     event_index,
+    event_name,
     origin_function_signature,
     origin_from_address,
     origin_to_address,
@@ -37,11 +39,11 @@ SELECT
     tx_to,
     sender,
     CASE
-        WHEN amount0_unadj < 0 THEN amount0_unadj
+        WHEN amount0_unadj < 0 THEN ABS(amount0_unadj)
         ELSE amount1_unadj
     END AS amount_in_unadj,
     CASE
-        WHEN amount0_unadj < 0 THEN amount1_unadj
+        WHEN amount0_unadj < 0 THEN ABS(amount1_unadj)
         ELSE amount0_unadj
     END AS amount_out_unadj,
     CASE
