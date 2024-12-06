@@ -25,7 +25,13 @@ WITH base AS (
 {% if is_incremental() %}
 AND _INSERTED_TIMESTAMP >= (
     SELECT
-        MAX(_INSERTED_TIMESTAMP) _INSERTED_TIMESTAMP
+        DATEADD(
+            'hour',
+            {{ var('fill_missing_logs_hours', -6) }},
+            MAX(
+                _inserted_timestamp
+            )
+        )
     FROM
         {{ this }}
 )
@@ -52,6 +58,18 @@ flat_logs AS (
         LATERAL FLATTEN(
             input => logs
         )
+),
+valid_txs as (
+    SELECT DISTINCT
+        b.block_number,
+        t.value::string as tx_hash
+    FROM
+        flat_logs l 
+        INNER JOIN {{ ref('silver_evm__blocks') }} b
+            ON l.block_number = b.block_number,
+        LATERAL FLATTEN(
+            input => b.data:result:transactions
+        ) t
 ),
 new_records AS (
     SELECT
@@ -81,7 +99,10 @@ new_records AS (
         ) AS _log_id
     FROM
         flat_logs l
-        LEFT OUTER JOIN {{ ref('silver_evm__transactions') }}
+        INNER JOIN valid_txs v
+        ON l.block_number = v.block_number
+        AND l.tx_hash = v.tx_hash
+        LEFT JOIN {{ ref('silver_evm__transactions') }}
         txs
         ON l.block_number = txs.block_number
         AND l.tx_hash = txs.tx_hash

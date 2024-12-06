@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    incremental_predicates = ["dynamic_range_predicate", "block_timestamp::date"],
+    incremental_predicates = ["DBT_INTERNAL_DEST.block_timestamp::DATE >= (select min(block_timestamp::DATE-7 ) from " ~ generate_tmp_view_name(this) ~ ")"],
     unique_key = "tx_id",
     incremental_strategy = 'merge',
     merge_exclude_columns = ["inserted_timestamp"],

@@ -80,7 +80,7 @@ GROUP BY
 )
 )
 WHERE
-    groupID_out < 20
+    groupID_out < 50
 ),
 calls AS (
     SELECT
