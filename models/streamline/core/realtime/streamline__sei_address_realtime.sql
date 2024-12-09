@@ -7,7 +7,8 @@
         "sql_limit" :"500",
         "producer_batch_size" :"100",
         "worker_batch_size" :"100",
-        "sql_source" :"{{this.identifier}}" }
+        "sql_source" :"{{this.identifier}}",
+        "async_concurrent_requests": "2" }
     )
 ) }}
 -- depends_on: {{ ref('streamline__evm_addresses') }}
