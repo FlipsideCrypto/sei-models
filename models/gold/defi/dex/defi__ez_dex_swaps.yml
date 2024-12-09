@@ -1,0 +1,110 @@
+version: 2
+models:
+  - name: defi__ez_dex_swaps
+    description: Records swap transactions on Sei (both native sei and evm protocols) for Astroport, Fuzio, Seaswap, and Dragonswap
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}   or block_timestamp is null
+      - name: TX_ID
+        description: This will be either the native sei tx_id or the evm tx_hash. Swaps that are initiated on and native sei protocol will have a tx_id that can be find in CORE.FAC_TRANSACTIONS. Swaps that are initiated on an evm protocol will have a tx_id that is the tx_hash of the evm transaction that can be found in CORE_EVM.FACT_TRANSACTIONS.
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: originated_from
+        description: The evm from address of this transaction.
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: PLATFORM
+        description: The platform that the swap was initiated on. This will be either astroport, fuzio, seaswap, or dragonswap.
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}
+      - name: SWAPPER
+        description: "{{ doc('swapper') }}"
+        data_tests:
+          - not_null:
+              where: originated_from = 'sei' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: origin_from_address
+        description: "{{ doc('swapper') }}"
+        data_tests:
+          - not_null:
+              where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: pool_address
+        description: "{{ doc('msg_group') }}"
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: amount_in_unadj
+        description: "{{ doc('msg_sub_group') }}"
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: amount_in
+        description: "{{ doc('msg_index') }}"
+      - name: amount_in_usd
+        description: "{{ doc('amount_in') }}"
+      - name: amount_out_unadj
+        description: "{{ doc('currency_in') }}"
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: amount_out
+        description: "{{ doc('amount_out') }}"
+      - name: amount_out_usd
+        description: "{{ doc('currency_out') }}"
+      - name: token_in
+        description: "{{ doc('pool_address') }}"
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: symbol_in
+        description: "{{ doc('pool_name') }}"
+      - name: symbol_out
+        description: "{{ doc('pool_address') }}"
+      - name: token_out
+        description: "{{ doc('pool_name') }}"
+      - name: origin_function_signature
+        description: "{{ doc('pool_address') }}"
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: INDEX
+        description: "{{ doc('pool_address') }}"
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: origin_to_address
+        description: "{{ doc('pool_address') }}"
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: sender
+        description: "{{ doc('pool_address') }}"
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: tx_to
+        description: "{{ doc('pool_address') }}"
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: event_name
+        description: "{{ doc('pool_address') }}"
+        data_tests:
+          - not_null:
+              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: EZ_DEX_SWAPS_ID
+        description: '{{ doc("pk") }}'   
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'   
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}'          

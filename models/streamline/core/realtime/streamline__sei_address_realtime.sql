@@ -4,10 +4,11 @@
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
         params ={ "external_table" :"sei_addresses",
-        "sql_limit" :"500",
+        "sql_limit" :"1000",
         "producer_batch_size" :"100",
         "worker_batch_size" :"100",
-        "sql_source" :"{{this.identifier}}" }
+        "sql_source" :"{{this.identifier}}",
+        "async_concurrent_requests": "2" }
     )
 ) }}
 -- depends_on: {{ ref('streamline__evm_addresses') }}
