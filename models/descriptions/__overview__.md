@@ -83,6 +83,7 @@ There is more information on how to use dbt docs in the last section of this doc
 - [ez_edge_trades](#!/model/model.sei_models.vertex__ez_edge_trades)
 - [ez_market_depth_stats](#!/model/model.sei_models.vertex__ez_market_depth_stats)
 - [ez_market_stats](#!/model/model.sei_models.vertex__ez_market_stats)
+- [ez_money_markets](#!/model/model.sei_models.vertex__ez_money_markets)
 
 ## **Data Model Overview**
 
