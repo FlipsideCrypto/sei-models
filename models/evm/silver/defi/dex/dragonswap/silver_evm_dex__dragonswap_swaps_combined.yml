@@ -1,0 +1,38 @@
+version: 2
+models:
+  - name: silver_evm_dex__dragonswap_swaps_combined
+    description: Records of swaps that occurred on the dragonswap platform
+    columns:
+      - name: BLOCK_NUMBER
+
+      - name: BLOCK_TIMESTAMP
+        tests:
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+      - name: tx_hash
+
+      - name: event_index
+ 
+      - name: event_name
+ 
+      - name: origin_function_signature
+ 
+      - name: origin_from_address
+ 
+      - name: origin_to_address
+ 
+      - name: contract_address
+ 
+      - name: tx_to
+ 
+      - name: sender
+
+      - name: amount_in_unadj
+ 
+      - name: amount_out_unadj
+ 
+      - name: token_in
+
+      - name: token_out
+  
