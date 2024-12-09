@@ -34,74 +34,71 @@ models:
           - not_null:
               where: originated_from = 'sei' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
       - name: origin_from_address
-        description: "{{ doc('swapper') }}"
+        description: "{{doc('sei_origin_from')}}"
         data_tests:
           - not_null:
               where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
       - name: pool_address
-        description: "{{ doc('msg_group') }}"
+        description: The contract address for the liquidity pool.
         data_tests:
           - not_null:
               where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
       - name: amount_in_unadj
-        description: "{{ doc('msg_sub_group') }}"
+        description: The non-decimal adjusted amount of tokens put into the swap.
         data_tests:
           - not_null:
               where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
       - name: amount_in
-        description: "{{ doc('msg_index') }}"
+        description: The amount of tokens put into the swap. This will be null if we do not have the decimal adjustment for the token.
       - name: amount_in_usd
-        description: "{{ doc('amount_in') }}"
+        description: The amount of tokens put into the swap converted to USD using the price of the token. This will be null if we do not have the decimal adjustment or price for the token.
       - name: amount_out_unadj
-        description: "{{ doc('currency_in') }}"
+        description: The non-decimal adjusted amount of tokens taken out of or received from the swap. This will be null if we do not have the decimal adjustment for the token.
         data_tests:
           - not_null:
               where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
       - name: amount_out
-        description: "{{ doc('amount_out') }}"
+        description: The amount of tokens taken out or received from the swap. This will be null if we do not have the decimal adjustment for the token.
       - name: amount_out_usd
-        description: "{{ doc('currency_out') }}"
+        description: The amount of tokens taken out or received from the swap converted to USD using the price of the token. This will be null if we do not have the decimal adjustment or price for the token.
       - name: token_in
-        description: "{{ doc('pool_address') }}"
+        description: The address of the token sent for swap.
         data_tests:
           - not_null:
               where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
       - name: symbol_in
-        description: "{{ doc('pool_name') }}"
-      - name: symbol_out
-        description: "{{ doc('pool_address') }}"
+        description: The symbol of the token sent for swap.
       - name: token_out
-        description: "{{ doc('pool_name') }}"
+        description: The address of the token being swapped to.
+      - name: symbol_out
+        description: The symbol of the token being swapped to.
       - name: origin_function_signature
-        description: "{{ doc('pool_address') }}"
+        description: "{{doc('sei_tx_origin_sig')}}"
         data_tests:
           - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+              where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
       - name: INDEX
-        description: "{{ doc('pool_address') }}"
+        description: This is the event_index for evm transactions or the msg_index for native sei transactions. This is used to uniquely identify the action within the transaction.
         data_tests:
           - not_null:
               where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
       - name: origin_to_address
-        description: "{{ doc('pool_address') }}"
+        description: "{{doc('sei_eth_origin_to')}} Note: this will only be populated for evm transactions."
         data_tests:
           - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+              where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
       - name: sender
-        description: "{{ doc('pool_address') }}"
+        description: "The Router is the Sender in the swap function. Note: this will only be populated for evm transactions."
         data_tests:
           - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+              where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
       - name: tx_to
-        description: "{{ doc('pool_address') }}"
+        description: 'The tx_to is the address who receives the swapped token. This corresponds to the "to" field in the swap function.  Note: this will only be populated for evm transactions.'
         data_tests:
           - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+              where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
       - name: event_name
-        description: "{{ doc('pool_address') }}"
-        data_tests:
-          - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+        description: The decoded event name for a given event.
       - name: EZ_DEX_SWAPS_ID
         description: '{{ doc("pk") }}'   
       - name: INSERTED_TIMESTAMP

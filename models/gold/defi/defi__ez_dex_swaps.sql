@@ -2,9 +2,9 @@
     materialized = 'incremental',
     unique_key = 'ez_dex_swaps_id',
     merge_exclude_columns = ["inserted_timestamp"],
-    cluster_by = ['block_timestamp::DATE','platform'],
+    cluster_by = ['block_timestamp::DATE','originated_from','platform'],
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(tx_id,origin_from_address,swapper,token_in,token_out,symbol_in,symbol_out);",
     meta ={ 'database_tags':{ 'table':{ 'PURPOSE': 'SWAPS' }} },
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(tx_id,originated_from,swapper,token_in,token_out,symbol_in,symbol_out);",
     tags = ['noncore','recent_test']
 ) }}
 

@@ -1,7 +1,7 @@
 version: 2
 models:
   - name: defi__fact_dex_swaps
-    description: Records swap transactions on Sei for Astroport, Fuzio, and Seaswap
+    description: "Deprecating soon!Records swap transactions on Sei for Astroport, Fuzio, and Seaswap. Note: this only contains swaps from native sei protocols."
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
