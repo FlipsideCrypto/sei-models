@@ -140,14 +140,14 @@ fin AS (
             WHEN c_in.decimals IS NOT NULL THEN (amount_in_unadj / pow(10, c_in.decimals))
         END AS amount_in,
         CASE
-            WHEN c_in.decimals IS NOT NULL THEN amount_in * b_in.price
+            WHEN c_in.decimals IS NOT NULL THEN (amount_in_unadj / pow(10, c_in.decimals)) * b_in.price
         END AS amount_in_usd,
         A.amount_out AS amount_out_unadj,
         CASE
             WHEN c_out.decimals IS NOT NULL THEN (amount_out_unadj / pow(10, c_out.decimals))
         END AS amount_out,
         CASE
-            WHEN c_out.decimals IS NOT NULL THEN amount_out * b_out.price
+            WHEN c_out.decimals IS NOT NULL THEN (amount_out_unadj / pow(10, c_out.decimals)) * b_out.price
         END AS amount_out_usd,
         A.currency_in AS token_in,
         c_in.symbol AS symbol_in,
