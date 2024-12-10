@@ -40,11 +40,11 @@ SELECT
     sender,
     CASE
         WHEN amount0_unadj < 0 THEN ABS(amount0_unadj)
-        ELSE amount1_unadj
+        ELSE ABS(amount1_unadj)
     END AS amount_in_unadj,
     CASE
         WHEN amount0_unadj < 0 THEN ABS(amount1_unadj)
-        ELSE amount0_unadj
+        ELSE ABS(amount0_unadj)
     END AS amount_out_unadj,
     CASE
         WHEN amount0_unadj < 0 THEN token0
