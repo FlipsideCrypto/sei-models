@@ -5,10 +5,10 @@
         target = "{{this.schema}}.{{this.identifier}}",
         params ={ "external_table" :"sei_addresses",
         "sql_limit" :"350",
-        "producer_batch_size" :"35",
-        "worker_batch_size" :"35",
+        "producer_batch_size" :"50",
+        "worker_batch_size" :"50",
         "sql_source" :"{{this.identifier}}",
-        "async_concurrent_requests": "1" }
+        "async_concurrent_requests": "5" }
     )
 ) }}
 -- depends_on: {{ ref('streamline__evm_addresses') }}
@@ -19,6 +19,22 @@ WITH adds AS (
         evm_address
     FROM
         {{ ref("streamline__evm_addresses") }}
+    INTERSECT
+    SELECT
+        evm_address
+    FROM
+        (
+            SELECT
+                origin_from_address AS evm_address
+            FROM
+                {{ ref('silver_evm_dex__swaps_combined') }}
+        )
+),
+excepts AS (
+    SELECT
+        evm_address
+    FROM
+        adds
     EXCEPT
     SELECT
         evm_address
@@ -35,7 +51,7 @@ SELECT
     evm_address,
     {{ target.database }}.live.udf_api(
         'POST',
-        'https://evm-rpc.sei-apis.com',
+        '{Service}/{Authentication}',
         OBJECT_CONSTRUCT(
             'Content-Type',
             'application/json'
@@ -51,7 +67,8 @@ SELECT
             ARRAY_CONSTRUCT(
                 evm_address
             )
-        )
+        ),
+        'Vault/prod/sei/quicknode/mainnet'
     ) AS request
 FROM
-    adds
+    excepts
