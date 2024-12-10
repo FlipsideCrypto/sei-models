@@ -4,11 +4,11 @@
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
         params ={ "external_table" :"sei_addresses",
-        "sql_limit" :"500",
-        "producer_batch_size" :"100",
-        "worker_batch_size" :"100",
+        "sql_limit" :"350",
+        "producer_batch_size" :"35",
+        "worker_batch_size" :"35",
         "sql_source" :"{{this.identifier}}",
-        "async_concurrent_requests": "2" }
+        "async_concurrent_requests": "1" }
     )
 ) }}
 -- depends_on: {{ ref('streamline__evm_addresses') }}
@@ -35,7 +35,7 @@ SELECT
     evm_address,
     {{ target.database }}.live.udf_api(
         'POST',
-        '{Service}/{Authentication}',
+        'https://evm-rpc.sei-apis.com',
         OBJECT_CONSTRUCT(
             'Content-Type',
             'application/json'
@@ -51,8 +51,7 @@ SELECT
             ARRAY_CONSTRUCT(
                 evm_address
             )
-        ),
-        'Vault/prod/sei/quicknode/mainnet'
+        )
     ) AS request
 FROM
     adds
