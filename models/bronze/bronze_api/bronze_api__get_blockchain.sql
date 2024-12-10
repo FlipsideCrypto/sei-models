@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    full_refresh = false
+    full_refresh = false 
 ) }}
 
 WITH base AS (
@@ -63,6 +63,7 @@ WITH base AS (
                                                         DISTINCT block_id
                                                     FROM
                                                         {{ ref('silver__blocks') }}
+                                                        where 0=1
 
 {% if is_incremental() %}
 EXCEPT
