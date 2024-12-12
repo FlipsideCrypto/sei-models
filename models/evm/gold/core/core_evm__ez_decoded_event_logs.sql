@@ -28,7 +28,7 @@ WITH base AS (
     AND modified_timestamp > (
         SELECT
             COALESCE(
-                MAX(modified_timestamp),
+                dateadd('hour', -2, MAX(modified_timestamp)),
                 '2000-01-01'::TIMESTAMP
             )
         FROM
