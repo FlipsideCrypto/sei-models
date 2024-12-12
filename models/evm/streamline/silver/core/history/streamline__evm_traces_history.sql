@@ -4,9 +4,9 @@
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
         params ={ "external_table" :"evm_traces",
-        "sql_limit" :"25000",
-        "producer_batch_size" :"1000",
-        "worker_batch_size" :"100",
+        "sql_limit" :"100000",
+        "producer_batch_size" :"10",
+        "worker_batch_size" :"10",
         "sql_source" :"{{this.identifier}}",
         "exploded_key": tojson(["result"]) }
     ),
@@ -52,7 +52,7 @@ SELECT
             'method',
             'debug_traceBlockByNumber',
             'params',
-            ARRAY_CONSTRUCT(utils.udf_int_to_hex(block_number), OBJECT_CONSTRUCT('tracer', 'callTracer', 'timeout', '30s'))
+            ARRAY_CONSTRUCT(utils.udf_int_to_hex(block_number), OBJECT_CONSTRUCT('tracer', 'callTracer', 'timeout', '120s'))
         ),
         'Vault/prod/sei/quicknode/mainnet'
     ) AS request
@@ -60,4 +60,4 @@ FROM
     ready_blocks
         ORDER BY
             block_number asc
-    limit 25000
+    limit 100000
