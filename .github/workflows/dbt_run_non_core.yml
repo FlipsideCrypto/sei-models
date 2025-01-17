@@ -45,4 +45,4 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt run -m "sei_models,tag:noncore" models/bronze/bronze_api "sei_models,tag:curated" --exclude models/bronze/bronze_api/bronze_api__get_seaswap_pools.sql
+          dbt run -m "sei_models,tag:noncore" models/bronze/bronze_api "sei_models,tag:curated" models/evm/bronze/api_udf/bronze_evm_api__contract_abis.sql --exclude models/bronze/bronze_api/bronze_api__get_seaswap_pools.sql

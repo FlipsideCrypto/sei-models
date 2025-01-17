@@ -12,7 +12,7 @@ WITH base AS (
     FROM
         {{ ref('silver_evm__relevant_contracts') }}
     WHERE
-        total_interaction_count >= 100
+        total_interaction_count >= 1000
 
 {% if is_incremental() %}
 and contract_address not in (
