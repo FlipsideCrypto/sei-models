@@ -17,15 +17,24 @@ WITH base AS (
         to_address,
         VALUE,
         identifier,
-        _call_id,
+        concat_ws(
+            '-',
+            block_number,
+            tx_position,
+            CONCAT(
+                TYPE,
+                '_',
+                trace_address
+            )
+        ) AS _call_id,
         input,
-        _INSERTED_TIMESTAMP,
+        modified_timestamp AS _inserted_timestamp,
         value_precise_raw,
         value_precise,
         tx_position,
         trace_index
     FROM
-        {{ ref('silver_evm__traces') }}
+        {{ ref('core_evm__fact_traces') }}
     WHERE
         VALUE > 0
         AND tx_status = 'SUCCESS'

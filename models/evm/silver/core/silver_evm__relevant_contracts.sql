@@ -32,10 +32,10 @@ function_calls AS (
     SELECT
         to_address AS contract_address,
         COUNT(*) AS function_call_count,
-        MAX(_inserted_timestamp) AS max_inserted_timestamp_traces,
+        MAX(modified_timestamp) AS max_inserted_timestamp_traces,
         MAX(block_number) AS latest_call_block
     FROM
-        {{ ref('silver_evm__traces') }}
+        {{ ref('core_evm__fact_traces') }}
     WHERE
         tx_status = 'SUCCESS'
         AND trace_status = 'SUCCESS'
@@ -44,7 +44,7 @@ function_calls AS (
         AND input <> '0x'
 
 {% if is_incremental() %}
-AND _inserted_timestamp > (
+AND modified_timestamp > (
     SELECT
         MAX(max_inserted_timestamp_traces)
     FROM
