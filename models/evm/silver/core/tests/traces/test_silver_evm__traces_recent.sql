@@ -13,7 +13,7 @@ WITH last_3_days AS (
 SELECT
     *
 FROM
-    {{ ref('core_evm__fact_traces') }}
+    {{ ref('silver_evm__traces') }}
 WHERE
     block_number >= (
         SELECT
