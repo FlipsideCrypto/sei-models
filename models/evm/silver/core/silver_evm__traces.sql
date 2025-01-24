@@ -10,49 +10,49 @@
 ) }}
 
 {% if execute %}
-  {% set max_inserted_query %}
+    {% set max_inserted_query %}
 
-  SELECT
-    DATEADD('minute', -5, MAX(_inserted_timestamp))
-  FROM
-    {{ this }}
+    SELECT
+        DATEADD('minute', -5, MAX(_inserted_timestamp))
+    FROM
+        {{ this }}
 
-    {% endset %}
-    {% set max_ins = run_query(max_inserted_query) [0] [0] %}
-    {% if not max_ins or max_ins == 'None' %}
-      {% set max_ins = '2099-01-01' %}
-    {% endif %}
+        {% endset %}
+        {% set max_ins = run_query(max_inserted_query) [0] [0] %}
+        {% if not max_ins or max_ins == 'None' %}
+            {% set max_ins = '2099-01-01' %}
+        {% endif %}
 
-    {% set query_blocks %}
-    CREATE
-    OR REPLACE temporary TABLE silver_evm.silver_evm__traces2_intermediate_tmp AS
-  SELECT
-    block_number,
-    partition_key,
-    VALUE :array_index :: INT AS tx_position,
-    DATA :result AS full_traces,
-    DATA :txHash :: STRING AS tx_hash,
-    _inserted_timestamp
-  FROM
+        {% set query_blocks %}
+        CREATE
+        OR REPLACE temporary TABLE silver_evm.silver_evm__traces2_intermediate_tmp AS
+    SELECT
+        block_number,
+        partition_key,
+        VALUE :array_index :: INT AS tx_position,
+        DATA :result AS full_traces,
+        DATA :txHash :: STRING AS tx_hash,
+        _inserted_timestamp
+    FROM
 
 {% if is_incremental() %}
 {{ ref('bronze_evm__streamline_traces') }}
 {% else %}
-  {{ ref('bronze_evm__streamline_fr_traces') }}
+    {{ ref('bronze_evm__streamline_fr_traces') }}
 {% endif %}
-
-where DATA :result IS NOT NULL
+WHERE
+    DATA :result IS NOT NULL
 
 {% if is_incremental() %}
-and _inserted_timestamp >= '{{max_ins}}'
+AND _inserted_timestamp >= '{{max_ins}}'
 {% endif %}
 
-qualify(ROW_NUMBER() over (PARTITION BY block_number, tx_position, tx_hash ORDER BY _inserted_timestamp DESC)) = 1
-
-{% endset %}
-{% do run_query(
-  query_blocks
-) %}
+qualify(ROW_NUMBER() over (PARTITION BY block_number, tx_position, tx_hash
+ORDER BY
+    _inserted_timestamp DESC)) = 1 {% endset %}
+    {% do run_query(
+        query_blocks
+    ) %}
 {% endif %}
 
 WITH flatten_traces AS (
@@ -124,7 +124,7 @@ WITH flatten_traces AS (
     WHERE
         f.index IS NULL
         AND f.key != 'calls'
-        AND f.path != 'result' 
+        AND f.path != 'result'
     GROUP BY
         block_number,
         tx_hash,
@@ -142,9 +142,7 @@ SELECT
     partition_key,
     _inserted_timestamp,
     {{ dbt_utils.generate_surrogate_key(
-        ['block_number'] + 
-        ['tx_hash'] + 
-        ['trace_address']
+        ['block_number'] + ['tx_hash'] + ['trace_address']
     ) }} AS traces_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
