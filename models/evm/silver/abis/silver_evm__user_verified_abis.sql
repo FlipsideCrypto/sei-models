@@ -41,7 +41,7 @@ AND _inserted_timestamp > (
         {{ this }}
 )
 AND _inserted_timestamp > DATEADD('day', -2, SYSDATE())
-{% endif %}), 
+{% endif %}),
 flat_event_abi AS (
     SELECT
         contract_address,
@@ -470,7 +470,7 @@ valid_traces AS (
             SELECT
                 base_address
             FROM
-                {{ ref('silver_evm__traces') }}
+                {{ ref('core_evm__fact_traces') }}
                 JOIN function_mapping
                 ON function_sig = LEFT(
                     input,
