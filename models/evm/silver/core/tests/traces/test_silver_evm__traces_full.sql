@@ -8,4 +8,4 @@ SELECT
 FROM
     {{ ref('silver_evm__traces') }}
 WHERE
-    block_timestamp < DATEADD('hour', -1, SYSDATE())
+    inserted_timestamp < DATEADD('hour', -1, SYSDATE())
