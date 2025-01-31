@@ -14,3 +14,4 @@ WHERE
         FROM
              {{ ref("_evm_block_lookback") }}
     )
+    and inserted_timestamp < DATEADD('hour', -1, SYSDATE())
