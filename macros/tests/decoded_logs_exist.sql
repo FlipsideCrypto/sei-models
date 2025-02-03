@@ -16,5 +16,6 @@ WHERE
             d.ez_decoded_event_logs_id = l.logs_id
             AND d.contract_address = l.contract_address
             AND d.topics [0] :: STRING = l.topics [0] :: STRING
+            AND l.inserted_timestamp < DATEADD('hour', -1, SYSDATE())
     ) 
 {% endtest %}
