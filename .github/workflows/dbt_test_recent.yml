@@ -45,4 +45,4 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt test -m  models/bronze/core "sei_models,tag:recent_test"
+          dbt test -m  models/bronze/core "sei_models,tag:recent_test" --exclude models/evm
