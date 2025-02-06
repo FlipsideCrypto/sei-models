@@ -39,7 +39,6 @@ SELECT
     tx_hash,
     event_index,
     contract_address,
-
     pool_id,
     pool_address,
     {{ dbt_utils.generate_surrogate_key(
