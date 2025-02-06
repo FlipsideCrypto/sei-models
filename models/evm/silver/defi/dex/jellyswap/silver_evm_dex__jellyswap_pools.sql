@@ -1,17 +1,55 @@
+{{ config(
+    materialized = 'incremental',
+    incremental_strategy = 'merge',
+    unique_key = 'pool_address',
+    merge_exclude_columns = ["inserted_timestamp"],
+    tags = ['noncore']
+) }}
+
+WITH created_pools AS (
+    SELECT 
+
+        block_number,
+        block_timestamp,
+        tx_hash,
+        event_index,
+        contract_address,
+        topics[1]::STRING as pool_id,
+        SUBSTR(topics[1]::STRING, 1, 42) as pool_address,
+        _inserted_timestamp,
+        _log_id
+    FROM 
+        {{ ref('silver_evm__logs') }}
+    WHERE 
+        topics[0]::STRING = '0x3c13bc30b8e878c53fd2a36b679409c073afd75950be43d8858768e956fbc20e' -- PoolRegistered
+        AND contract_address = '0xfb43069f6d0473b85686a85f4ce4fc1fd8f00875' -- Vault contract
+        AND tx_status = 'SUCCESS'
+    
+    {% if is_incremental() %}
+        AND _inserted_timestamp >= (
+            SELECT
+                MAX(_inserted_timestamp) - INTERVAL '5 minutes'
+            FROM {{ this }}
+        )
+    {% endif %}
+)
 SELECT 
+    block_number,
     block_timestamp,
     tx_hash,
     event_index,
-    origin_from_address as swapper,
     contract_address,
-    event_name,
-    decoded_log:poolId::STRING as pool_id,
-    decoded_log:tokenIn::STRING as token_in,
-    decoded_log:tokenOut::STRING as token_out,
-    decoded_log:amountIn::NUMBER as amount_in,
-    decoded_log:amountOut::NUMBER as amount_out
-FROM sei.core_evm.ez_decoded_event_logs
-WHERE contract_address = LOWER('0xfb43069f6d0473b85686a85f4ce4fc1fd8f00875')
-AND event_name = 'Swap'
-AND tx_hash = '0x5c1852f9396b8dbcf41e7f8e028257628a43d51c482b0df921870177ac027c9a'
-ORDER BY event_index;
+
+    pool_id,
+    pool_address,
+    {{ dbt_utils.generate_surrogate_key(
+        ['pool_address']
+    ) }} AS jellyswap_pools_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
+FROM created_pools
+QUALIFY ROW_NUMBER() OVER (
+    PARTITION BY pool_address 
+    ORDER BY block_timestamp DESC
+) = 1
