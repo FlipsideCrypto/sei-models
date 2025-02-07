@@ -1,0 +1,34 @@
+version: 2
+models:
+  - name: silver_evm_dex__jellyswap_pools
+    description: Records of pools created on the jellyswap platform.
+    columns:
+      - name: BLOCK_NUMBER
+
+      - name: BLOCK_TIMESTAMP
+        tests:
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+
+      - name: tx_hash
+
+      - name: event_index
+ 
+      - name: contract_address
+ 
+      - name: pool_id
+
+      - name: pool_address
+
+      - name: jellyswap_pools_id
+        description: Unique identifier for the pool
+        tests:
+          - unique
+          - not_null
+        
+
+  
+  
+
+

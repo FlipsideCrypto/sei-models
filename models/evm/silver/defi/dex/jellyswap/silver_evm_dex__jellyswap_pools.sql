@@ -1,7 +1,7 @@
 {{ config(
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'pool_address',
+    unique_key = 'jellyswap_pools_id',
     merge_exclude_columns = ["inserted_timestamp"],
     tags = ['noncore']
 ) }}
