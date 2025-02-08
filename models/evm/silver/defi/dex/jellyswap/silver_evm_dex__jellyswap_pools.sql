@@ -6,7 +6,18 @@
     tags = ['noncore']
 ) }}
 
-WITH created_pools AS (
+WITH
+
+{% if is_incremental() %}
+    last_update AS (
+        SELECT
+            MAX(modified_timestamp) - INTERVAL '5 minutes' AS max_inserted_timestamp
+        FROM 
+            {{ this }}
+    ),
+{% endif %}
+
+created_pools AS (
     SELECT 
 
         block_number,
@@ -28,8 +39,9 @@ WITH created_pools AS (
     {% if is_incremental() %}
         AND _inserted_timestamp >= (
             SELECT
-                MAX(_inserted_timestamp) - INTERVAL '5 minutes'
-            FROM {{ this }}
+                max_inserted_timestamp
+            FROM 
+                last_update
         )
     {% endif %}
 )
