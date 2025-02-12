@@ -27,15 +27,13 @@ logs AS (
         origin_function_signature,
         tx_status,
         contract_address,
-        block_hash,
         data,
         event_index,
         event_removed,
         topics,
         modified_timestamp as _inserted_timestamp,
         concat(tx_hash, '-', event_index) AS _log_id,
-        is_pending,
-        logs_id,
+        fact_event_logs_id as logs_id,
         inserted_timestamp,
         modified_timestamp
     FROM
