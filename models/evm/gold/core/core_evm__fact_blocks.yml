@@ -39,7 +39,7 @@ models:
       - name: UNCLE_BLOCKS
         description: '{{ doc("sei_uncle_blocks") }}' 
       - name: BLOCK_HEADER_JSON
-        description: '{{ doc("sei_block_header_json") }}'
+        description: This column is being deprecated for standardization purposes. Please update your queries by March 10, 2025.
       - name: FACT_BLOCKS_ID
         description: '{{ doc("pk") }}'   
       - name: INSERTED_TIMESTAMP
