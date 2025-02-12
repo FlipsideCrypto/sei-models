@@ -24,7 +24,7 @@ WITH created_pools AS (
             )
         ) AS pool_id,
     FROM
-        {{ ref ('silver_evm__logs') }}
+        {{ ref ('core_evm__fact_event_logs') }}
     WHERE
         tx_status = 'SUCCESS'
         AND contract_address = LOWER('0x179d9a5592bc77050796f7be28058c51ca575df4') --DragonswapFactoryV2

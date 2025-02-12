@@ -31,16 +31,16 @@ WITH logs_pull AS (
         utils.udf_hex_to_int(
             segmented_data [1] :: STRING
         ) :: INT AS product_id,
-        _log_id,
-        _inserted_timestamp
+        concat(tx_hash, '-', event_index) AS _log_id,
+        modified_timestamp AS _inserted_timestamp
     FROM
-        {{ ref('silver_evm__logs') }}
+        {{ ref('core_evm__fact_event_logs') }}
     WHERE
         topics [0] :: STRING = '0xfe53084a731040f869d38b1dcd00fbbdbc14e10d7d739160559d77f5bc80cf05'
         AND contract_address = lower('0xaE1510367aA8d500bdF507E251147Ea50B22307F') --clearing house
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
         MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM

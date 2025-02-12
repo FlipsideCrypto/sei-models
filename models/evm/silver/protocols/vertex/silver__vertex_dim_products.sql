@@ -15,14 +15,14 @@ WITH logs_pull AS (
         tx_hash,
         block_number,
         block_timestamp,
-        _inserted_timestamp,
-        _log_id
+        modified_timestamp AS _inserted_timestamp,
+        concat(tx_hash, '-', event_index) AS _log_id
     FROM
-        {{ ref('silver_evm__logs') }}
+        {{ ref('core_evm__fact_event_logs') }}
     WHERE
         topics [0] :: STRING = '0x3286b0394bf1350245290b7226c92ed186bd716f28938e62dbb895298f018172'
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
         MAX(
             _inserted_timestamp
@@ -30,7 +30,7 @@ AND _inserted_timestamp >= (
     FROM
         {{ this }}
 )
-AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
+AND modified_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 ),
 new_prod AS (

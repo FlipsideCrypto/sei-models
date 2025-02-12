@@ -263,14 +263,15 @@ SELECT
     origin_function_signature,
     tx_succeeded,
     event_name,
-    full_decoded_data,
+    full_decoded_data as full_decoded_log,
     decoded_log,
     contract_name,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_hash', 'event_index']
     ) }} AS ez_decoded_event_logs_id,
     SYSDATE() AS inserted_timestamp,
-    SYSDATE() AS modified_timestamp
+    SYSDATE() AS modified_timestamp,
+    full_decoded_data -- deprecate
 FROM
     FINAL qualify ROW_NUMBER() over (
         PARTITION BY ez_decoded_event_logs_id

@@ -49,14 +49,14 @@ swaps_base AS (
         token1,
         pool_address
     FROM
-        {{ ref('silver_evm__logs') }}
+        {{ ref('core_evm__fact_event_logs') }}
         l
         INNER JOIN pools p
         ON p.pool_address = l.contract_address
     WHERE
         l.block_timestamp :: DATE >= '2024-01-01'
         AND topics [0] :: STRING = '0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67'
-        AND tx_status = 'SUCCESS'
+        AND tx_succeeded
 
 {% if is_incremental() %}
 AND l.modified_timestamp >= (
