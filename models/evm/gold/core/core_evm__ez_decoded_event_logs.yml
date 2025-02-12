@@ -40,8 +40,10 @@ models:
         description: Whether the transaction was successful, returned as a boolean.
       - name: EVENT_NAME
         description: The name of the event, as defined in the contract ABI.
-      - name: FULL_DECODED_DATA
+      - name: FULL_DECODED_LOG
         description: The full decoded log, including the event name, the event parameters, and the data type of the event parameters.
+      - name: FULL_DECODED_DATA
+        description: This column will be deprecated on 3/10/2025. Please use `FULL_DECODED_LOG` instead.
       - name: DECODED_LOG
         description: The flattened decoded log, where the keys are the names of the event parameters, and the values are the values of the event parameters.
       - name: CONTRACT_NAME

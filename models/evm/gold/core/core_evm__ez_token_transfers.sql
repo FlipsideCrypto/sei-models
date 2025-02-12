@@ -21,11 +21,11 @@ SELECT
     amount,
     decimals,
     symbol,
-    has_decimal,
-    _log_id,
-    _inserted_timestamp,
     transfers_id AS ez_token_transfers_id,
     inserted_timestamp,
-    modified_timestamp
+    modified_timestamp,
+    has_decimal, -- deprecate
+    _log_id, -- deprecate
+    _inserted_timestamp -- deprecate
 FROM
     {{ ref('silver_evm__transfers') }}

@@ -6,21 +6,29 @@
 
 SELECT
     block_number,
+    hash as block_hash,
     block_timestamp,
     'mainnet' AS network,
-    'sei' AS blockchain,
     tx_count,
+    SIZE,
+    miner,
+    extra_data,
+    parent_hash,
+    gas_used,
+    gas_limit,
+    base_fee_per_gas,
     difficulty,
     total_difficulty,
-    extra_data,
-    gas_limit,
-    gas_used,
-    HASH,
-    parent_hash,
-    receipts_root,
     sha3_uncles,
-    SIZE,
-    uncles AS uncle_blocks,
+    uncles as uncle_blocks,
+    nonce,
+    receipts_root,
+    state_root,
+    transactions_root,
+    logs_bloom,
+    blocks_id AS fact_blocks_id,
+    inserted_timestamp,
+    modified_timestamp,
     OBJECT_CONSTRUCT(
         'baseFeePerGas',
         base_fee_per_gas,
@@ -61,8 +69,6 @@ SELECT
         'uncles',
         uncles
     ) AS block_header_json,
-    blocks_id AS fact_blocks_id,
-    inserted_timestamp,
-    modified_timestamp
+    'sei' AS blockchain -- deprecate
 FROM
     {{ ref('silver_evm__blocks') }}

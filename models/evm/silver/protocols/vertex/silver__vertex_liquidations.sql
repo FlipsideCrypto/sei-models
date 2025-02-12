@@ -32,27 +32,26 @@ logs AS (
         event_index,
         event_removed,
         topics,
-        _inserted_timestamp,
-        _log_id,
+        modified_timestamp as _inserted_timestamp,
+        concat(tx_hash, '-', event_index) AS _log_id,
         is_pending,
         logs_id,
         inserted_timestamp,
-        modified_timestamp,
-        _invocation_id
+        modified_timestamp
     FROM
-        {{ ref('silver_evm__logs') }}
+        {{ ref('core_evm__fact_event_logs') }}
     WHERE
         topics [0] :: STRING = '0x494f937f5cc892f798248aa831acfb4ad7c4bf35edd8498c5fb431ce1e38b035'
         AND contract_address = LOWER('0xaE1510367aA8d500bdF507E251147Ea50B22307F')
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
         MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
-AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
+AND modified_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 ),
 logs_pull_v2 AS (

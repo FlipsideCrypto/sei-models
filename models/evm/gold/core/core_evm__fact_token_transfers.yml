@@ -1,7 +1,7 @@
 version: 2
 models:
   - name: core_evm__fact_token_transfers
-    description: '{{ doc("sei_transfer_table_doc") }}'
+    description: This table is being deprecated for standardization purposes. Please update your queries to use `ez_token_transfers` instead by March 10, 2025.
       
     columns:
       - name: BLOCK_NUMBER

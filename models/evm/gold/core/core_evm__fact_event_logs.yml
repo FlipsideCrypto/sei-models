@@ -16,20 +16,30 @@ models:
         description: '{{ doc("sei_logs_contract_address") }}'
       - name: TOPICS
         description: '{{ doc("sei_topics") }}'
+      - name: TOPIC_0
+        description: The first topic of the event, which is a unique identifier for the event.
+      - name: TOPIC_1
+        description: The second topic of the event, if applicable.
+      - name: TOPIC_2
+        description: The third topic of the event, if applicable.
+      - name: TOPIC_3
+        description: The fourth topic of the event, if applicable.
       - name: DATA
         description: '{{ doc("sei_logs_data") }}'
       - name: EVENT_REMOVED
         description: '{{ doc("sei_event_removed") }}'  
       - name: _LOG_ID
-        description: '{{ doc("internal_column") }}'
+        description: This column is being deprecated for standardization purposes. Please update your queries by March 10, 2025. Please use `EZ_DECODED_EVENT_LOGS_ID` instead.
       - name: TX_STATUS
-        description: '{{ doc("sei_tx_status") }}' 
+        description: This column is being deprecated for standardization purposes. Please update your queries by March 10, 2025. Please use `TX_SUCCEEDED` instead.
       - name: ORIGIN_FUNCTION_SIGNATURE
         description: '{{ doc("sei_origin_sig") }}'
       - name: ORIGIN_FROM_ADDRESS
         description: '{{ doc("sei_origin_from") }}'
       - name: ORIGIN_TO_ADDRESS
         description: '{{ doc("sei_origin_to") }}'
+      - name: TX_SUCCEEDED
+        description: Whether the transaction was successful, returned as a boolean.
       - name: FACT_EVENT_LOGS_ID
         description: '{{ doc("pk") }}'   
       - name: INSERTED_TIMESTAMP

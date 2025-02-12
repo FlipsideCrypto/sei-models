@@ -37,11 +37,11 @@ models:
       - name: SYMBOL
         description: '{{ doc("sei_symbol") }}'
       - name: HAS_DECIMAL
-        description: '{{ doc("sei_transfer_has_decimal") }}'
+        description: This column is being deprecated for standardization purposes. Please update your queries by March 10, 2025. Please use `DECIMALS` instead.
       - name: _LOG_ID
-        description: '{{ doc("internal_column") }}'
+        description: This column is being deprecated for standardization purposes. Please update your queries by March 10, 2025. Please use `EZ_TOKEN_TRANSFERS_ID` instead.
       - name: _INSERTED_TIMESTAMP
-        description: '{{ doc("internal_column") }}'
+        description: This column is being deprecated for standardization purposes. Please update your queries by March 10, 2025. Please use `INSERTED_TIMESTAMP` instead.
       - name: EZ_TOKEN_TRANSFERS_ID
         description: '{{ doc("pk") }}'   
       - name: INSERTED_TIMESTAMP
