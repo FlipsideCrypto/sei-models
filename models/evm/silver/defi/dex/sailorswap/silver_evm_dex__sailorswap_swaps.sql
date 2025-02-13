@@ -38,7 +38,7 @@ swaps_base AS (
         p.token1,
         CASE WHEN p.pool_address IS NULL THEN TRUE ELSE FALSE END AS is_missing_pool
     FROM {{ ref('silver_evm__logs') }} l
-    LEFT JOIN pools p
+    JOIN pools p
         ON LOWER(p.pool_address) = LOWER(l.contract_address)
     WHERE 
         topics[0] :: STRING = '0x19b47279256b2a23a1665c810c8d55a1758940ee09377d4f8d26497a3577dc83'
