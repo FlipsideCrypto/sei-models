@@ -1,0 +1,45 @@
+version: 2
+models:
+  - name: silver_evm_dex__jellyswap_swaps
+    description: Records of swaps that occurred on the jellyswap platform
+    columns:
+      - name: BLOCK_NUMBER
+
+      - name: BLOCK_TIMESTAMP
+        tests:
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+
+      - name: tx_hash
+
+      - name: event_index
+ 
+      - name: event_name
+ 
+      - name: origin_function_signature
+ 
+      - name: origin_from_address
+ 
+      - name: origin_to_address
+ 
+      - name: contract_address
+ 
+      - name: pool_id
+        description: Identifier from Jellyswap for the pool in which the swap occurred
+
+      - name: amount_in_unadj
+ 
+      - name: amount_out_unadj
+ 
+      - name: token_in
+
+      - name: token_out
+
+      - name: jellyswap_swaps_id
+        description: Unique identifier for the swap
+        tests:
+          - unique:
+              where: modified_timestamp > current_date -3
+          - not_null:
+              where: modified_timestamp > current_date -3
