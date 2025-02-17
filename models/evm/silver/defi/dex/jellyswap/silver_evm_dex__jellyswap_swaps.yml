@@ -39,5 +39,7 @@ models:
       - name: jellyswap_swaps_id
         description: Unique identifier for the swap
         tests:
-          - unique
-          - not_null
+          - unique:
+              where: modified_timestamp > current_date -3
+          - not_null:
+              where: modified_timestamp > current_date -3

@@ -37,11 +37,11 @@ created_pools AS (
         AND tx_status = 'SUCCESS'
     
     {% if is_incremental() %}
-        AND _inserted_timestamp >= (
+        AND modified_timestamp >= (
             SELECT
-                max_inserted_timestamp
+                MAX(modified_timestamp) - INTERVAL '5 minutes' AS max_inserted_timestamp
             FROM 
-                last_update
+                {{ this }}
         )
     {% endif %}
 )
