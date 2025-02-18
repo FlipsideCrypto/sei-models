@@ -50,12 +50,41 @@ WHERE
     modified_timestamp >= '{{ max_mod_timestamp }}'
 {% endif %}
 
-qualify ROW_NUMBER() over (
-    PARTITION BY tx_hash,
-    event_index
-    ORDER BY
-        modified_timestamp DESC
-) = 1 -- add other dexes
+    qualify ROW_NUMBER() over (
+        PARTITION BY tx_hash,
+        event_index
+        ORDER BY
+            modified_timestamp DESC
+    ) = 1 -- add other dexes
+
+    UNION ALL
+
+    SELECT
+        'jellyswap' AS platform,
+        block_number,
+        block_timestamp,
+        tx_hash,
+        event_index,
+        event_name,
+        origin_function_signature,
+        origin_from_address,
+        origin_to_address,
+        pool_address AS contract_address,
+        null AS tx_to,
+        null AS sender,
+        amount_in_unadj,
+        amount_out_unadj,
+        token_in,
+        token_out,
+        jellyswap_swaps_id AS uk
+
+    FROM
+        {{ ref('silver_evm_dex__jellyswap_swaps') }}
+
+{% if is_incremental() and 'dragonswap' not in var('HEAL_MODELS') %}
+WHERE
+    modified_timestamp >= '{{ max_mod_timestamp }}'
+{% endif %}
 )
 
 {% if is_incremental() %},
