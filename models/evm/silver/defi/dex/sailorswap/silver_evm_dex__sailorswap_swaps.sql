@@ -1,7 +1,7 @@
 {{ config(
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'sailor_swaps_id',
+    unique_key = 'sailorswap_swaps_id',
     merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['block_timestamp::DATE'],
     tags = ['noncore']
@@ -73,7 +73,7 @@ SELECT
     is_missing_pool,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_hash', 'event_index']
-    ) }} AS sailor_swaps_id,
+    ) }} AS sailorswap_swaps_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id

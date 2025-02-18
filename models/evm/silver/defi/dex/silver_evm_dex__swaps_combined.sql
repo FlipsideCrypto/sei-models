@@ -101,7 +101,7 @@ WHERE
         ABS(amount1) AS amount_out_unadj,
         token0 AS token_in,
         token1 AS token_out,
-        sailor_swaps_id AS uk
+        sailorswap_swaps_id AS uk
     FROM
         {{ ref('silver_evm_dex__sailorswap_swaps') }}
 )
