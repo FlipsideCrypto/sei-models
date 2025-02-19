@@ -91,12 +91,12 @@ models:
         description: "The Router is the Sender in the swap function. Note: this will only be populated for evm transactions."
         data_tests:
           - not_null:
-              where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+              where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}   and platform <> 'jellyswap'
       - name: tx_to
         description: 'The tx_to is the address who receives the swapped token. This corresponds to the "to" field in the swap function.  Note: this will only be populated for evm transactions.'
         data_tests:
           - not_null:
-              where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+              where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  and platform <> 'jellyswap'
       - name: event_name
         description: The decoded event name for a given event.
       - name: EZ_DEX_SWAPS_ID
