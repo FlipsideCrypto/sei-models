@@ -95,7 +95,7 @@ WHERE
         origin_from_address,
         origin_to_address,
         pool_address AS contract_address,
-        recipient AS tx_to,
+        tx_to,
         sender,
         ABS(amount0) AS amount_in_unadj,
         ABS(amount1) AS amount_out_unadj,

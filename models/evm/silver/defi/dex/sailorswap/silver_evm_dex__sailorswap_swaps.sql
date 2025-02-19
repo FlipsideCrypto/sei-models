@@ -26,7 +26,7 @@ swaps_base AS (
         l.origin_to_address,
         l.contract_address,
         CONCAT('0x', SUBSTR(topics[1] :: STRING, 27, 40)) AS sender,
-        CONCAT('0x', SUBSTR(topics[2] :: STRING, 27, 40)) AS recipient,
+        CONCAT('0x', SUBSTR(topics[2] :: STRING, 27, 40)) AS tx_to,
         utils.udf_hex_to_int(
             's2c',
             regexp_substr_all(SUBSTR(DATA, 3, len(DATA)), '.{64}')[0] :: STRING
@@ -65,7 +65,7 @@ SELECT
     origin_to_address,
     contract_address AS pool_address,
     sender,
-    recipient,
+    tx_to,
     token0,
     token1,
     amount0,

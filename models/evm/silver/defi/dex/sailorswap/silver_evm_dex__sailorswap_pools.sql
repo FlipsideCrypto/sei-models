@@ -18,7 +18,7 @@ WITH pools_created AS (
         CONCAT('0x', SUBSTR(topics[2] :: STRING, 27, 40)) AS token1,
         CONCAT('0x', SUBSTR(segmented_data[1] :: STRING, 25, 40)) AS pool_address,
     FROM
-        sei.silver_evm.logs
+        {{ ref('silver_evm__logs') }}
     WHERE
         contract_address = LOWER('0xA51136931fdd3875902618bF6B3abe38Ab2D703b') -- SailorSwapFactory
         AND topics[0] :: STRING = '0x783cca1c0412dd0d695e784568c96da2e9c22ff989357a2e8b1d9b2b4e6b7118' -- PairCreated
