@@ -1,0 +1,30 @@
+version: 2
+models:
+  - name: silver_evm_dex__sailorswap_pools
+    description: Records of pools created on the sailorswap platform.
+    columns:
+      - name: BLOCK_NUMBER
+
+      - name: BLOCK_TIMESTAMP
+
+      - name: tx_hash
+
+      - name: event_index
+ 
+      - name: contract_address
+
+      - name: token0
+
+      - name: token1
+
+      - name: pool_id
+
+      - name: pool_address
+
+      - name: sailorswap_pools_id
+        description: Unique identifier for the pool
+        tests:
+          - unique:
+              where: modified_timestamp > current_date -3
+          - not_null:
+              where: modified_timestamp > current_date -3
