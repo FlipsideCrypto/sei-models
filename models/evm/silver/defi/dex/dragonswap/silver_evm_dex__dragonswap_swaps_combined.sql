@@ -39,20 +39,20 @@ SELECT
     tx_to,
     sender,
     CASE
-        WHEN amount0_unadj < 0 THEN ABS(amount0_unadj)
-        ELSE ABS(amount1_unadj)
+        WHEN amount0_unadj < 0 THEN amount1_unadj
+        ELSE amount0_unadj
     END AS amount_in_unadj,
     CASE
-        WHEN amount0_unadj < 0 THEN ABS(amount1_unadj)
-        ELSE ABS(amount0_unadj)
+        WHEN amount0_unadj < 0 THEN ABS(amount0_unadj)
+        ELSE ABS(amount1_unadj)
     END AS amount_out_unadj,
-    CASE
-        WHEN amount0_unadj < 0 THEN token0
-        ELSE token1
-    END AS token_in,
     CASE
         WHEN amount0_unadj < 0 THEN token1
         ELSE token0
+    END AS token_in,
+    CASE
+        WHEN amount0_unadj < 0 THEN token0
+        ELSE token1
     END AS token_out,
     dragonswap_swaps_undecoded_id,
     inserted_timestamp,
