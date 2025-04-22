@@ -46,3 +46,10 @@ jobs:
       - name: Run DBT Jobs
         run: |
           dbt test -m  models/bronze/core "sei_models,tag:recent_evm_test"
+
+  notify-failure:
+    needs: [run_dbt_jobs]
+    if: failure()
+    uses: ./.github/workflows/slack_notify.yml
+    secrets:
+      EVM_SLACK_WEBHOOK_URL: ${{ secrets.EVM_SLACK_WEBHOOK_URL }}
