@@ -43,3 +43,10 @@ jobs:
       - name: Update decoded logs
         run: |
           dbt run -m "sei_models,tag:gold_decoded_logs" "sei_models,tag:silver_decoded_logs" "sei_models,tag:bronze_decoded_logs"
+
+  notify-failure:
+    needs: [run_dbt_jobs]
+    if: failure()
+    uses: ./.github/workflows/slack_notify.yml
+    secrets:
+      EVM_SLACK_WEBHOOK_URL: ${{ secrets.EVM_SLACK_WEBHOOK_URL }}
