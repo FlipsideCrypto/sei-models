@@ -95,8 +95,9 @@ SELECT
     raw_amount,
     amount_precise,
     amount,
-    decimals,
-    symbol,
+    amount * p.price as amount_usd,
+    t.decimals,
+    t.symbol,
     has_decimal,
     _log_id,
     _inserted_timestamp,
@@ -107,4 +108,45 @@ SELECT
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id
 FROM
-    token_transfers
+    token_transfers t 
+left join {{ ref('price__ez_prices_hourly') }} p
+on date_trunc('hour', block_timestamp) = p.hour
+and contract_address = p.token_address
+
+{% if is_incremental() %}
+union all
+SELECT
+    t.block_number,
+    t.block_timestamp,
+    t.tx_hash,
+    t.event_index,
+    t.origin_function_signature,
+    t.origin_from_address,
+    t.origin_to_address,
+    t.contract_address,
+    t.from_address,
+    t.to_address,
+    t.raw_amount_precise,
+    t.raw_amount,
+    t.amount_precise,
+    t.amount,
+    t.amount * p.price as amount_usd,
+    t.decimals,
+    t.symbol,
+    t.has_decimal,
+    t._log_id,
+    t._inserted_timestamp,
+    t.transfers_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
+FROM
+    {{ this }} t 
+    inner join {{ ref('price__ez_prices_hourly') }} p
+    on date_trunc('hour', t.block_timestamp) = p.hour
+    and t.contract_address = p.token_address
+where t.amount_usd is null
+
+qualify row_number() over (partition by transfers_id order by _inserted_timestamp desc) = 1
+
+{% endif %}

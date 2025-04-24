@@ -19,6 +19,7 @@ SELECT
     raw_amount,
     amount_precise,
     amount,
+    amount_usd,
     decimals,
     symbol,
     transfers_id AS ez_token_transfers_id,
