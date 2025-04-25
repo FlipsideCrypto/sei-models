@@ -88,3 +88,5 @@ FROM
     LEFT JOIN {{ ref('price__ez_asset_metadata') }}
     b
     ON A.token_address = b.token_address
+
+qualify row_number() over (partition by token_address, hour order by blockchain, modified_timestamp desc) = 1
