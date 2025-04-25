@@ -89,4 +89,4 @@ FROM
     b
     ON A.token_address = b.token_address
 
-qualify row_number() over (partition by token_address, hour order by blockchain, modified_timestamp desc) = 1
+qualify row_number() over (partition by a.token_address, a.hour order by a.blockchain, a.modified_timestamp desc) = 1
