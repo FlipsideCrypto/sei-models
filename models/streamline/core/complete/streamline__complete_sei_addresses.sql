@@ -21,7 +21,7 @@ FROM
     {{ ref('bronze__streamline_FR_sei_addresses') }}
 {% endif %}
 WHERE
-    DATA :result LIKE 'sei%'
+    1 = 1 --DATA :result LIKE 'sei%'
 
 {% if is_incremental() %}
 AND _inserted_timestamp >=(
