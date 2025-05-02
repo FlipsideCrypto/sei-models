@@ -4,9 +4,9 @@
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
         params ={ "external_table" :"sei_addresses",
-        "sql_limit" :"350",
-        "producer_batch_size" :"50",
-        "worker_batch_size" :"50",
+        "sql_limit" :"5000",
+        "producer_batch_size" :"1000",
+        "worker_batch_size" :"1000",
         "sql_source" :"{{this.identifier}}",
         "async_concurrent_requests": "5" }
     )
@@ -19,16 +19,6 @@ WITH adds AS (
         evm_address
     FROM
         {{ ref("streamline__evm_addresses") }}
-    INTERSECT
-    SELECT
-        evm_address
-    FROM
-        (
-            SELECT
-                origin_from_address AS evm_address
-            FROM
-                {{ ref('silver_evm_dex__swaps_combined') }}
-        )
 ),
 excepts AS (
     SELECT
@@ -48,7 +38,7 @@ excepts AS (
 )
 SELECT
     REPLACE(SYSDATE() :: DATE :: STRING, '-') AS partition_key,
-    evm_address,
+    A.evm_address,
     {{ target.database }}.live.udf_api(
         'POST',
         '{Service}/{Authentication}',
@@ -65,10 +55,15 @@ SELECT
             'sei_getSeiAddress',
             'params',
             ARRAY_CONSTRUCT(
-                evm_address
+                A.evm_address
             )
         ),
         'Vault/prod/sei/quicknode/mainnet'
     ) AS request
 FROM
-    excepts
+    excepts A
+    JOIN {{ ref("streamline__evm_addresses") }}
+    b
+    ON A.evm_address = b.evm_address
+ORDER BY
+    block_timestamp_associated DESC
