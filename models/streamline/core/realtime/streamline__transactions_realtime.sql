@@ -22,7 +22,7 @@ WITH blocks AS (
         {{ ref("streamline__complete_tx_counts") }} A
     WHERE
         tx_count > 0
-        AND block_number > 70000000
+        AND block_number > 146300000
         AND block_number :: INT NOT IN (
             101356734,
             101361293,
