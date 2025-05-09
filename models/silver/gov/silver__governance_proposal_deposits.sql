@@ -13,11 +13,15 @@ WITH
 max_date AS (
 
     SELECT
-        MAX(
-            _inserted_timestamp
-        ) _inserted_timestamp
-    FROM
-        {{ this }}
+        GREATEST(
+            (
+                SELECT
+                    MAX(_inserted_timestamp)
+                FROM
+                    {{ this }}
+            ),
+            SYSDATE() :: DATE -3
+        ) AS _inserted_timestamp
 ),
 {% endif %}
 
@@ -105,7 +109,7 @@ AND _inserted_timestamp >= (
             _inserted_timestamp
         )
     FROM
-        {{ this }}
+        max_date
 )
 {% endif %}
 
@@ -147,6 +151,6 @@ WHERE
                 _inserted_timestamp
             )
         FROM
-            {{ this }}
+            max_date
     )
 {% endif %}
