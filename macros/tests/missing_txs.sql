@@ -129,6 +129,7 @@ WHERE
                 81772279,
                 81772251
             ) -- these are broken at the node
+            and tx.TX_SUCCEEDED
     )
 SELECT
     *
