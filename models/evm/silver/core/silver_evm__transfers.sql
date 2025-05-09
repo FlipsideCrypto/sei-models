@@ -147,6 +147,6 @@ FROM
     and t.contract_address = p.token_address
 where t.amount_usd is null
 
-qualify row_number() over (partition by transfers_id order by _inserted_timestamp desc) = 1
-
 {% endif %}
+
+qualify row_number() over (partition by transfers_id order by _inserted_timestamp desc) = 1

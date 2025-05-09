@@ -1,7 +1,7 @@
 {{ config(
     materialized = 'incremental',
     incremental_strategy = 'delete+insert',
-    unique_key = 'ez_prices_hourly_id',
+    unique_key = ['token_address', 'hour'],
     cluster_by = ['hour::DATE'],
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(token_address, symbol, name)",
     tags = ['core']
