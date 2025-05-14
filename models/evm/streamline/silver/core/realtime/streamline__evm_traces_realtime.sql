@@ -10,7 +10,7 @@
         "sql_source" :"{{this.identifier}}",
         "exploded_key": tojson(["result"]) }
     ),
-    tags = ['paused']
+    tags = ['streamline_core_evm_realtime']
 ) }}
 
 WITH last_3_days AS (
