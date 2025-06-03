@@ -162,7 +162,7 @@ SELECT
     '{{ invocation_id }}' AS _invocation_id
 FROM
     combo --temp fix to exclude blocks that keep re-running
-WHERE
+    {# WHERE
     block_id NOT IN (
         101356734,
         101361293,
@@ -171,6 +171,7 @@ WHERE
         101374780,
         101600807,
         101600808
-    ) qualify(ROW_NUMBER() over (PARTITION BY tx_id
+    ) #}
+    qualify(ROW_NUMBER() over (PARTITION BY tx_id
 ORDER BY
     block_timestamp, tx_succeeded DESC, _inserted_timestamp DESC)) = 1
