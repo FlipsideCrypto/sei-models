@@ -19,6 +19,7 @@ WITH base_metadata AS (
     WHERE
         read_result IS NOT NULL
         AND read_result <> '0x'
+        AND LENGTH(read_result :: STRING) <= 4300
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
@@ -42,7 +43,9 @@ token_names AS (
         base_metadata
     WHERE
         function_signature = '0x06fdde03'
-        AND token_name IS NOT NULL),
+        AND token_name IS NOT NULL
+        AND LENGTH(read_output :: STRING) <= 4300
+    ),
         token_symbols AS (
             SELECT
                 contract_address,
@@ -54,8 +57,10 @@ token_names AS (
                 base_metadata
             WHERE
                 function_signature = '0x95d89b41'
-                AND token_symbol IS NOT NULL),
-                token_decimals AS (
+                AND token_symbol IS NOT NULL
+                AND LENGTH(read_output :: STRING) <= 4300
+    ),
+    token_decimals AS (
                     SELECT
                         contract_address,
                         utils.udf_hex_to_int(
