@@ -4,6 +4,8 @@
         partition_name,
         unique_key
     ) %}
+
+
     WITH meta AS (
         SELECT
             job_created_time AS _inserted_timestamp,
@@ -34,8 +36,8 @@
             JOIN meta b
             ON b.file_name = metadata$filename
             AND b.{{ partition_name }} = s.{{ partition_name }}
-        WHERE
-            b.{{ partition_name }} = s.{{ partition_name }}
+        WHERE 
+           b.{{ partition_name }} = s.{{ partition_name }}
             AND (
                 DATA :error :code IS NULL
                 OR DATA :error :code NOT IN (
@@ -114,11 +116,25 @@ WHERE
     )
 {% endmacro %}
 
-
 {% macro streamline_external_table_query_v2(
         model,
         partition_function
     ) %}
+
+    {% set threshold_query %}
+SELECT
+    MAX(ROUND(block_id, -3)) -400000 --~3days
+FROM
+     {{ target.database }}.silver.blocks
+
+    {% endset %}
+    {% set results = run_query(threshold_query) %}
+    {% if execute %}
+        {% set threshold_value = results.columns [0].values() [0] %}
+    {% else %}
+        {% set threshold_value = '0' %}
+    {% endif %}
+
     WITH meta AS (
         SELECT
             job_created_time AS _inserted_timestamp,
@@ -145,9 +161,9 @@ WHERE
             ON b.file_name = metadata$filename
             AND b.partition_key = s.partition_key
         WHERE
-            b.partition_key = s.partition_key
+            s.partition_key >= {{ threshold_value }}
+            AND b.partition_key = s.partition_key
             AND DATA :error IS NULL
-             
 {% endmacro %}
 
 {% macro streamline_external_table_FR_query_v2(
@@ -184,7 +200,6 @@ WHERE
     AND DATA :error IS NULL
 {% endmacro %}
 
-
 {% macro decode_logs_history(
         start,
         stop
@@ -216,7 +231,7 @@ FROM
     l
     INNER JOIN {{ ref("silver_evm__complete_event_abis") }} A
     ON A.parent_contract_address = l.contract_address
-    AND A.event_signature = l.topics[0]:: STRING
+    AND A.event_signature = l.topics [0] :: STRING
     AND l.block_number BETWEEN A.start_block
     AND A.end_block
 WHERE
