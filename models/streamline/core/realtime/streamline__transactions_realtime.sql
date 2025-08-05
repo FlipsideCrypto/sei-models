@@ -22,12 +22,7 @@ WITH blocks AS (
         {{ ref("streamline__complete_tx_counts") }} A
     WHERE
         tx_count > 0
-        AND block_number > 146300000
-        AND block_number :: INT NOT IN (
-            101356734,
-            101361293,
-            101600774
-        )
+        AND block_number > 160000000
 ),
 numbers AS (
     -- Recursive CTE to generate numbers. We'll use the maximum txcount value to limit our recursion.
