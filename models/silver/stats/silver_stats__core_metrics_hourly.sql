@@ -75,6 +75,7 @@ WHERE
     block_timestamp_hour < DATE_TRUNC('hour', systimestamp())
 
 {% if is_incremental() %}
+and block_timestamp::Date > current_date -7
 AND DATE_TRUNC(
     'hour',
     block_timestamp
