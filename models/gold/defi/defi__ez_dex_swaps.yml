@@ -1,107 +1,65 @@
 version: 2
 models:
   - name: defi__ez_dex_swaps
-    description: Records swap transactions on Sei (both native sei and evm protocols) for Astroport, Fuzio, Seaswap, and Dragonswap
+    description: '{{ doc("ez_dex_swaps_table_doc") }}'
+
     columns:
-      - name: BLOCK_ID
-        description: "{{ doc('block_id') }}"
-        data_tests:
-          - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+      - name: BLOCK_NUMBER
+        description: '{{ doc("general_block_number") }}'
       - name: BLOCK_TIMESTAMP
-        description: "{{ doc('block_timestamp') }}"
-        data_tests:
-          - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}   or block_timestamp is null
-      - name: TX_ID
-        description: This will be either the native sei tx_id or the evm tx_hash. Swaps that are initiated on and native sei protocol will have a tx_id that can be find in CORE.FAC_TRANSACTIONS. Swaps that are initiated on an evm protocol will have a tx_id that is the tx_hash of the evm transaction that can be found in CORE_EVM.FACT_TRANSACTIONS.
-        data_tests:
-          - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
-      - name: originated_from
-        description: The evm from address of this transaction.
-        data_tests:
-          - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
+        description: '{{ doc("general_block_timestamp") }}'
+      - name: TX_HASH
+        description: '{{ doc("general_tx_hash") }}'
+      - name: CONTRACT_ADDRESS
+        description: '{{ doc("ez_dex_swaps_contract_address") }}'
+      - name: EVENT_NAME
+        description: '{{ doc("general_event_name") }}'
+      - name: AMOUNT_IN
+        description: '{{ doc("ez_dex_swaps_amount_in") }}'
+      - name: AMOUNT_OUT
+        description: '{{ doc("ez_dex_swaps_amount_out") }}'
+      - name: AMOUNT_IN_USD
+        description: '{{ doc("ez_dex_swaps_amount_in_usd") }}'
+      - name: AMOUNT_OUT_USD
+        description: '{{ doc("ez_dex_swaps_amount_out_usd") }}'
+      - name: TOKEN_IN
+        description: '{{ doc("ez_dex_swaps_token_in") }}'
+      - name: TOKEN_IN_IS_VERIFIED
+        description: '{{ doc("ez_dex_swaps_token_in_is_verified") }}'
+      - name: TOKEN_OUT
+        description: '{{ doc("ez_dex_swaps_token_out") }}'
+      - name: TOKEN_OUT_IS_VERIFIED
+        description: '{{ doc("ez_dex_swaps_token_out_is_verified") }}'
+      - name: SYMBOL_IN
+        description: '{{ doc("ez_dex_swaps_symbol_in") }}'
+      - name: SYMBOL_OUT
+        description: '{{ doc("ez_dex_swaps_symbol_out") }}'
+      - name: SENDER
+        description: '{{ doc("ez_dex_swaps_sender") }}'
+      - name: TX_TO
+        description: '{{ doc("ez_dex_swaps_to") }}'
       - name: PLATFORM
-        description: The platform that the swap was initiated on. This will be either astroport, fuzio, seaswap, or dragonswap.
-        data_tests:
-          - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}
-      - name: SWAPPER
-        description: "{{ doc('swapper') }}"
-        data_tests:
-          - not_null:
-              where: originated_from = 'sei' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
-      - name: origin_from_address
-        description: "{{doc('sei_origin_from')}}"
-        data_tests:
-          - not_null:
-              where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
-      - name: pool_address
-        description: The contract address for the liquidity pool.
-        data_tests:
-          - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
-      - name: amount_in_unadj
-        description: The non-decimal adjusted amount of tokens put into the swap.
-        data_tests:
-          - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
-      - name: amount_in
-        description: The amount of tokens put into the swap. This will be null if we do not have the decimal adjustment for the token.
-      - name: amount_in_usd
-        description: The amount of tokens put into the swap converted to USD using the price of the token. This will be null if we do not have the decimal adjustment or price for the token.
-      - name: amount_out_unadj
-        description: The non-decimal adjusted amount of tokens taken out of or received from the swap. This will be null if we do not have the decimal adjustment for the token.
-        data_tests:
-          - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
-      - name: amount_out
-        description: The amount of tokens taken out or received from the swap. This will be null if we do not have the decimal adjustment for the token.
-      - name: amount_out_usd
-        description: The amount of tokens taken out or received from the swap converted to USD using the price of the token. This will be null if we do not have the decimal adjustment or price for the token.
-      - name: token_in
-        description: The address of the token sent for swap.
-        data_tests:
-          - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
-      - name: symbol_in
-        description: The symbol of the token sent for swap.
-      - name: token_out
-        description: The address of the token being swapped to.
-      - name: symbol_out
-        description: The symbol of the token being swapped to.
-      - name: origin_function_signature
-        description: "{{doc('sei_tx_origin_sig')}}"
-        data_tests:
-          - not_null:
-              where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
-      - name: INDEX
-        description: This is the event_index for evm transactions or the msg_index for native sei transactions. This is used to uniquely identify the action within the transaction.
-        data_tests:
-          - not_null:
-              where: block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
-      - name: origin_to_address
-        description: "{{doc('sei_eth_origin_to')}} Note: this will only be populated for evm transactions."
-        data_tests:
-          - not_null:
-              where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  
-      - name: sender
-        description: "The Router is the Sender in the swap function. Note: this will only be populated for evm transactions."
-        data_tests:
-          - not_null:
-              where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}   and platform <> 'jellyswap'
-      - name: tx_to
-        description: 'The tx_to is the address who receives the swapped token. This corresponds to the "to" field in the swap function.  Note: this will only be populated for evm transactions.'
-        data_tests:
-          - not_null:
-              where: originated_from = 'evm' and block_timestamp > current_date() - {{ var('test_days_threshold', 7) }}  and platform <> 'jellyswap'
-      - name: event_name
-        description: The decoded event name for a given event.
+        description: '{{ doc("ez_dex_swaps_platform") }}'
+      - name: PROTOCOL
+        description: '{{ doc("ez_dex_swaps_protocol") }}'
+      - name: PROTOCOL_VERSION
+        description: '{{ doc("ez_dex_swaps_protocol_version") }}'
+      - name: EVENT_INDEX
+        description: '{{ doc("general_event_index") }}'
+      - name: ORIGIN_FUNCTION_SIGNATURE
+        description: '{{ doc("general_origin_function_signature") }}'
+      - name: ORIGIN_FROM_ADDRESS
+        description: '{{ doc("general_from_address") }}'
+      - name: ORIGIN_TO_ADDRESS
+        description: '{{ doc("general_to_address") }}'
+      - name: AMOUNT_IN_UNADJ
+        description: '{{ doc("ez_dex_swaps_amount_in_unadj") }}'
+      - name: AMOUNT_OUT_UNADJ
+        description: '{{ doc("ez_dex_swaps_amount_out_unadj") }}'
       - name: EZ_DEX_SWAPS_ID
-        description: '{{ doc("pk") }}'   
+        description: '{{ doc("general_pk") }}'   
       - name: INSERTED_TIMESTAMP
-        description: '{{ doc("inserted_timestamp") }}'   
+        description: '{{ doc("general_inserted_timestamp") }}'   
       - name: MODIFIED_TIMESTAMP
-        description: '{{ doc("modified_timestamp") }}'          
+        description: '{{ doc("general_modified_timestamp") }}' 
+
