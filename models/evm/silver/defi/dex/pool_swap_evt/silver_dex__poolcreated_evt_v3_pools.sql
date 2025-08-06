@@ -75,11 +75,11 @@ pools AS (
 {% if is_incremental() %}
 AND modified_timestamp >= (
     SELECT
-        MAX(modified_timestamp) - INTERVAL '{{ vars.CURATED_LOOKBACK_HOURS }}'
+        MAX(modified_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
-AND modified_timestamp >= SYSDATE() - INTERVAL '{{ vars.CURATED_LOOKBACK_DAYS }}'
+AND modified_timestamp >= SYSDATE() - INTERVAL '7 days'
 {% endif %}
 ),
 initial_info AS (
@@ -107,11 +107,11 @@ initial_info AS (
 {% if is_incremental() %}
 AND modified_timestamp >= (
     SELECT
-        MAX(modified_timestamp) - INTERVAL '{{ vars.CURATED_LOOKBACK_HOURS }}'
+        MAX(modified_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
-AND modified_timestamp >= SYSDATE() - INTERVAL '{{ vars.CURATED_LOOKBACK_DAYS }}'
+AND modified_timestamp >= SYSDATE() - INTERVAL '7 days'
 {% endif %}
 ),
 FINAL AS (

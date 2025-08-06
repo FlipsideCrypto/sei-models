@@ -23,17 +23,17 @@ WITH contracts AS (
     decimals AS token_decimals,
     modified_timestamp AS _inserted_timestamp
   FROM
-    {{ ref('core__dim_contracts') }}
+    {{ ref('core_evm__dim_contracts') }}
   UNION ALL
   SELECT
     '0x0000000000000000000000000000000000000000' AS contract_address,
-    '{{ vars.GLOBAL_NATIVE_ASSET_SYMBOL }}' AS token_symbol,
+    'SEI' AS token_symbol,
     decimals AS token_decimals,
     modified_timestamp AS _inserted_timestamp
   FROM
-    {{ ref('core__dim_contracts') }}
+    {{ ref('core_evm__dim_contracts') }}
   WHERE
-    address = '{{ vars.GLOBAL_WRAPPED_NATIVE_ASSET_ADDRESS }}'
+    address = '0xe30fedd158a2e3b13e9badaeabafc5516e95e8c7'
 ),
 prices AS (
   SELECT
@@ -84,11 +84,11 @@ swap_evt_v3 AS (
   FROM
     {{ ref('silver_dex__swap_evt_v3_swaps') }}
 
-{% if is_incremental() and 'swap_evt_v3' not in vars.CURATED_FR_MODELS %}
+{% if is_incremental() and 'swap_evt_v3' not in var('HEAL_MODELS') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) - INTERVAL '{{ vars.CURATED_COMPLETE_LOOKBACK_HOURS }}'
+      MAX(_inserted_timestamp) - INTERVAL '{{ var("LOOKBACK", "4 hours") }}'
     FROM
       {{ this }}
   )
@@ -121,11 +121,11 @@ swap_evt_v2 AS (
   FROM
     {{ ref('silver_dex__swap_evt_v2_swaps') }}
 
-{% if is_incremental() and 'swap_evt_v2' not in vars.CURATED_FR_MODELS %}
+{% if is_incremental() and 'swap_evt_v2' not in var('HEAL_MODELS') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) - INTERVAL '{{ vars.CURATED_COMPLETE_LOOKBACK_HOURS }}'
+      MAX(_inserted_timestamp) - INTERVAL '{{ var("LOOKBACK", "4 hours") }}'
     FROM
       {{ this }}
   )
@@ -158,48 +158,11 @@ jellyswap AS (
   FROM
     {{ ref('silver_dex__jellyswap_swaps') }}
 
-{% if is_incremental() and 'jellyswap' not in vars.CURATED_FR_MODELS %}
+{% if is_incremental() and 'jellyswap' not in var('HEAL_MODELS') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) - INTERVAL '{{ vars.CURATED_COMPLETE_LOOKBACK_HOURS }}'
-    FROM
-      {{ this }}
-  )
-{% endif %}
-),
-oxium AS (
-  SELECT
-    block_number,
-    block_timestamp,
-    tx_hash,
-    origin_function_signature,
-    origin_from_address,
-    origin_to_address,
-    contract_address,
-    '0x' AS pool_id,
-    event_name,
-    amount_in_unadj,
-    amount_out_unadj,
-    token_in,
-    token_out,
-    sender,
-    tx_to,
-    event_index,
-    platform,
-    protocol,
-    version,
-    type,
-    _log_id,
-    _inserted_timestamp
-  FROM
-    {{ ref('silver_dex__oxium_swaps') }}
-
-{% if is_incremental() and 'oxium' not in vars.CURATED_FR_MODELS %}
-WHERE
-  _inserted_timestamp >= (
-    SELECT
-      MAX(_inserted_timestamp) - INTERVAL '{{ vars.CURATED_COMPLETE_LOOKBACK_HOURS }}'
+      MAX(_inserted_timestamp) - INTERVAL '{{ var("LOOKBACK", "4 hours") }}'
     FROM
       {{ this }}
   )
@@ -220,11 +183,6 @@ all_dex AS (
     *
   FROM
     swap_evt_v2
-  UNION ALL
-  SELECT
-    *
-  FROM
-    oxium
 ),
 complete_dex_swaps AS (
   SELECT
@@ -453,7 +411,7 @@ heal_model AS (
           SELECT
             MAX(
               _inserted_timestamp
-            ) - INTERVAL '{{ vars.CURATED_COMPLETE_LOOKBACK_HOURS }}'
+            ) - INTERVAL '{{ var("LOOKBACK", "4 hours") }}'
           FROM
             {{ this }}
         )
@@ -493,7 +451,7 @@ heal_model AS (
               SELECT
                 MAX(
                   _inserted_timestamp
-                ) - INTERVAL '{{ vars.CURATED_COMPLETE_LOOKBACK_HOURS }}'
+                ) - INTERVAL '{{ var("LOOKBACK", "4 hours") }}'
               FROM
                 {{ this }}
             )
@@ -533,7 +491,7 @@ heal_model AS (
                   SELECT
                     MAX(
                       _inserted_timestamp
-                    ) - INTERVAL '{{ vars.CURATED_COMPLETE_LOOKBACK_HOURS }}'
+                    ) - INTERVAL '{{ var("LOOKBACK", "4 hours") }}'
                   FROM
                     {{ this }}
                 )
@@ -579,7 +537,7 @@ heal_model AS (
                   SELECT
                     MAX(
                       _inserted_timestamp
-                    ) - INTERVAL '{{ vars.CURATED_COMPLETE_LOOKBACK_HOURS }}'
+                    ) - INTERVAL '{{ var("LOOKBACK", "4 hours") }}'
                   FROM
                     {{ this }}
                 )

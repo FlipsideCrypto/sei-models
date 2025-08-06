@@ -76,11 +76,11 @@ swaps_base AS (
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
     SELECT
-        MAX(_inserted_timestamp) - INTERVAL '{{ vars.CURATED_LOOKBACK_HOURS }}'
+        MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
-AND _inserted_timestamp >= SYSDATE() - INTERVAL '{{ vars.CURATED_LOOKBACK_DAYS }}'
+AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 days'
 {% endif %}
 )
 SELECT

@@ -72,11 +72,11 @@ WITH swaps AS (
 {% if is_incremental() %}
 AND l.modified_timestamp >= (
     SELECT
-        MAX(modified_timestamp) - INTERVAL '{{ vars.CURATED_LOOKBACK_HOURS }}'
+        MAX(modified_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
-AND l.modified_timestamp >= SYSDATE() - INTERVAL '{{ vars.CURATED_LOOKBACK_DAYS }}'
+AND l.modified_timestamp >= SYSDATE() - INTERVAL '7 days'
 {% endif %}
 )
 SELECT
