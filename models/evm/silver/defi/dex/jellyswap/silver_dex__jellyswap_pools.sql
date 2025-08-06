@@ -2,7 +2,6 @@
     materialized = 'incremental',
     incremental_strategy = 'delete+insert',
     unique_key = 'pool_address',
-    full_refresh = vars.GLOBAL_SILVER_FR_ENABLED,
     tags = ['silver_dex','defi','dex','curated']
 ) }}
 
@@ -167,7 +166,7 @@ build_rpc_requests AS (
 pool_token_reads AS ({% for item in range(20) %}
     (
 SELECT
-    live.udf_api('POST','{{ vars.GLOBAL_NODE_URL }}',{}, batch_rpc_request, '{{ vars.GLOBAL_NODE_VAULT_PATH }}') AS read_output, SYSDATE() AS _inserted_timestamp
+    live.udf_api('POST','{Service}/{Authentication}',{}, batch_rpc_request, 'Vault/prod/sei/quicknode/mainnet') AS read_output, SYSDATE() AS _inserted_timestamp
 FROM
     (
 SELECT

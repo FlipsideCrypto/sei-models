@@ -17,6 +17,7 @@ WITH base AS (
         FALSE AS is_native,
         is_imputed,
         is_deprecated,
+        is_verified,
         inserted_timestamp,
         modified_timestamp,
         complete_token_prices_id AS ez_prices_hourly_id
@@ -47,6 +48,7 @@ SELECT
     TRUE AS is_native,
     is_imputed,
     is_deprecated,
+    TRUE AS is_verified,
     inserted_timestamp,
     modified_timestamp,
     complete_native_prices_id AS ez_prices_hourly_id
@@ -80,6 +82,7 @@ SELECT
     A.is_native,
     A.is_imputed,
     A.is_deprecated,
+    A.is_verified,
     A.inserted_timestamp,
     A.modified_timestamp,
     A.ez_prices_hourly_id

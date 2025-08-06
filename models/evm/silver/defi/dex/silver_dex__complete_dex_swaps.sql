@@ -1,16 +1,10 @@
 -- depends_on: {{ ref('price__ez_asset_metadata') }}
-{# Get variables #}
-{% set vars = return_vars() %}
-
-{# Log configuration details #}
-{{ log_model_details() }}
 
 {{ config(
   materialized = 'incremental',
   incremental_strategy = 'delete+insert',
   unique_key = ['block_number','platform','version'],
   cluster_by = ['block_timestamp::DATE','platform'],
-  incremental_predicates = [fsc_evm.standard_predicate()],
   post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(tx_hash, origin_function_signature, origin_from_address, origin_to_address, contract_address, pool_name, event_name, sender, tx_to, token_in, token_out, symbol_in, symbol_out)",
   tags = ['silver_dex','defi','dex','curated','heal','complete','swap']
 ) }}
@@ -54,7 +48,7 @@ prices AS (
   FROM
     {{ ref('price__ez_prices_hourly') }}
   WHERE
-    token_address = '{{ vars.GLOBAL_WRAPPED_NATIVE_ASSET_ADDRESS }}'
+    token_address = '0xe30fedd158a2e3b13e9badaeabafc5516e95e8c7'
 ),
 swap_evt_v3 AS (
 

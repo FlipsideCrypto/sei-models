@@ -1,9 +1,3 @@
-{# Get variables #}
-{% set vars = return_vars() %}
-
-{# Log configuration details #}
-{{ log_model_details() }}
-
 {{ config(
     materialized = 'incremental',
     incremental_strategy = 'delete+insert',
@@ -12,7 +6,7 @@
 ) }}
 
 WITH contract_mapping AS (
-SELECT * FROM VALUES
+    SELECT * FROM VALUES
         ('0x595a6b190ba0163eac1da988955563635ab3aa60', 'uniswap', 'v2', 'uni_v2_pair_created'),
         ('0x4b4746216214f9e972c5d35d3fe88e6ec4c28a6b', 'donkeswap', 'v2', 'uni_v2_pair_created'),
         ('0x5d370a6189f89603fab67e9c68383e63f7b6a262', 'dragonswap', 'v1', 'uni_v2_pair_created'),
