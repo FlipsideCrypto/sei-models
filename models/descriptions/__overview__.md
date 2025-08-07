@@ -71,6 +71,7 @@ There is more information on how to use dbt docs in the last section of this doc
 - [ez_token_transfers](#!/model/model.sei_models.core_evm__ez_token_transfers)
 - [ez_native_transfers](#!/model/model.sei_models.core_evm__ez_native_transfers)
 - [ez_decoded_event_logs](#!/model/model.sei_models.core_evm__ez_decoded_event_logs)
+- [sei.nft.ez_nft_transfers](#!/model/model.sei_models.nft__ez_nft_transfers)
 
 ## **Data Model Overview**
 
