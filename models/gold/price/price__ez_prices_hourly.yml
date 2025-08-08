@@ -39,6 +39,8 @@ models:
         description: '{{ doc("prices_is_deprecated") }}'
         tests:
           - not_null
+      - name: IS_VERIFIED
+        description: '{{ doc("ez_prices_is_verified") }}'
       - name: EZ_PRICES_HOURLY_ID
         description: '{{ doc("pk") }}'   
       - name: INSERTED_TIMESTAMP

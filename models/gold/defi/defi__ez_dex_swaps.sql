@@ -1,93 +1,66 @@
 {{ config(
-    materialized = 'incremental',
-    unique_key = 'ez_dex_swaps_id',
-    merge_exclude_columns = ["inserted_timestamp"],
-    cluster_by = ['block_timestamp::DATE','originated_from','platform'],
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(tx_id,origin_from_address,swapper,token_in,token_out,symbol_in,symbol_out);",
-    meta ={ 'database_tags':{ 'table':{ 'PURPOSE': 'SWAPS' }} },
-    tags = ['noncore','recent_test']
+    materialized = 'view',
+    persist_docs ={ "relation": true,
+    "columns": true },
+    meta ={ 'database_tags':{ 'table':{ 'PURPOSE': 'DEX, SWAPS' } } },
+    tags = ['gold','defi','dex','curated','ez']
 ) }}
 
 SELECT
-    block_id,
+    block_number,
     block_timestamp,
-    tx_id,
-    originated_from,
-    platform,
-    swapper,
+    tx_hash,
+    origin_function_signature,
     origin_from_address,
-    pool_address,
+    origin_to_address,
+    contract_address,
+    pool_name,
+    event_name,
     amount_in_unadj,
     amount_in,
-    amount_in_usd,
+    ROUND(
+        CASE
+            WHEN (token_in <> '0xe30fedd158a2e3b13e9badaeabafc5516e95e8c7'
+            OR NOT token_in_is_verified)
+            AND (
+                amount_out_usd IS NULL
+                OR ABS((amount_in_usd - amount_out_usd) / NULLIF(amount_out_usd, 0)) > 0.75
+                OR ABS((amount_in_usd - amount_out_usd) / NULLIF(amount_in_usd, 0)) > 0.75
+            ) THEN NULL
+            ELSE amount_in_usd
+        END,
+        2
+    ) AS amount_in_usd,
     amount_out_unadj,
     amount_out,
-    amount_out_usd,
-    token_in,
-    symbol_in,
-    token_out,
-    symbol_out,
-    origin_function_signature,
-    INDEX,
-    origin_to_address,
+    ROUND(
+        CASE
+            WHEN (token_out <> '0xe30fedd158a2e3b13e9badaeabafc5516e95e8c7'
+            OR NOT token_out_is_verified)
+            AND (
+                amount_in_usd IS NULL
+                OR ABS((amount_out_usd - amount_in_usd) / NULLIF(amount_in_usd, 0)) > 0.75
+                OR ABS((amount_out_usd - amount_in_usd) / NULLIF(amount_out_usd, 0)) > 0.75
+            ) THEN NULL
+            ELSE amount_out_usd
+        END,
+        2
+    ) AS amount_out_usd,
     sender,
     tx_to,
-    event_name,
-    swaps_combined_id AS ez_dex_swaps_id,
-    SYSDATE() AS inserted_timestamp,
-    SYSDATE() AS modified_timestamp,
-    '{{ invocation_id }}' AS _invocation_id
-FROM
-    {{ ref('silver_evm_dex__swaps_combined') }}
-
-{% if is_incremental() %}
-WHERE
-    modified_timestamp >= (
-        SELECT
-            MAX(modified_timestamp) - INTERVAL '{{ var("LOOKBACK", "30 minutes") }}'
-        FROM
-            {{ this }}
-    )
-{% endif %}
-UNION ALL
-SELECT
-    block_id,
-    block_timestamp,
-    tx_id,
-    originated_from,
+    event_index,
     platform,
-    swapper,
-    origin_from_address,
-    pool_address,
-    amount_in_unadj,
-    amount_in,
-    amount_in_usd,
-    amount_out_unadj,
-    amount_out,
-    amount_out_usd,
+    protocol,
+    version AS protocol_version,
     token_in,
-    symbol_in,
+    token_in_is_verified,
     token_out,
+    token_out_is_verified,
+    symbol_in,
     symbol_out,
-    origin_function_signature,
-    INDEX,
-    origin_to_address,
-    sender,
-    tx_to,
-    event_name,
-    swaps_combined_id AS ez_dex_swaps_id,
-    SYSDATE() AS inserted_timestamp,
-    SYSDATE() AS modified_timestamp,
-    '{{ invocation_id }}' AS _invocation_id
+    _log_id,
+    complete_dex_swaps_id AS ez_dex_swaps_id,
+    inserted_timestamp,
+    modified_timestamp
 FROM
-    {{ ref('silver__dex_swaps_combined') }}
-
-{% if is_incremental() %}
-WHERE
-    modified_timestamp >= (
-        SELECT
-            MAX(modified_timestamp) - INTERVAL '{{ var("LOOKBACK", "30 minutes") }}'
-        FROM
-            {{ this }}
-    )
-{% endif %}
+    {{ ref('silver_dex__complete_dex_swaps') }}
