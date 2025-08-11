@@ -46,7 +46,7 @@ logs AS (
         ) AS _log_id,
         modified_timestamp
     FROM
-        {{ ref('core__fact_event_logs') }}
+        {{ ref('core_evm__fact_event_logs') }}
     WHERE
         (
             contract_address IN (
