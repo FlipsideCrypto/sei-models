@@ -25,5 +25,5 @@ FROM
         'complete_native_prices'
     ) }}
 WHERE
-    blockchain = 'sei'
+    blockchain ILIKE 'sei%'
     AND symbol = 'SEI'

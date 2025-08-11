@@ -22,7 +22,4 @@ FROM
         'complete_provider_asset_metadata'
     ) }}
 WHERE
-    platform IN (
-        'sei-network',
-        'sei-v2'
-    )
+    platform ILIKE 'sei%'

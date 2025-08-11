@@ -25,7 +25,4 @@ FROM
         'complete_token_asset_metadata'
     ) }}
 WHERE
-    blockchain IN (
-        'sei network',
-        'sei v2'
-    )
+    blockchain ILIKE 'sei%'

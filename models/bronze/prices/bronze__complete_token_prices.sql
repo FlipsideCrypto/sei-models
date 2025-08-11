@@ -28,7 +28,4 @@ FROM
         'complete_token_prices'
     ) }}
 WHERE
-    blockchain IN (
-        'sei network',
-        'sei v2'
-    )
+    blockchain ILIKE 'sei%'

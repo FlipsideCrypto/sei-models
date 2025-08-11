@@ -22,4 +22,4 @@ FROM
         'complete_native_asset_metadata'
     ) }}
 WHERE
-    blockchain = 'sei'
+    blockchain ILIKE 'sei%'
