@@ -1,12 +1,12 @@
-name: dbt_test_evm_recent
-run-name: dbt_test_evm_recent
+name: dbt_run_heal_models
+run-name: dbt_run_heal_models
 
 on:
   workflow_dispatch:
   schedule:
-    # Daily at 10:30am UTC
-    - cron: '30 10 * * *'
-
+    # At 12:10 UTC on Sunday
+    - cron: '10 12 * * 0'
+  
 env:
   USE_VARS: "${{ vars.USE_VARS }}"
   DBT_PROFILES_DIR: "${{ vars.DBT_PROFILES_DIR }}"
@@ -17,13 +17,11 @@ env:
   PASSWORD: "${{ secrets.PASSWORD }}"
   REGION: "${{ vars.REGION }}"
   DATABASE: "${{ vars.DATABASE }}"
-  WAREHOUSE: "${{ vars.TEST_WAREHOUSE }}"
+  WAREHOUSE: "${{ vars.WAREHOUSE }}"
   SCHEMA: "${{ vars.SCHEMA }}"
 
 concurrency:
   group: ${{ github.workflow }}
-
-
 
 jobs:
   run_dbt_jobs:
@@ -45,7 +43,7 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt test -m models/bronze/core "sei_models,tag:recent_evm_test" "sei_models,tag:curated"
+          dbt run -m "sei_models,tag:heal" --vars '{"HEAL_MODEL":True}'
 
   notify-failure:
     needs: [run_dbt_jobs]
