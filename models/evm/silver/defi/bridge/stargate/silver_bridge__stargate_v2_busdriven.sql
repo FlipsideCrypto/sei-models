@@ -29,13 +29,13 @@ bus_driven_raw AS (
         block_timestamp,
         tx_hash,
         event_index,
-        event_name,
+        'BusDriven' AS event_name,
         l.contract_address,
         regexp_substr_all(SUBSTR(DATA, 3), '.{64}') AS part,
         utils.udf_hex_to_int(
             part [0] :: STRING
         ) :: INT AS dst_id,
-        '0x' || part [3] :: STRING AS guid,
+        part [3] :: STRING AS guid,
         utils.udf_hex_to_int(
             part [1] :: STRING
         ) :: INT AS start_ticket_id,
@@ -65,7 +65,7 @@ bus_driven_raw AS (
         INNER JOIN contract_mapping m
         ON l.contract_address = m.contract_address
     WHERE
-        event_name = 'BusDriven'
+        topic_0 = '0x1623f9ea59bd6f214c9571a892da012fc23534aa5906bef4ae8c5d15ee7d2d6e' --event_name = 'BusDriven'
 
 {% if is_incremental() %}
 AND modified_timestamp >= (

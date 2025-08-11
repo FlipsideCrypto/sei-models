@@ -1,3 +1,4 @@
+-- depends_on: {{ ref('silver_bridge__stargate_v2_asset_seed') }}
 {{ config(
     materialized = 'incremental',
     incremental_strategy = 'delete+insert',
@@ -135,7 +136,7 @@ FINAL AS (
     FROM
         combined
 
-{% if is_incremental() and 'stargate_heal' in vars.curated_fr_models %}
+{% if is_incremental() and 'stargate_heal' in var('HEAL_MODELS') %}
 UNION ALL
 SELECT
     block_number,
