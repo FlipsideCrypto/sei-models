@@ -1,9 +1,10 @@
 -- depends_on: {{ ref('silver_bridge__stargate_v2_asset_seed') }}
+-- depends_on: {{ ref('silver_bridge__layerzero_v2_bridge_seed') }}
 {{ config(
     materialized = 'incremental',
     incremental_strategy = 'delete+insert',
     unique_key = "block_number",
-    tags = ['noncore']
+    tags = ['silver_bridge','defi','bridge','curated']
 ) }}
 
 WITH bus_driven AS (
@@ -130,6 +131,19 @@ combined AS (
     FROM
         oft_sent
 ),
+
+{% if is_incremental() and 'stargate_heal' in var('HEAL_MODELS') %}
+blocks_to_heal AS (
+    SELECT
+        DISTINCT block_number
+    FROM
+        {{ this }}
+    WHERE
+        token_address IS NULL
+        OR destination_chain IS NULL
+),
+{% endif %}
+
 FINAL AS (
     SELECT
         *
@@ -180,15 +194,13 @@ SELECT
 FROM
     {{ this }}
     t
+    INNER JOIN blocks_to_heal USING (block_number)
     LEFT JOIN {{ ref('silver_bridge__stargate_v2_asset_seed') }} A
     ON t.bridge_address = A.oftaddress
     AND A.chain = 'sei'
     LEFT JOIN {{ ref('silver_bridge__layerzero_v2_bridge_seed') }}
     b
     ON t.destination_chain_id = b.eid
-WHERE
-    t.token_address IS NULL
-    OR t.destination_chain IS NULL
 {% endif %}
 )
 SELECT
@@ -233,5 +245,6 @@ FROM
         PARTITION BY _log_id
         ORDER BY
             modified_timestamp DESC,
-            destination_chain DESC nulls last
+            destination_chain DESC nulls last,
+            token_address DESC nulls last
     ) = 1

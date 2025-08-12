@@ -1,8 +1,8 @@
 {{ config(
     materialized = 'incremental',
     incremental_strategy = 'delete+insert',
-    unique_key = "block_number",
-    tags = ['noncore']
+    unique_key = "token_address",
+    tags = ['silver_bridge','defi','bridge','curated']
 ) }}
 
 WITH new_tokens AS (
