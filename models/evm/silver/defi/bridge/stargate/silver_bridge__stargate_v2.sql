@@ -221,8 +221,8 @@ SELECT
     dst_chain_id,
     destination_chain_id,
     destination_chain,
-    token_address,
-    token_symbol,
+    A.address AS token_address,
+    A.asset AS token_symbol,
     amount_unadj,
     src_chain_id,
     src_chain,
@@ -241,7 +241,10 @@ SELECT
     _log_id,
     modified_timestamp
 FROM
-    FINAL qualify ROW_NUMBER() over (
+    FINAL f
+    LEFT JOIN {{ ref('silver_bridge__stargate_v2_asset_seed') }} A
+    ON f.bridge_address = A.oftaddress
+    AND A.chain = 'sei' qualify ROW_NUMBER() over (
         PARTITION BY _log_id
         ORDER BY
             modified_timestamp DESC,
