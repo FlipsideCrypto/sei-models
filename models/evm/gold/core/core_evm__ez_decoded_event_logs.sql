@@ -63,27 +63,27 @@ new_records AS (
     FROM
         base b
         LEFT JOIN {{ ref('core_evm__fact_event_logs') }}
-        fel USING (
-            block_number,
-            tx_hash,
-            event_index
-        )
+        fel 
+        on fel.block_number = b.block_number
+        and fel.tx_hash = b.tx_hash
+        and fel.event_index = b.event_index
+        {% if is_incremental() %}
+        AND fel.inserted_timestamp > DATEADD('day', -3, SYSDATE())
+        {% endif %}
         LEFT JOIN {{ ref('core_evm__fact_transactions') }}
-        ft USING (
-            block_number,
-            tx_hash
-        )
+        ft 
+        on ft.block_number = b.block_number
+        and ft.tx_hash = b.tx_hash
+        {% if is_incremental() %}
+        AND ft.inserted_timestamp > DATEADD('day', -3, SYSDATE())
+        {% endif %}
         LEFT JOIN {{ ref('core_evm__dim_contracts') }}
         dc
         ON b.contract_address = dc.address
         AND dc.name IS NOT NULL
     WHERE
         1 = 1
-
-{% if is_incremental() %}
-AND fel.inserted_timestamp > DATEADD('day', -3, SYSDATE())
-AND ft.inserted_timestamp > DATEADD('day', -3, SYSDATE())
-{% endif %})
+)
 
 {% if is_incremental() %},
 missing_tx_data AS (
