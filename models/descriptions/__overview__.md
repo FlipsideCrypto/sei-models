@@ -46,10 +46,12 @@ There is more information on how to use dbt docs in the last section of this doc
 - [fact_staking](#!/model/model.sei_models.gov__fact_staking)
 - [fact_staking_rewards](#!/model/model.sei_models.gov__fact_staking_rewards)
 
-**Defi Fact  Tables:**
+**Defi Tables:**
 - [fact_dex_swaps](#!/model/model.sei_models.defi__fact_dex_swaps)
 - [fact_lp_actions](#!/model/model.sei_models.defi__fact_lp_actions)
+- [dim_dex_liquidity_pools](#!/model/model.sei_models.defi__dim_dex_liquidity_pools)
 - [ez_dex_swaps](#!/model/model.sei_models.defi__ez_dex_swaps)
+- [ez_bridge_activity](#!/model/model.sei_models.defi__ez_bridge_activity)
 
 **Pricing Tables:**
 - [dim_asset_metadata](#!/model/model.sei_models.price__dim_asset_metadata)
