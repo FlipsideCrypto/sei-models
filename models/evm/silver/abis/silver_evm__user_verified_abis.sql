@@ -503,7 +503,7 @@ valid_traces AS (
                     SELECT
                         base_address
                     FROM
-                        {{ ref('silver_evm__logs') }}
+                        {{ ref('core_evm__fact_event_logs') }}
                         l
                         JOIN event_mapping ia
                         ON ia.contract_address = l.contract_address

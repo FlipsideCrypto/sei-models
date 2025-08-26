@@ -11,7 +11,7 @@ WITH base AS (
         ) AS block_hour,
         MAX(block_number) block_number
     FROM
-        {{ ref("silver_evm__blocks") }}
+        {{ ref("core_evm__fact_blocks") }}
     WHERE
         block_timestamp > DATEADD(
             'day',

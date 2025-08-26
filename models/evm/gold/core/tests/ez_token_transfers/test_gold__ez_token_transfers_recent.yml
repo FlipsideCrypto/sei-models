@@ -1,71 +1,63 @@
 version: 2
 models:
-  - name: test_silver_evm__logs_full
+  - name: test_gold__ez_token_transfers_recent
+    description: "This is a view used to test the last three days of `ez_token_transfers` data."
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
-            - _LOG_ID
-      - fsc_utils.sequence_gaps:
-          partition_by:
-            - BLOCK_NUMBER
-            - TX_HASH
-          column_name: EVENT_INDEX
-          where: BLOCK_TIMESTAMP < CURRENT_DATE - 1
+            - EZ_TOKEN_TRANSFERS_ID
+
     columns:
       - name: BLOCK_NUMBER
         tests:
-          - not_null  
+          - not_null    
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
                 - NUMBER    
+                - FLOAT      
       - name: BLOCK_TIMESTAMP
         tests:
-          - not_null:
-              where: NOT IS_PENDING
+          - not_null
           - dbt_expectations.expect_row_values_to_have_recent_data:
-              datepart: day
-              interval: 1
+              datepart: hour
+              interval: 3
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
-                - TIMESTAMP_LTZ
                 - TIMESTAMP_NTZ
+                - TIMESTAMP_LTZ
       - name: TX_HASH
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_match_regex:
               regex: 0[xX][0-9a-fA-F]+
-          - fsc_utils.tx_block_count:
-              config:
-                severity: error
-                error_if: "!=0"
-      - name: EVENT_INDEX
-        tests:
-          - not_null
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - NUMBER
-                - FLOAT
       - name: CONTRACT_ADDRESS
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_match_regex:
               regex: 0[xX][0-9a-fA-F]+
-      - name: TOPICS
+      - name: FROM_ADDRESS
         tests:
           - not_null
-      - name: DATA
+          - dbt_expectations.expect_column_values_to_match_regex:
+              regex: 0[xX][0-9a-fA-F]+
+      - name: TO_ADDRESS
         tests:
           - not_null
-      - name: EVENT_REMOVED
+          - dbt_expectations.expect_column_values_to_match_regex:
+              regex: 0[xX][0-9a-fA-F]+
+      - name: RAW_AMOUNT
         tests:
           - not_null
-      - name: _LOG_ID
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER    
+                - FLOAT
+      - name: EZ_TOKEN_TRANSFERS_ID
         tests:
-          - not_null
+          - not_null    
       - name: ORIGIN_FUNCTION_SIGNATURE
         tests:
-          - not_null:
-              where: NOT IS_PENDING
+          - not_null
       - name: ORIGIN_FROM_ADDRESS
         tests:
           - not_null

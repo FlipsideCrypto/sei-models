@@ -1,82 +1,41 @@
 -- depends_on: {{ ref('bronze_evm__streamline_blocks') }}
 {{ config(
     materialized = 'incremental',
+    incremental_strategy = 'delete+insert',
     unique_key = "block_number",
-    cluster_by = "block_timestamp::date",
-    tags = ['core'],
-    merge_exclude_columns = ["inserted_timestamp"],
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(hash,parent_hash,receipts_root,sha3_uncles,state_root,transactions_root)",
+    cluster_by = ['modified_timestamp::DATE','partition_key'],
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(block_number)",
+    tags = ['core']
 ) }}
 
-SELECT
-    DATA,
-    VALUE :BLOCK_NUMBER :: INT AS block_number,
-    utils.udf_hex_to_int(
-        DATA :result :baseFeePerGas :: STRING
-    ) :: INT AS base_fee_per_gas,
-    utils.udf_hex_to_int(
-        DATA :result :difficulty :: STRING
-    ) :: INT AS difficulty,
-    DATA :result :extraData :: STRING AS extra_data,
-    utils.udf_hex_to_int(
-        DATA :result :gasLimit :: STRING
-    ) :: INT AS gas_limit,
-    utils.udf_hex_to_int(
-        DATA :result :gasUsed :: STRING
-    ) :: INT AS gas_used,
-    DATA :result :hash :: STRING AS HASH,
-    DATA :result :logsBloom :: STRING AS logs_bloom,
-    DATA :result :miner :: STRING AS miner,
-    DATA :result :mixHash :: STRING AS mixHash,
-    utils.udf_hex_to_int(
-        DATA :result :nonce :: STRING
-    ) :: INT AS nonce,
-    utils.udf_hex_to_int(
-        DATA :result :number :: STRING
-    ) :: INT AS NUMBER,
-    DATA :result :parentHash :: STRING AS parent_hash,
-    DATA :result :receiptsRoot :: STRING AS receipts_root,
-    DATA :result :sha3Uncles :: STRING AS sha3_uncles,
-    utils.udf_hex_to_int(
-        DATA :result :size :: STRING
-    ) :: INT AS SIZE,
-    DATA :result :stateRoot :: STRING AS state_root,
-    utils.udf_hex_to_int(
-        DATA :result :timestamp :: STRING
-    ) :: TIMESTAMP AS block_timestamp,
-    IFNULL(
-        utils.udf_hex_to_int(
-            DATA :result :totalDifficulty :: STRING
-        ) :: INT,
-        0
-    ) AS total_difficulty,
-    ARRAY_SIZE(
-        DATA :result :transactions
-    ) AS tx_count,
-    DATA :result :transactionsRoot :: STRING AS transactions_root,
-    DATA :result :uncles AS uncles,
+WITH bronze_blocks AS (
+    SELECT 
+        block_number,
+        partition_key,
+        DATA:result AS block_json,
+        _inserted_timestamp
+    FROM 
+    {% if is_incremental() %}
+    {{ ref('bronze_evm__streamline_blocks') }}
+    WHERE _inserted_timestamp >= (
+        SELECT 
+            COALESCE(MAX(_inserted_timestamp), '1900-01-01'::TIMESTAMP) AS _inserted_timestamp
+        FROM {{ this }}
+    ) AND DATA IS NOT NULL
+    {% else %}
+    {{ ref('bronze_evm__streamline_fr_blocks') }}
+    WHERE DATA IS NOT NULL
+    {% endif %}
+)
+
+SELECT 
+    block_number,
+    partition_key,
+    block_json,
     _inserted_timestamp,
-    {{ dbt_utils.generate_surrogate_key(
-        ['block_number']
-    ) }} AS blocks_id,
+    {{ dbt_utils.generate_surrogate_key(['block_number']) }} AS blocks_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id
-FROM
-
-{% if is_incremental() %}
-{{ ref('bronze_evm__streamline_blocks') }}
-WHERE
-    _inserted_timestamp >= (
-        SELECT
-            MAX(_inserted_timestamp) _inserted_timestamp
-        FROM
-            {{ this }}
-    )
-{% else %}
-    {{ ref('bronze_evm__streamline_fr_blocks') }}
-{% endif %}
-
-qualify(ROW_NUMBER() over (PARTITION BY block_number
-ORDER BY
-    _inserted_timestamp DESC)) = 1
+FROM bronze_blocks
+QUALIFY ROW_NUMBER() OVER (PARTITION BY blocks_id ORDER BY _inserted_timestamp DESC) = 1

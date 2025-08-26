@@ -244,8 +244,7 @@ aggregated_errors AS (
                 t.origin_function_signature,
                 t.from_address AS origin_from_address,
                 t.to_address AS origin_to_address,
-                t.tx_status,
-                t.position AS tx_position,
+                t.tx_position,
                 f.trace_index,
                 f.from_address AS from_address,
                 f.to_address AS to_address,
@@ -267,14 +266,10 @@ aggregated_errors AS (
                 f.traces_id,
                 f.trace_succeeded,
                 f.trace_address,
-                IFF(
-                    t.tx_status = 'SUCCESS',
-                    TRUE,
-                    FALSE
-                ) AS tx_succeeded
+                t.tx_succeeded
             FROM
                 json_traces f
-                LEFT OUTER JOIN {{ ref('silver_evm__transactions') }}
+                LEFT OUTER JOIN {{ ref('core_evm__fact_transactions') }}
                 t
                 ON f.tx_hash = t.tx_hash
                 AND f.block_number = t.block_number
@@ -305,8 +300,7 @@ heal_missing_data AS (
         txs.origin_function_signature,
         txs.from_address AS origin_from_address,
         txs.to_address AS origin_to_address,
-        txs.tx_status,
-        txs.position AS tx_position,
+        txs.tx_position,
         t.trace_index,
         t.from_address,
         t.to_address,
@@ -328,15 +322,11 @@ heal_missing_data AS (
         t.fact_traces_id AS traces_id,
         t.trace_succeeded,
         t.trace_address,
-        IFF(
-            txs.tx_status = 'SUCCESS',
-            TRUE,
-            FALSE
-        ) AS tx_succeeded
+        txs.tx_succeeded
     FROM
         {{ this }}
         t
-        JOIN {{ ref('silver_evm__transactions') }}
+        JOIN {{ ref('core_evm__fact_transactions') }}
         txs
         ON t.tx_hash = txs.tx_hash
         AND t.block_number = txs.block_number
@@ -354,7 +344,6 @@ all_traces AS (
         origin_function_signature,
         origin_from_address,
         origin_to_address,
-        tx_status,
         tx_position,
         trace_index,
         from_address,
@@ -387,7 +376,6 @@ all_traces AS (
         origin_function_signature,
         origin_from_address,
         origin_to_address,
-        tx_status,
         tx_position,
         trace_index,
         from_address,
@@ -412,40 +400,6 @@ all_traces AS (
         tx_succeeded
     FROM
         heal_missing_data
-    UNION ALL
-    SELECT
-        block_number,
-        tx_hash,
-        block_timestamp,
-        origin_function_signature,
-        origin_from_address,
-        origin_to_address,
-        tx_status,
-        tx_position,
-        trace_index,
-        from_address,
-        to_address,
-        value_hex,
-        value_precise_raw,
-        value_precise,
-        VALUE,
-        gas,
-        gas_used,
-        input,
-        output,
-        TYPE,
-        identifier,
-        sub_traces,
-        error_reason,
-        revert_reason,
-        trace_status,
-        DATA,
-        trace_succeeded,
-        trace_address,
-        tx_succeeded
-    FROM
-        {{ this }}
-        JOIN overflow_blocks USING (block_number)
 )
 SELECT
     block_number,
@@ -475,7 +429,6 @@ SELECT
     tx_succeeded,
     identifier,
     DATA,
-    tx_status,
     trace_status,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_hash', 'trace_index']
