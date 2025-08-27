@@ -6,7 +6,7 @@
             block_number AS base_block_number,
             tx_hash AS base_tx_hash
         FROM
-            {{ ref('test_silver_evm__transactions_full') }}
+            {{ ref('test_gold__fact_transactions_full') }}
         WHERE
             block_number NOT IN (
                 81772279,
@@ -45,7 +45,7 @@ WHERE
             block_number AS base_block_number,
             tx_hash AS base_tx_hash
         FROM
-            {{ ref('test_silver_evm__transactions_recent') }}
+            {{ ref('test_gold__fact_transactions_recent') }}
     ),
     model_name AS (
         SELECT
@@ -129,7 +129,7 @@ WHERE
                 81772279,
                 81772251
             ) -- these are broken at the node
-            and tx.tx_status = 'SUCCESS'
+            and tx.tx_succeeded
     )
 SELECT
     *

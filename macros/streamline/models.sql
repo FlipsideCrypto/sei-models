@@ -216,7 +216,7 @@ WHERE
     )
 SELECT
     l.block_number,
-    l._log_id,
+    concat(l.tx_hash, '-', l.event_index) AS _log_id,
     A.abi AS abi,
     OBJECT_CONSTRUCT(
         'topics',
@@ -227,7 +227,7 @@ SELECT
         l.contract_address
     ) AS DATA
 FROM
-    {{ ref("silver_evm__logs") }}
+    {{ ref("core_evm__fact_event_logs") }}
     l
     INNER JOIN {{ ref("silver_evm__complete_event_abis") }} A
     ON A.parent_contract_address = l.contract_address

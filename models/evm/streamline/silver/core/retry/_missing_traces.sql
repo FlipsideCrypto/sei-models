@@ -12,7 +12,7 @@ WITH lookback AS (
 SELECT
     DISTINCT tx.block_number block_number
 FROM
-    {{ ref("silver_evm__transactions") }}
+    {{ ref("core_evm__fact_transactions") }}
     tx
     LEFT JOIN {{ ref("core_evm__fact_traces") }}
     tr
