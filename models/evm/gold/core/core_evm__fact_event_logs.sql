@@ -151,7 +151,7 @@ missing_data AS (
     FROM
         {{ this }}
         t
-        LEFT JOIN {{ ref('core__fact_transactions') }}
+        LEFT JOIN {{ ref('core_evm__fact_transactions') }}
         txs
         ON t.tx_hash = txs.tx_hash
         AND t.block_number = txs.block_number
