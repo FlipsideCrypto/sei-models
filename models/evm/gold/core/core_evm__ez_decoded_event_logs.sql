@@ -39,7 +39,7 @@ new_records AS (
         b.block_number,
         fel.block_timestamp,
         b.tx_hash,
-        ft.position AS tx_position,
+        ft.tx_position,
         b.event_index,
         b.contract_address,
         fel.topics,
@@ -52,10 +52,7 @@ new_records AS (
         fel.origin_from_address,
         fel.origin_to_address,
         fel.origin_function_signature,
-        CASE
-            WHEN ft.status = 'SUCCESS' THEN TRUE
-            ELSE FALSE
-        END AS tx_succeeded,
+        ft.tx_succeeded,
         b.event_name,
         b.full_decoded_data,
         b.decoded_log,
@@ -91,7 +88,7 @@ missing_tx_data AS (
         t.block_number,
         fel.block_timestamp,
         t.tx_hash,
-        ft.position AS tx_position,
+        ft.tx_position,
         t.event_index,
         t.contract_address,
         fel.topics,
@@ -104,10 +101,7 @@ missing_tx_data AS (
         fel.origin_from_address,
         fel.origin_to_address,
         fel.origin_function_signature,
-        CASE
-            WHEN ft.status = 'SUCCESS' THEN TRUE
-            ELSE FALSE
-        END AS tx_succeeded,
+        ft.tx_succeeded,
         t.event_name,
         t.full_decoded_data,
         t.decoded_log,

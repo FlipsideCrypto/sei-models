@@ -29,5 +29,5 @@ WHERE
     )
     AND cb._inserted_timestamp >= DATEADD('hour', -84, SYSDATE())
     AND (
-        txs._inserted_timestamp >= DATEADD('hour', -84, SYSDATE())
-        OR txs._inserted_timestamp IS NULL)
+        txs.inserted_timestamp >= DATEADD('hour', -84, SYSDATE())
+        OR txs.inserted_timestamp IS NULL)
