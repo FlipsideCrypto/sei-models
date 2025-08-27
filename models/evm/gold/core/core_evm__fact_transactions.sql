@@ -188,7 +188,6 @@ missing_data AS (
         t.max_priority_fee_per_gas,
         t.y_parity,
         t.access_list,
-        t.authorization_list,
         t.gas_price,
         utils.udf_hex_to_int(
             r.receipts_json :gasUsed :: STRING
