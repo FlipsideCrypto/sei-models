@@ -332,6 +332,7 @@ SELECT
     max_fee_per_gas,
     max_priority_fee_per_gas,
     access_list,
+    y_parity,
     r,
     s,
     v,
