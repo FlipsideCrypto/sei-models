@@ -59,7 +59,7 @@
                   concat(l.tx_hash::string, '-', l.event_index::string) as _log_id
               FROM target_blocks b
               INNER JOIN {{ ref('core_evm__fact_event_logs') }} l using (block_number)
-              WHERE l.tx_status = 'SUCCESS' and date_trunc('month', l.block_timestamp) = '{{month}}'::timestamp
+              WHERE l.tx_succeeded and date_trunc('month', l.block_timestamp) = '{{month}}'::timestamp
           )
           SELECT
             l.block_number,
