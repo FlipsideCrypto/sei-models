@@ -16,7 +16,7 @@ SELECT
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id
 FROM
-    {{ ref('silver_evm__transactions') }}
+    {{ ref('core_evm__fact_transactions') }}
 
 {% if is_incremental() %}
 WHERE
