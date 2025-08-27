@@ -10,7 +10,7 @@ WITH lookback AS (
         {{ ref("_evm_block_lookback") }}
 )
 SELECT
-    DISTINCT t.block_number AS block_number
+    DISTINCT block_number
 FROM
     {{ ref("core_evm__fact_transactions") }}
 WHERE
