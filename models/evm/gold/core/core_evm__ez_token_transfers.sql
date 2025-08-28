@@ -6,7 +6,7 @@
     unique_key = 'ez_token_transfers_id',
     cluster_by = ['block_timestamp::DATE'],
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(origin_from_address, origin_to_address, from_address, to_address, origin_function_signature)",
-    tags = ['core']
+    tags = ['core', 'heal']
 ) }}
 
 WITH base AS (
