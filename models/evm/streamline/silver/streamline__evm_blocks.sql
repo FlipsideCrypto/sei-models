@@ -20,7 +20,7 @@ WHERE
         SELECT
             MAX(block_number)
         FROM
-            {{ ref('streamline__chainhead') }}
+            {{ ref('streamline__evm_chainhead') }}
     )
     AND _id >= 79123881
 ORDER BY
