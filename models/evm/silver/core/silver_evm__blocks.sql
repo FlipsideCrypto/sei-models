@@ -12,7 +12,7 @@ WITH bronze_blocks AS (
     SELECT 
         block_number,
         partition_key,
-        DATA:result AS block_json,
+        coalesce(DATA:result, DATA) AS block_json,
         _inserted_timestamp
     FROM 
     {% if is_incremental() %}
