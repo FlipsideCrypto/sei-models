@@ -3,12 +3,13 @@
     post_hook = fsc_utils.if_data_call_function_v2(
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
-        params ={ "external_table" :"evm_transactions",
+        params ={ "external_table" :"evm_blocks_transactions",
         "sql_limit" :"30000",
         "producer_batch_size" :"30000",
         "worker_batch_size" :"10000",
         "sql_source" :"{{this.identifier}}",
-        "exploded_key": tojson(["result.transactions"]) }
+        "exploded_key": tojson(['result', 'result.transactions'])
+    }
     ),
     tags = ['streamline_core_evm_realtime']
 ) }}
@@ -39,18 +40,14 @@ to_do AS (
     SELECT
         block_number
     FROM
-        {{ ref("streamline__complete_evm_transactions") }}
+        {{ ref("streamline__complete_evm_blocks") }} b 
+    INNER JOIN {{ ref("streamline__complete_evm_transactions") }} t USING (block_number)
     WHERE
-        block_number >= (
+        b.block_number >= (
             SELECT
                 block_number
             FROM
                 last_3_days
-        )
-        AND _inserted_timestamp >= DATEADD(
-            'day',
-            -4,
-            SYSDATE()
         )
 ),
 ready_blocks AS (
@@ -97,4 +94,4 @@ SELECT
             ready_blocks
         ORDER BY
             block_number DESC
-        limit 25000
+limit 30000

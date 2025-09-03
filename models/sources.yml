@@ -53,6 +53,8 @@ sources:
       - name: txcount_v2
       - name: evm_decoded_logs
       - name: sei_addresses
+      - name: evm_blocks_v2
+      - name: evm_transactions_v2
   - name: bronze
     schema: bronze
     tables:
