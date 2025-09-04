@@ -1,3 +1,6 @@
+{% set GLOBAL_PROJECT_NAME = 'sei'%}
+{% set GLOBAL_NEW_BUILD_ENABLED = var('GLOBAL_NEW_BUILD_ENABLED', false) %}
+
 
 {{ config (
     materialized = "incremental",
@@ -119,7 +122,7 @@ SELECT
     t.origin_to_address,
     t.origin_function_signature,
     t.ez_native_transfers_id,
-    {% if is_incremental() or vars.GLOBAL_NEW_BUILD_ENABLED %}
+    {% if is_incremental() or GLOBAL_NEW_BUILD_ENABLED %}
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp
     {% else %}

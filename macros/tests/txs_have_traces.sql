@@ -3,7 +3,9 @@
     transactions_model
 ) %}
 
-{% set vars = return_vars() %}
+{% set MAIN_CORE_GOLD_TRACES_TEST_ERROR_THRESHOLD = var('MAIN_CORE_GOLD_TRACES_TEST_ERROR_THRESHOLD', 5000) %}
+
+{% set GLOBAL_PROJECT_NAME = 'sei'%}    
 
 WITH txs_with_traces AS (
 
@@ -28,11 +30,11 @@ WHERE
     )
     AND txs.from_address <> '0x0000000000000000000000000000000000000000'
     AND txs.to_address <> '0x0000000000000000000000000000000000000000' 
-    {% if vars.GLOBAL_PROJECT_NAME == 'arbitrum' %}
+    {% if GLOBAL_PROJECT_NAME == 'arbitrum' %}
         AND txs.to_address <> '0x000000000000000000000000000000000000006e'
         AND txs.block_number > 22207817
     {% endif %}
-    {% if vars.GLOBAL_PROJECT_NAME == 'boba' %}
+    {% if GLOBAL_PROJECT_NAME == 'boba' %}
         AND txs.block_number > 1041894
     {% endif %}
 )
@@ -44,7 +46,7 @@ FROM
 WHERE
     (
         SELECT
-            COUNT(DISTINCT block_number) >= {{ vars.MAIN_CORE_GOLD_TRACES_TEST_ERROR_THRESHOLD }}
+            COUNT(DISTINCT block_number) >= {{ MAIN_CORE_GOLD_TRACES_TEST_ERROR_THRESHOLD }}
         FROM
             txs_with_traces
     )
