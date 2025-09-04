@@ -3,7 +3,9 @@
     transactions_model
 ) %}
 
-{% set vars = return_vars() %}
+{% set MAIN_CORE_GOLD_TRACES_TEST_ERROR_THRESHOLD = var('MAIN_CORE_GOLD_TRACES_TEST_ERROR_THRESHOLD', 5000) %}
+
+{% set GLOBAL_PROJECT_NAME = 'sei'%}    
 
 WITH txs_with_traces AS (
 
@@ -44,7 +46,7 @@ FROM
 WHERE
     (
         SELECT
-            COUNT(DISTINCT block_number) >= {{ vars.MAIN_CORE_GOLD_TRACES_TEST_ERROR_THRESHOLD }}
+            COUNT(DISTINCT block_number) >= {{ MAIN_CORE_GOLD_TRACES_TEST_ERROR_THRESHOLD }}
         FROM
             txs_with_traces
     )
