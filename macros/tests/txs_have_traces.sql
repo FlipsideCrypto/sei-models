@@ -28,11 +28,11 @@ WHERE
     )
     AND txs.from_address <> '0x0000000000000000000000000000000000000000'
     AND txs.to_address <> '0x0000000000000000000000000000000000000000' 
-    {% if vars.GLOBAL_PROJECT_NAME == 'arbitrum' %}
+    {% if GLOBAL_PROJECT_NAME == 'arbitrum' %}
         AND txs.to_address <> '0x000000000000000000000000000000000000006e'
         AND txs.block_number > 22207817
     {% endif %}
-    {% if vars.GLOBAL_PROJECT_NAME == 'boba' %}
+    {% if GLOBAL_PROJECT_NAME == 'boba' %}
         AND txs.block_number > 1041894
     {% endif %}
 )
