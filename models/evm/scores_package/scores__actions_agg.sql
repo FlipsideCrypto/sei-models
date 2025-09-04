@@ -37,8 +37,8 @@
         {% endif %}
 
         ORDER BY score_date ASC
-        {% if vars.SCORES_LIMIT_DAYS %}
-            LIMIT {{ vars.SCORES_LIMIT_DAYS }}
+        {% if SCORES_LIMIT_DAYS %}
+            LIMIT {{ SCORES_LIMIT_DAYS }}
         {% endif %}
     {% endset %}
 
