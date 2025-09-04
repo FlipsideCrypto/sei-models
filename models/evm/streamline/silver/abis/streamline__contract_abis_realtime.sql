@@ -39,7 +39,7 @@ FROM
 )
 SELECT
     contract_address,
-    DATE_PART('EPOCH_SECONDS', systimestamp()) :: INT AS partition_key,
+    DATE_PART('EPOCH_SECONDS', sysdate()::date) :: INT AS partition_key,
     live.udf_api(
         'GET',
         CONCAT(
