@@ -41,7 +41,10 @@ SELECT
         '2000-01-01'
     ) AS modified_timestamp
 FROM
-    {{ ref('silver__lp_actions_astroport') }} A
+    {{ source(
+        'silver',
+        'lp_actions_astroport'
+    ) }} A
 UNION ALL
 SELECT
     'fuzio' AS platform,

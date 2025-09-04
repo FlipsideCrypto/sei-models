@@ -91,3 +91,4 @@ sources:
       - name: dex_swaps_seaswap
       - name: lp_actions_seaswap
       - name: lp_actions_fuzio
+      - name: lp_actions_astroport
