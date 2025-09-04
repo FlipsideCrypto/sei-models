@@ -55,6 +55,7 @@ sources:
       - name: sei_addresses
       - name: evm_blocks_v2
       - name: evm_transactions_v2
+      - name: contract_abis
   - name: bronze
     schema: bronze
     tables:
@@ -102,3 +103,14 @@ sources:
       - name: evm_wrapped_assets
       - name: dates
       - name: scoring_activity_categories
+  - name: abis_silver
+    database: "{{ target.database }}"
+    schema: silver_evm
+    tables:
+      - name: verified_abis
+      - name: complete_event_abis
+  - name: complete_streamline
+    database: "{{ target.database }}"
+    schema: streamline
+    tables:
+      - name: complete_contract_abis

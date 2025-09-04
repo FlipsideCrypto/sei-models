@@ -33,7 +33,7 @@ verified_abis AS (
     FROM
         {{ ref('silver_evm__verified_abis') }}
     WHERE
-        abi_source = 'seitrace'
+        abi_source = 'etherscan'
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
@@ -44,7 +44,7 @@ AND _inserted_timestamp >= (
     FROM
         {{ this }}
     WHERE
-        abi_source = 'seitrace'
+        abi_source = 'etherscan'
 )
 {% endif %}
 ),

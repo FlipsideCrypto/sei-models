@@ -1,3 +1,4 @@
+-- depends_on: {{ ref('bronze__contract_abis') }}
 {{ config(
     materialized = 'incremental',
     unique_key = "contract_address",
@@ -9,16 +10,20 @@ WITH base AS (
     SELECT
         contract_address,
         PARSE_JSON(
-            abi_data
+            b.data:result
         ) AS DATA,
         _inserted_timestamp
     FROM
-        {{ ref('bronze_evm_api__contract_abis') }}
+        {% if is_incremental() %}
+        {{ ref('bronze__contract_abis') }} b 
+        {% else %}
+        {{ ref('bronze__contract_abis_fr') }} b 
+        {% endif %}
     WHERE
-        abi_data [0] :: STRING <> 'ABI unavailable'
+        b.data:message::string = 'OK'
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND b._inserted_timestamp >= (
     SELECT
         COALESCE(
             MAX(
@@ -31,12 +36,12 @@ AND _inserted_timestamp >= (
 )
 {% endif %}
 ),
-sei_trace_abis AS (
+etherscan_abis AS (
     SELECT
         contract_address,
         DATA,
         _inserted_timestamp,
-        'seitrace' AS abi_source
+        'etherscan' AS abi_source
     FROM
         base
 ),
@@ -83,7 +88,7 @@ all_abis AS (
         NULL AS discord_username,
         SHA2(DATA) AS abi_hash
     FROM
-        sei_trace_abis
+        etherscan_abis
     UNION
     SELECT
         contract_address,
