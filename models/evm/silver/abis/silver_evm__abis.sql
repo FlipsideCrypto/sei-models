@@ -2,7 +2,7 @@
     materialized = "incremental",
     unique_key = "contract_address",
     merge_exclude_columns = ["inserted_timestamp"],
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(contract_address,abi_hash,bytecode), SUBSTRING(contract_address,abi_hash,bytecode)",
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(contract_address,abi_hash,bytecode)",
     tags = ['abis']
 ) }}
 
@@ -33,7 +33,7 @@ verified_abis AS (
     FROM
         {{ ref('silver_evm__verified_abis') }}
     WHERE
-        abi_source = 'seitrace'
+        abi_source = 'etherscan'
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
@@ -44,7 +44,7 @@ AND _inserted_timestamp >= (
     FROM
         {{ this }}
     WHERE
-        abi_source = 'seitrace'
+        abi_source = 'etherscan'
 )
 {% endif %}
 ),
