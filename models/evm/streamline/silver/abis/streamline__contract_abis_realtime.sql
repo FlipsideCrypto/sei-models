@@ -22,7 +22,7 @@ WITH recent_relevant_contracts AS (
     ORDER BY
         total_interaction_count DESC
     LIMIT
-        2000
+        750
 ), all_contracts AS (
     SELECT
         contract_address
@@ -61,10 +61,10 @@ FROM
 {% if execute %}
     {% set params = { 
         "external_table" :"contract_abis",
-        "sql_limit" : 2500,
-        "producer_batch_size" : 100,
-        "worker_batch_size" : 100,
-        "async_concurrent_requests" : 5,
+        "sql_limit" : 1000,
+        "producer_batch_size" : 10,
+        "worker_batch_size" : 10,
+        "async_concurrent_requests" : 1,
         "sql_source" : 'contract_abis_realtime'
     } %}
 

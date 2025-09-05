@@ -28,8 +28,10 @@ WHERE
             COALESCE (MAX(_inserted_timestamp), '1970-01-01' :: TIMESTAMP)
         FROM
             {{ this }})
+    and data:result::string not like 'Max calls per%'
         {% else %}
             {{ ref('bronze__contract_abis_fr') }}
+            where data:result::string not like 'Max calls per%'
         {% endif %}
 
         qualify(ROW_NUMBER() over (PARTITION BY complete_contract_abis_id
