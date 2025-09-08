@@ -4,7 +4,7 @@
     unique_key = 'complete_contract_abis_id',
     cluster_by = 'partition_key',
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(complete_contract_abis_id, contract_address)",
-    tags = ['noncore']
+    tags = ['complete_abis']
 ) }}
 
 SELECT
