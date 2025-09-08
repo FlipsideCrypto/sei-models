@@ -1,6 +1,6 @@
 {{ config (
     materialized = "view",
-    tags = ['noncore']
+    tags = ['realtime_abis']
 ) }}
 
 WITH recent_relevant_contracts AS (
