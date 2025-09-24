@@ -1,5 +1,6 @@
 {{ config (
-    materialized = 'view'
+    materialized = 'view',
+    enabled = false
 ) }}
 {{ streamline_external_table_FR_query(
     "blocks",
