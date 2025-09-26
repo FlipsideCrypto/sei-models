@@ -1,20 +1,33 @@
 {{ config(
-    materialized = 'view',
-    persist_docs ={ "relation": true,
-    "columns": true }
+    materialized = 'incremental',
+    unique_key = ['address', 'blockchain'],
+    incremental_strategy = 'merge',
+    merge_exclude_columns = ["inserted_timestamp"],
+    cluster_by = 'modified_timestamp::DATE',
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(address, label_type, label_subtype, address_name, label); DELETE FROM {{ this }} WHERE address in (SELECT address FROM {{ ref('silver_evm__labels') }} WHERE _is_deleted = TRUE);",
+    tags = ['core']
 ) }}
 
-select 
-    l.blockchain as blockchain,
-    l.creator as creator,
-    evm_address as address,
-    l.label_type as label_type,
-    l.label_subtype as label_subtype,
-    l.label as label,
-    l.address_name as address_name,
-    l.dim_labels_id as dim_labels_id,
-    l.inserted_timestamp as inserted_timestamp,
-    l.modified_timestamp as modified_timestamp
-from {{ ref('core__dim_labels') }} l
-join {{ ref('core__dim_address_mapping') }} d 
-on l.address = d.sei_address
+SELECT
+    blockchain,
+    creator,
+    address,
+    address_name,
+    label_type,
+    label_subtype,
+    project_name AS label,
+    {{ dbt_utils.generate_surrogate_key(['labels_id']) }} AS dim_labels_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp
+FROM
+    {{ ref('silver_evm__labels') }} s 
+
+{% if is_incremental() %}
+WHERE
+    s.modified_timestamp > (
+        SELECT
+            COALESCE(MAX(modified_timestamp), '1970-01-01' :: TIMESTAMP) AS modified_timestamp
+        FROM
+            {{ this }}
+    )
+{% endif %}
