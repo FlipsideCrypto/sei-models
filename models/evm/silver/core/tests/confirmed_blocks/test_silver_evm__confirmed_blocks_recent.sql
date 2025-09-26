@@ -14,3 +14,4 @@ WHERE
         FROM
             {{ ref("_evm_block_lookback") }}
     )
+    and block_number not in (169970057, 169970054)
