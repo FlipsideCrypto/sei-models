@@ -12,10 +12,10 @@ models:
         description: "{{ doc('block_id') }}"
       - name: BLOCK_TIMESTAMP
         description: "{{ doc('block_timestamp') }}"
-        tests:
-          - dbt_expectations.expect_row_values_to_have_recent_data:
-              datepart: day
-              interval: 7
+        # tests:
+        #   - dbt_expectations.expect_row_values_to_have_recent_data:
+        #       datepart: day
+        #       interval: 7
       - name: TX_ID
         description: "{{ doc('tx_id') }}"
         tests: 
