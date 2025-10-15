@@ -40,9 +40,9 @@ sources:
     schema: |
       {{ "SEI_DEV" if var("STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES", False) else "SEI" }}
     tables:
-      - name: blocks
-      - name: transactions
-      - name: txcount
+      # - name: blocks
+      # - name: transactions
+      # - name: txcount
       - name: evm_blocks
       - name: evm_transactions
       - name: evm_confirm_blocks
