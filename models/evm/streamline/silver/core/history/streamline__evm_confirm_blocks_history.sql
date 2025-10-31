@@ -4,9 +4,9 @@
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
         params ={ "external_table" :"evm_confirm_blocks",
-        "sql_limit" :"25000",
-        "producer_batch_size" :"10000",
-        "worker_batch_size" :"5000",
+        "sql_limit" :"1000000",
+        "producer_batch_size" :"3000",
+        "worker_batch_size" :"1000",
         "sql_source" :"{{this.identifier}}" }
     ),
     tags = ['streamline_core_evm_history']
@@ -58,7 +58,8 @@ SELECT
         '{Service}/{Authentication}',
         OBJECT_CONSTRUCT(
             'Content-Type',
-            'application/json'
+            'application/json',
+            'fsc-quantum-state', 'streamline'
         ),
         OBJECT_CONSTRUCT(
             'id',
@@ -75,4 +76,4 @@ SELECT
             ready_blocks
         ORDER BY
             block_number asc
-    limit 25000
+    limit 1000000

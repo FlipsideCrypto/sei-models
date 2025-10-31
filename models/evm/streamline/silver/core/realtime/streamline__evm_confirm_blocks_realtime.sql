@@ -85,7 +85,8 @@ SELECT
         '{Service}/{Authentication}',
         OBJECT_CONSTRUCT(
             'Content-Type',
-            'application/json'
+            'application/json',
+            'fsc-quantum-state', 'streamline'
         ),
         OBJECT_CONSTRUCT(
             'id',
