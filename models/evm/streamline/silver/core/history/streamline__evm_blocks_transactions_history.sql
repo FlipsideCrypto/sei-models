@@ -4,9 +4,9 @@
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
         params ={ "external_table" :"evm_blocks_transactions",
-        "sql_limit" :"30000",
-        "producer_batch_size" :"30000",
-        "worker_batch_size" :"10000",
+        "sql_limit" :"1000000",
+        "producer_batch_size" :"3000",
+        "worker_batch_size" :"1000",
         "sql_source" :"{{this.identifier}}",
         "exploded_key": tojson(['result', 'result.transactions'])
     }
@@ -19,12 +19,14 @@ WITH to_do AS (
         block_number
     FROM
         {{ ref("streamline__evm_blocks") }}
+    WHERE block_number > 160000000
     EXCEPT
     SELECT
         block_number
     FROM
         {{ ref("streamline__complete_evm_blocks") }} b
     INNER JOIN {{ ref("streamline__complete_evm_transactions") }} t USING (block_number)
+    WHERE block_number > 160000000
 ),
 ready_blocks AS (
     SELECT
@@ -43,7 +45,8 @@ SELECT
         '{Service}/{Authentication}',
         OBJECT_CONSTRUCT(
             'Content-Type',
-            'application/json'
+            'application/json',
+            'fsc-quantum-state', 'streamline'
         ),
         OBJECT_CONSTRUCT(
             'id',
@@ -60,3 +63,4 @@ SELECT
             ready_blocks
         ORDER BY
             block_number ASC
+        limit 1000000

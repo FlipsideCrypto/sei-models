@@ -18,16 +18,13 @@ WITH to_do AS (
         block_number
     FROM
         {{ ref("streamline__evm_blocks") }}
-    WHERE block_number IS NOT NULL and block_number < (    
-        SELECT
-        block_number
-    FROM
-        {{ ref("_evm_block_lookback") }})
+    WHERE block_number IS NOT NULL and block_number > 160000000
     EXCEPT
     SELECT
         block_number
     FROM
         {{ ref("streamline__complete_evm_traces") }}
+    WHERE block_number > 160000000
 ),
 ready_blocks AS (
     SELECT
@@ -46,7 +43,8 @@ SELECT
         '{Service}/{Authentication}',
         OBJECT_CONSTRUCT(
             'Content-Type',
-            'application/json'
+            'application/json',
+            'fsc-quantum-state', 'streamline'
         ),
         OBJECT_CONSTRUCT(
             'id',
